@@ -38,13 +38,12 @@ const router = createBrowserRouter([
     element: <NotLoggedIn />,
   },
   {
-    path: "/",
+    path: "onboarding",
+    element: <Onboarding />,
+  },
+  {
     element: <LayoutPage />,
     children: [
-      {
-        path: "onboarding",
-        element: <Onboarding />,
-      },
       {
         path: "dashboard",
         element: <Dashboard />,
@@ -53,7 +52,7 @@ const router = createBrowserRouter([
         path: "categories",
         children: [
           {
-            path: "/add",
+            path: "add",
             element: <AddCategory />,
           },
           {
@@ -61,14 +60,14 @@ const router = createBrowserRouter([
             element: <Category />,
             children: [
               {
-                path: "/expense",
+                path: "expense",
                 children: [
                   {
                     path: ":expense",
                     element: <Expense />,
                   },
                   {
-                    path: "/add",
+                    path: "add",
                     element: <AddExpense />,
                   },
                 ],
