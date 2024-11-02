@@ -12,7 +12,7 @@ categoryRouter.get("/", async (req: Request, res: Response) => {
     })
 
   } catch (error: any) {
-    res.json({
+    res.status(500).json({
       message: "An error has occured",
       error: error.message 
     })
