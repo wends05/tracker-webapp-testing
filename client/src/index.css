@@ -16,3 +16,13 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@layer base {
+  input {
+    @apply px-2 bg-green text-darkCopper;
+  }
+
+  input[type="submit"] {
+    @apply py-2 px-4 bg-copper text-white rounded-lg;
+  }
+}
