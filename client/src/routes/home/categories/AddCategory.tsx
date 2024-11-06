@@ -6,7 +6,7 @@ const AddCategory: React.FC = () => {
   const [backgroundColor, setBackgroundColor] = useState<string>('');
   const [backgroundImage, setBackgroundImage] = useState<File | null>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null); 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const colors = ['#7D4F50', '#CC8B86', '#EFD293', '#4C9182', '#D9DBBC', '#A66D45'];
 
@@ -22,15 +22,15 @@ const AddCategory: React.FC = () => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setBackgroundImage(file);
-      setImagePreviewUrl(URL.createObjectURL(file)); 
+      setImagePreviewUrl(URL.createObjectURL(file));
     }
   };
 
   const removeImage = () => {
     setBackgroundImage(null);
-    setImagePreviewUrl(null); 
+    setImagePreviewUrl(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = ''; 
+      fileInputRef.current.value = '';
     }
   };
 
@@ -91,11 +91,11 @@ const AddCategory: React.FC = () => {
                 id="backgroundImage"
                 onChange={handleImageUpload}
                 ref={fileInputRef}
-                className="hidden" 
+                className="hidden"
               />
               <button
                 type="button"
-                onClick={() => fileInputRef.current?.click()} 
+                onClick={() => fileInputRef.current?.click()}
                 className="mt-1 bg-teal-800 text-white font-bold py-2 px-4 rounded-md"
               >
                 Choose File
