@@ -1,7 +1,11 @@
 import { useState } from "react";
-import logo from "../assets/logosample1.png";
+import logo from "./assets/logosample1.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBarsProgress, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBarsProgress,
+  faXmark,
+  faSignOutAlt,
+} from "@fortawesome/free-solid-svg-icons";
 
 const navLinks = [
   {
@@ -38,22 +42,35 @@ const Sidebar = () => {
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <button onClick={toggleMenu} className=" text-2xl w-min self-end">
-          <FontAwesomeIcon icon={faXmark} color="black" />
-        </button>
+        <div className="flex items-center justify-between px-2 py-4">
+          <img
+            src={logo}
+            alt="Logo"
+            onClick={() => console.log("Home button clicked")}
+            className="h-20 w-20 cursor-pointer"
+          />
+          <button onClick={toggleMenu} className="text-2xl">
+            <FontAwesomeIcon icon={faXmark} color="black" />
+          </button>
+        </div>
 
         <nav className="flex flex-col items-start p-6 text-black">
-          {navLinks.map(({ name }) => {
-            return (
-              <a
-                href="#"
-                className="py-2 px-2 text-lg font-semibold hover:bg-gray-200 w-full rounded-md"
-              >
-                {name}
-              </a>
-            );
-          })}
+          {navLinks.map(({ name }) => (
+            <a
+              href="#"
+              className="py-2 px-2 text-lg font-semibold hover:bg-gray-200 w-full rounded-md"
+            >
+              {name}
+            </a>
+          ))}
         </nav>
+
+        <button
+          onClick={() => console.log("Log out clicked")}
+          className="absolute bottom-4 right-4 text-2xl text-black hover:text-red-600"
+        >
+          <FontAwesomeIcon icon={faSignOutAlt} />
+        </button>
       </div>
 
       {isMenuOpen && (
