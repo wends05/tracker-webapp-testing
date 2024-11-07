@@ -3,7 +3,7 @@ import { pool } from "../db";
 
 const userRouter = express.Router();
 
-userRouter.post("", async (req: Request, res: Response) => {
+userRouter.get("", async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
 
@@ -27,6 +27,29 @@ userRouter.post("", async (req: Request, res: Response) => {
     res.status(200).json({
       data: createdUser.rows[0],
     });
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({
+      message: "An error has occured",
+      error: error.message,
+    });
+  }
+});
+
+userRouter.post("", async (req: Request, res: Response) => {
+  try {
+    const body = req.body;
+    const username = body.username;
+    const email = body.email;
+
+    const user = await pool.query(
+      'INSERT INTO "User"(username, email) VALUES ($1, $2) RETURNING *',
+      [username, email]
+    );
+
+    res.json({
+      user
+    })
   } catch (error: any) {
     console.error(error);
     res.status(500).json({

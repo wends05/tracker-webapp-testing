@@ -10,7 +10,7 @@ interface IUserContext {
 export const UserContext = createContext<IUserContext>({
   user: null,
   setUser: () => {},
-  supabaseSession: null,
+  supabaseSession: null, //ngalan sang crayon
 });
 
 export const supabase = createClient(
@@ -56,6 +56,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
           console.error("ERROR: ", error);
         }
       }
+
     });
 
     return () => subscription.unsubscribe();
