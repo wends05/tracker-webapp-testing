@@ -3,16 +3,11 @@ import { FaUser } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import { faUser, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons'
+
 
 const Register = () => {
   const [change, setChange] = useState("SIGN UP");
-  //on submit funct -> fetch local host 3000/user
-  //post method funct ->
-  // {
-  //   email, username
-  // }
+  
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
