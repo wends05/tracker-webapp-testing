@@ -23,7 +23,7 @@ const Register = () => {
       if (res.data.session) {
         nav("/dashboard");
       } else {
-        setLoading(false)
+        setLoading(false);
       }
     });
   }, []);
