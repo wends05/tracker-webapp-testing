@@ -7,12 +7,12 @@ const NotLoggedIn = () => {
   const [loading, setLoading] = useState(true);
 
   const nav = useNavigate();
-  useEffect(() => {
-    if (supabaseSession) {
-      nav("/dashboard");
-    }
-    setLoading(false);
-  }, [supabaseSession]);
+  // useEffect(() => {
+  //   if (supabaseSession) {
+  //     nav("/dashboard");
+  //   }
+  //   setLoading(false);
+  // }, [supabaseSession]);
 
   return (
     <div className="flex flex-col min-h-screen justify-center items-center">
