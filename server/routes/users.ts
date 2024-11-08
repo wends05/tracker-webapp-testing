@@ -5,7 +5,7 @@ const userRouter = express.Router();
 
 userRouter.get("", async (req: Request, res: Response) => {
   try {
-    const { email } = req.body;
+    const { email } = req.query;
 
     if (!email) {
       throw Error("No email provided");
@@ -20,13 +20,7 @@ userRouter.get("", async (req: Request, res: Response) => {
       return;
     }
 
-    const createdUser = await pool.query(
-      'INSERT INTO "User"(email) VALUES($1) RETURNING *',
-      [email]
-    );
-    res.status(200).json({
-      data: createdUser.rows[0],
-    });
+    throw Error("User not found");
   } catch (error: any) {
     console.error(error);
     res.status(500).json({
@@ -38,9 +32,7 @@ userRouter.get("", async (req: Request, res: Response) => {
 
 userRouter.post("", async (req: Request, res: Response) => {
   try {
-    const body = req.body;
-    const username = body.username;
-    const email = body.email;
+    const { username, email } = req.body;
 
     const user = await pool.query(
       'INSERT INTO "User"(username, email) VALUES ($1, $2) RETURNING *',

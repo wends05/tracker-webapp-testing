@@ -27,36 +27,11 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     });
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (ev, session) => {
-      console.log(user);
+    } = supabase.auth.onAuthStateChange(async (_, session) => {
       setSupabaseSession(session);
 
-      console.log(ev);
-      if (ev == "SIGNED_IN") {
-        const email = session!.user.email;
-
-        console.log(email);
-        try {
-          const response = await fetch(`http://localhost:3000/user`, {
-            method: "POST",
-            body: JSON.stringify({ email }),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-
-          if (!response.ok) {
-            throw Error(await response.json());
-          }
-
-          const dbUser = await response.json();
-          console.log(dbUser);
-          setUser(dbUser.data);
-        } catch (error) {
-          console.error("ERROR: ", error);
-        }
-      }
-
+      // console.log(ev);
+      
     });
 
     return () => subscription.unsubscribe();

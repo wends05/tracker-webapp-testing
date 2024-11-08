@@ -23,6 +23,6 @@
   }
 
   input[type="submit"] {
-    @apply py-2 px-4 bg-copper text-white rounded-lg;
+    @apply py-2 px-4 w-max bg-copper hover:bg-[#6f4717] text-white rounded-lg cursor-pointer;
   }
 }

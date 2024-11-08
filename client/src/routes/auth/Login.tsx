@@ -9,14 +9,14 @@ const Login = () => {
   const [loading, setLoading] = useState(true);
   const nav = useNavigate();
 
-  useEffect(() => {
-    console.log(supabaseSession);
+  // useEffect(() => {
+  //   console.log(supabaseSession);
 
-    if (supabaseSession) {
-      nav("/dashboard");
-    }
-    setLoading(false);
-  }, [supabaseSession]);
+  //   if (supabaseSession) {
+  //     nav("/dashboard");
+  //   }
+  //   setLoading(false);
+  // }, [supabaseSession]);
 
   const handleSubmit = async (ev: FormEvent) => {
     ev.preventDefault();
