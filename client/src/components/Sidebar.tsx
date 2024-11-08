@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logo from "./assets/logosample1.png";
+import logo from "../assets/logosample1.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBarsProgress,
