@@ -16,6 +16,7 @@ import Summaries from "../routes/home/summary/Summaries";
 import Summary from "../routes/home/summary/Summary";
 import Saved from "../routes/home/Saved";
 import EditCategory from "../routes/home/categories/EditCategory";
+import EditExpense from "../routes/home/expense/EditExpense";
 
 const router = createBrowserRouter([
   {
@@ -23,11 +24,7 @@ const router = createBrowserRouter([
     element: <Landing />,
   },
   {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/register",
+    path: "/auth",
     element: <Register />,
   },
   {
@@ -62,29 +59,21 @@ const router = createBrowserRouter([
           },
           {
             path: ":category/expense",
-          },
-          {
-            path: ":category/expense",
             children: [
+              {
+                path: "add",
+                element: <AddExpense />,
+              },
               {
                 path: ":expense",
                 element: <Expense />,
-                children: [
-                  {
-                    path: "edit",
-                  },
-                ],
+              },
+              {
+                path: ":expense/edit",
+                element: <EditExpense />,
               },
             ],
           },
-          {
-            path: ":category/add",
-            element: <AddExpense />,
-          },
-          {
-            path: ":category/add",
-            element: <AddExpense />,
-          }
         ],
       },
       {
