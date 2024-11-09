@@ -57,8 +57,15 @@ const router = createBrowserRouter([
             element: <AddCategory />,
           },
           {
+            path: ":category/edit",
+            element: <EditCategory />,
+          },
+          {
             path: ":category",
             element: <Category />,
+          },
+          {
+            path: ":category/expense",
           },
           {
             path: ":category/expense",
@@ -69,11 +76,14 @@ const router = createBrowserRouter([
                 children: [
                   {
                     path: "edit",
-                    element: <EditCategory />,
                   },
                 ],
               },
             ],
+          },
+          {
+            path: ":category/add",
+            element: <AddExpense />,
           },
           {
             path: ":category/add",
