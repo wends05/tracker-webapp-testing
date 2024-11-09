@@ -15,6 +15,7 @@ import Profile from "../routes/home/Profile";
 import Summaries from "../routes/home/summary/Summaries";
 import Summary from "../routes/home/summary/Summary";
 import Saved from "../routes/home/Saved";
+import EditCategory from "../routes/home/categories/EditCategory";
 
 const router = createBrowserRouter([
   {
@@ -49,7 +50,7 @@ const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
-        path: "categories",
+        path: "category",
         children: [
           {
             path: "add",
@@ -58,22 +59,26 @@ const router = createBrowserRouter([
           {
             path: ":category",
             element: <Category />,
+          },
+          {
+            path: ":category/expense",
             children: [
               {
-                path: "expense",
+                path: ":expense",
+                element: <Expense />,
                 children: [
                   {
-                    path: ":expense",
-                    element: <Expense />,
-                  },
-                  {
-                    path: "add",
-                    element: <AddExpense />,
+                    path: "edit",
+                    element: <EditCategory />,
                   },
                 ],
               },
             ],
           },
+          {
+            path: ":category/add",
+            element: <AddExpense />,
+          }
         ],
       },
       {
