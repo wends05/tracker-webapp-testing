@@ -1,7 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Landing from "../routes";
 import About from "../routes/About";
-import Login from "../routes/auth/Login";
 import Register from "../routes/auth/Register";
 import NotLoggedIn from "../routes/NotLoggedIn";
 import LayoutPage from "../routes/home/_LayoutPage";
@@ -15,6 +14,7 @@ import Profile from "../routes/home/Profile";
 import Summaries from "../routes/home/summary/Summaries";
 import Summary from "../routes/home/summary/Summary";
 import Saved from "../routes/home/Saved";
+import EditCategory from "../routes/home/categories/EditCategory";
 
 const router = createBrowserRouter([
   {
@@ -45,31 +45,45 @@ const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
-        path: "categories",
+        path: "category",
         children: [
           {
             path: "add",
             element: <AddCategory />,
           },
           {
+            path: ":category/edit",
+            element: <EditCategory />,
+          },
+          {
             path: ":category",
             element: <Category />,
+          },
+          {
+            path: ":category/expense",
+          },
+          {
+            path: ":category/expense",
             children: [
               {
-                path: "expense",
+                path: ":expense",
+                element: <Expense />,
                 children: [
                   {
-                    path: ":expense",
-                    element: <Expense />,
-                  },
-                  {
-                    path: "add",
-                    element: <AddExpense />,
+                    path: "edit",
                   },
                 ],
               },
             ],
           },
+          {
+            path: ":category/add",
+            element: <AddExpense />,
+          },
+          {
+            path: ":category/add",
+            element: <AddExpense />,
+          }
         ],
       },
       {

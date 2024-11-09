@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
 
-const AddCategory: React.FC = () => {
+const AddCategory = () => {
   const [categoryName, setCategoryName] = useState<string>("");
   const [budget, setBudget] = useState<number | "">("");
   const [backgroundColor, setBackgroundColor] = useState<string>("");
@@ -40,7 +40,7 @@ const AddCategory: React.FC = () => {
         className="max-w-lg w-full flex flex-col gap-2"
       >
         <h1 className="text-2xl text-black font-bold text-center">
-          Add Category
+          Edit Category
         </h1>
 
         <div>
@@ -48,7 +48,7 @@ const AddCategory: React.FC = () => {
             htmlFor="categoryName"
             className="text-sm font-medium text-gray-700"
           >
-            Category Name:
+            Category Name
           </label>
           <input
             type="text"
@@ -66,7 +66,7 @@ const AddCategory: React.FC = () => {
             htmlFor="budget"
             className="text-sm font-medium text-gray-700"
           >
-            Budget:
+            Budget
           </label>
           <input
             type="number"
@@ -81,7 +81,7 @@ const AddCategory: React.FC = () => {
 
         <div>
           <label className="text-sm font-medium text-gray-700">
-            Select Background Color:
+            Select Background Color
           </label>
           <div className="flex space-x-2 mt-1">
             {CATEGORY_COLORS.map((color) => (
@@ -101,7 +101,7 @@ const AddCategory: React.FC = () => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Upload Background Image:
+            Upload Background Image
           </label>
           <div className="flex items-center">
             <input

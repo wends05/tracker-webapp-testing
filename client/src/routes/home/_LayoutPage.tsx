@@ -1,13 +1,13 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import Drawer from "../../components/Drawer";
-import { useContext, useEffect } from "react";
-import { supabase, UserContext } from "../../utils/UserContext";
+import Drawer from "../../components/Sidebar";
+import { useEffect } from "react";
+import { supabase } from "../../utils/UserContext";
 
 const LayoutPage = () => {
   const nav = useNavigate();
 
   useEffect(() => {
-    supabase.auth.getSession().then((res) => {
+    supabase.auth.getSession().then(res => {
       console.log(res)
       if (!res.data.session) {
         nav("/register");
