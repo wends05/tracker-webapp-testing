@@ -66,6 +66,9 @@ const router = createBrowserRouter([
           },
           {
             path: ":category/expense",
+          },
+          {
+            path: ":category/expense",
             children: [
               {
                 path: ":expense",
@@ -77,6 +80,10 @@ const router = createBrowserRouter([
                 ],
               },
             ],
+          },
+          {
+            path: ":category/add",
+            element: <AddExpense />,
           },
           {
             path: ":category/add",
