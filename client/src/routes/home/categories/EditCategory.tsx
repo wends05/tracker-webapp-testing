@@ -17,20 +17,22 @@ const AddCategory = () => {
   );
   const [backgroundImage, setBackgroundImage] = useState<File | null>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(
-    // category.background_image_url ?? null
     category.background_image_url ?? null
   );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const { mutate } = useMutation({
-    mutationFn: (category: Category) =>
-      fetch(`http://localhost:3000/category/${category.category_id}`, {
+    mutationFn: async (newCategory: Category) => {
+      console.log(newCategory);
+
+      await fetch(`http://localhost:3000/category/${category.category_id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(category),
-      }),
+        body: JSON.stringify(newCategory),
+      });
+    },
   });
 
   const handleReset = () => {
