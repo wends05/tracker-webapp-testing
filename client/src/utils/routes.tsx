@@ -4,7 +4,7 @@ import About from "../routes/About";
 import Login from "../routes/auth/Login";
 import Register from "../routes/auth/Register";
 import NotLoggedIn from "../routes/NotLoggedIn";
-import LayoutPage from "../routes/home/LayoutPage";
+import LayoutPage from "../routes/home/_LayoutPage";
 import Dashboard from "../routes/home/Dashboard";
 import Onboarding from "../routes/home/Onboarding";
 import AddCategory from "../routes/home/categories/AddCategory";
@@ -21,10 +21,6 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Landing />,
-  },
-  {
-    path: "/about",
-    element: <About />,
   },
   {
     path: "/login",
@@ -108,6 +104,10 @@ const router = createBrowserRouter([
       {
         path: "saved",
         element: <Saved />,
+      },
+      {
+        path: "/about",
+        element: <About />,
       },
     ],
   },
