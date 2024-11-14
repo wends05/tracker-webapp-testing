@@ -5,7 +5,7 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { supabase, UserContext } from "../../utils/UserContext";
 import { useNavigate } from "react-router-dom";
 
-const Register = () => {
+const AuthPage = () => {
   const [change, setChange] = useState("LOG IN");
 
   const { setUser } = useContext(UserContext);
@@ -16,7 +16,6 @@ const Register = () => {
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     supabase.auth.getSession().then((res) => {
@@ -217,4 +216,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default AuthPage;
