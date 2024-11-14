@@ -1,20 +1,57 @@
 import React, { useState, useRef } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
+import { Link, useLoaderData } from "react-router-dom";
+import { Category } from "../../../interfaces/Category";
+import { BackendResponse } from "../../../interfaces/response";
+import { useMutation } from "@tanstack/react-query";
 
 const AddCategory = () => {
-  const [categoryName, setCategoryName] = useState<string>("");
-  const [budget, setBudget] = useState<number | "">("");
-  const [backgroundColor, setBackgroundColor] = useState<string>("");
+  const { data: category } = useLoaderData() as BackendResponse<Category>;
+
+  const [categoryName, setCategoryName] = useState<string>(
+    category.category_name
+  );
+  const [budget, setBudget] = useState<number | 0>(category.budget);
+  const [backgroundColor, setBackgroundColor] = useState<string>(
+    category.category_color
+  );
   const [backgroundImage, setBackgroundImage] = useState<File | null>(null);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(
+    category.background_image_url ?? null
+  );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const { mutate } = useMutation({
+    mutationFn: async (newCategory: Category) => {
+      console.log(newCategory);
+
+      await fetch(`http://localhost:3000/category/${category.category_id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newCategory),
+      });
+    },
+  });
+
+  const handleReset = () => {
+    setCategoryName(category.category_name);
+    setBudget(category.budget);
+    setBackgroundColor(category.category_color);
+    setBackgroundImage(null);
+    setImagePreviewUrl(category.background_image_url ?? "");
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Category Name:", categoryName);
-    console.log("Budget:", budget);
-    console.log("Background Color:", backgroundColor);
-    console.log("Background Image:", backgroundImage);
+    mutate({
+      category_id: category.category_id,
+      category_name: categoryName,
+      budget: budget,
+      category_color: backgroundColor,
+      background_image_url: imagePreviewUrl ?? category.background_image_url,
+    });
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,10 +99,7 @@ const AddCategory = () => {
         </div>
 
         <div>
-          <label
-            htmlFor="budget"
-            className="text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="budget" className="text-sm font-medium text-gray-700">
             Budget
           </label>
           <input
@@ -137,12 +171,25 @@ const AddCategory = () => {
             </button>
           </div>
         )}
+        <button
+          className="w-full bg-neutral-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-200"
+          type="button"
+        >
+          <Link to={`/category/${category.category_id}`}>Cancel</Link>
+        </button>
+        <button
+          className="w-full bg-red-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-200"
+          type="reset"
+          onClick={handleReset}
+        >
+          Reset
+        </button>
 
         <button
           type="submit"
           className="w-full bg-teal-800 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-200"
         >
-          Add Category
+          Edit Category
         </button>
       </form>
     </div>
