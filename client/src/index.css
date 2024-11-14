@@ -16,3 +16,13 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@layer base {
+  input {
+    @apply px-2 bg-green text-darkCopper;
+  }
+
+  input[type="submit"] {
+    @apply py-2 px-4 w-max bg-copper hover:bg-[#6f4717] text-white rounded-lg cursor-pointer;
+  }
+}
