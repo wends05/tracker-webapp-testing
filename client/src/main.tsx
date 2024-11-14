@@ -6,6 +6,7 @@ import "./index.css";
 import UserProvider from "./utils/UserContext";
 
 createRoot(document.getElementById("root")!).render(
+
   <StrictMode>
     <UserProvider>
       <RouterProvider router={router} />
