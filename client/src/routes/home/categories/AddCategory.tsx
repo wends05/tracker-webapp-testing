@@ -1,5 +1,8 @@
 import React, { useState, useRef } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
+import supabase from "../../../routes/home/categories/supaDB";
+
+
 
 const AddCategory: React.FC = () => {
   const [categoryName, setCategoryName] = useState<string>("");
@@ -11,7 +14,7 @@ const AddCategory: React.FC = () => {
   const [budgetError, setBudgetError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit =  async (e: React.FormEvent) => {
     e.preventDefault();
 
     let hasEmptyField = false;
@@ -36,6 +39,27 @@ const AddCategory: React.FC = () => {
     console.log("Budget:", budget);
     console.log("Background Color:", backgroundColor);
     console.log("Background Image:", backgroundImage);
+
+    // const {data} = await supabase
+    // .from('Category')
+    // .insert([
+    //   {categoryName, budget, backgroundColor, backgroundImage}])
+
+    // if (data) {
+    //   console.log(data)
+    // }
+    // };
+
+    const {data} = await supabase
+    .from('Category')
+    .insert([{"budget": budget, "category_color":  backgroundColor,"background_image_url": backgroundImage, "category_name": categoryName}])
+
+    if (data) {
+      console.log(data)
+    }
+    
+
+
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
