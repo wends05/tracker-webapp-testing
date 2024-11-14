@@ -7,8 +7,8 @@ const LayoutPage = () => {
   const nav = useNavigate();
 
   useEffect(() => {
-    supabase.auth.getSession().then(res => {
-      console.log(res)
+    supabase.auth.getSession().then((res: any) => {
+      console.log(res);
       if (!res.data.session) {
         nav("/register");
       }
