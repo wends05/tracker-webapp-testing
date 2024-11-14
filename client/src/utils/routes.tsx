@@ -18,7 +18,6 @@ import Saved from "../routes/home/Saved";
 import EditCategory from "../routes/home/categories/EditCategory";
 import EditExpense from "../routes/home/expense/EditExpense";
 import { getCategory } from "./loaders";
-import { QueryClient } from "@tanstack/react-query";
 import ErrorPage from "../ErrorPage";
 import { queryClient } from "../_Root";
 
