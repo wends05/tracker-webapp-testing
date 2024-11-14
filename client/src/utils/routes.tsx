@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
+import _Root from "../_Root";
 import Landing from "../routes";
 import About from "../routes/About";
-import Login from "../routes/auth/Login";
-import Register from "../routes/auth/Register";
+import Register from "../routes/auth/AuthPage";
 import NotLoggedIn from "../routes/NotLoggedIn";
 import LayoutPage from "../routes/home/_LayoutPage";
 import Dashboard from "../routes/home/Dashboard";
@@ -17,86 +17,97 @@ import Summary from "../routes/home/summary/Summary";
 import Saved from "../routes/home/Saved";
 import EditCategory from "../routes/home/categories/EditCategory";
 import EditExpense from "../routes/home/expense/EditExpense";
+import { getCategory } from "./loaders";
+import ErrorPage from "../ErrorPage";
+import { queryClient } from "../_Root";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Landing />,
-  },
-  {
-    path: "/auth",
-    element: <Register />,
-  },
-  {
-    path: "/not-logged-in",
-    element: <NotLoggedIn />,
-  },
-  {
-    path: "onboarding",
-    element: <Onboarding />,
-  },
-  {
-    element: <LayoutPage />,
+    element: <_Root />,
     children: [
       {
-        path: "dashboard",
-        element: <Dashboard />,
+        path: "/",
+        element: <Landing />,
       },
       {
-        path: "category",
+        path: "auth",
+        element: <Register />,
+      },
+      {
+        path: "not-logged-in",
+        element: <NotLoggedIn />,
+      },
+      {
+        path: "onboarding",
+        element: <Onboarding />,
+      },
+      {
+        element: <LayoutPage />,
+        errorElement: <ErrorPage />,
         children: [
           {
-            path: "add",
-            element: <AddCategory />,
+            path: "dashboard",
+            element: <Dashboard />,
           },
           {
-            path: ":category/edit",
-            element: <EditCategory />,
-          },
-          {
-            path: ":category",
-            element: <Category />,
-          },
-          {
-            path: ":category/expense",
+            path: "category",
             children: [
               {
                 path: "add",
-                element: <AddExpense />,
+                element: <AddCategory />,
               },
               {
-                path: ":expense",
-                element: <Expense />,
+                path: ":category/edit",
+                element: <EditCategory />,
+                loader: getCategory(queryClient),
               },
               {
-                path: ":expense/edit",
-                element: <EditExpense />,
+                path: ":category",
+                element: <Category />,
+              },
+              {
+                path: ":category/expense",
+                children: [
+                  {
+                    path: "add",
+                    element: <AddExpense />,
+                  },
+                  {
+                    path: ":expense",
+                    element: <Expense />,
+                  },
+                  {
+                    path: ":expense/edit",
+                    element: <EditExpense />,
+                  },
+                ],
               },
             ],
           },
-        ],
-      },
-      {
-        path: "profile",
-        element: <Profile />,
-      },
-      {
-        path: "weeklysummaries",
-        element: <Summaries />,
-        children: [
           {
-            path: ":weeklysummary",
-            element: <Summary />,
+            path: "profile",
+            element: <Profile />,
+          },
+          {
+            path: "weeklysummaries",
+            element: <Summaries />,
+            children: [
+              {
+                path: ":weeklysummary",
+                element: <Summary />,
+              },
+            ],
+          },
+          {
+            path: "saved",
+            element: <Saved />,
+          },
+          {
+            path: "/about",
+            element: <About />,
           },
         ],
-      },
-      {
-        path: "saved",
-        element: <Saved />,
-      },
-      {
-        path: "/about",
-        element: <About />,
       },
     ],
   },
