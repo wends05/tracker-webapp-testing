@@ -17,6 +17,10 @@ import Summary from "../routes/home/summary/Summary";
 import Saved from "../routes/home/Saved";
 import EditCategory from "../routes/home/categories/EditCategory";
 import EditExpense from "../routes/home/expense/EditExpense";
+import { getCategory } from "./loaders";
+import { QueryClient } from "@tanstack/react-query";
+import ErrorPage from "../ErrorPage";
+import { queryClient } from "../_Root";
 
 const router = createBrowserRouter([
   {
@@ -24,7 +28,7 @@ const router = createBrowserRouter([
     element: <_Root />,
     children: [
       {
-        path: "",
+        path: "/",
         element: <Landing />,
       },
       {
@@ -41,6 +45,7 @@ const router = createBrowserRouter([
       },
       {
         element: <LayoutPage />,
+        errorElement: <ErrorPage />,
         children: [
           {
             path: "dashboard",
@@ -54,12 +59,13 @@ const router = createBrowserRouter([
                 element: <AddCategory />,
               },
               {
-                path: ":category",
-                element: <Category />,
-              },
-              {
                 path: ":category/edit",
                 element: <EditCategory />,
+                loader: getCategory(queryClient),
+              },
+              {
+                path: ":category",
+                element: <Category />,
               },
               {
                 path: ":category/expense",
