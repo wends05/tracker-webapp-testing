@@ -10,16 +10,17 @@ const LayoutPage = () => {
     supabase.auth.getSession().then((res: any) => {
       console.log(res);
       if (!res.data.session) {
-        nav("/register");
+        nav("/auth");
       }
     });
   }, []);
   return (
-    <>
-      LayoutPage
+    <div className="flex flex-col">
       <Drawer />
-      <Outlet />
-    </>
+      <div className="h-full">
+        <Outlet />
+      </div>
+    </div>
   );
 };
 
