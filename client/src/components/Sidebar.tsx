@@ -6,7 +6,8 @@ import {
   faXmark,
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "../utils/UserContext";
 
 const navLinks = [
   {
@@ -33,14 +34,20 @@ const navLinks = [
 
 const Sidebar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const nav = useNavigate();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const logOut = async () => {
+    await supabase.auth.signOut();
+    nav("/auth");
+  }
+
   return (
     <div>
-      <header className="flex fixed w-full justify-between items-center text-black px-16 bg-vanilla drop-shadow-md h-16">
+      <header className="flex w-full justify-between items-center text-black px-16 bg-vanilla drop-shadow-md h-16">
         <button onClick={toggleMenu} className="text-2xl">
           <FontAwesomeIcon icon={faBarsProgress} />
         </button>
@@ -64,20 +71,26 @@ const Sidebar = () => {
         </div>
 
         <nav className="flex flex-col items-start p-6 text-black">
-          {navLinks.map(({ name, path }) => (
-            <button
-              className="py-2 px-2 text-lg font-semibold hover:bg-gray-200 w-full rounded-md"
-              onClick={() => {
-                setIsMenuOpen(false);
-              }}
+          {navLinks.map(({ name, path }, idx) => (
+            <Link
+              to={path}
+              className="text-lg font-semibold hover:bg-gray-200 w-full rounded-md"
+              key={idx}
             >
-              <Link to={path}> {name} </Link>
-            </button>
+              <button
+              className="w-full p-2"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                }}
+              >
+                {name}
+              </button>
+            </Link>
           ))}
         </nav>
-
+        
         <button
-          onClick={() => console.log("Log out clicked")}
+          onClick={logOut}
           className="absolute bottom-4 right-4 text-2xl text-black hover:text-red-600"
         >
           <FontAwesomeIcon icon={faSignOutAlt} />
