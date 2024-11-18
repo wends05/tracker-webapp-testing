@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
+import supabase from "../../../routes/home/categories/supaDB";
 
 const AddCategory: React.FC = () => {
   const [categoryName, setCategoryName] = useState<string>("");
@@ -7,14 +8,62 @@ const AddCategory: React.FC = () => {
   const [backgroundColor, setBackgroundColor] = useState<string>("");
   const [backgroundImage, setBackgroundImage] = useState<File | null>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [categoryNameError, setCategoryNameError] = useState<string | null>(
+    null
+  );
+  const [budgetError, setBudgetError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    let hasEmptyField = false;
+
+    if (!categoryName) {
+      setCategoryNameError("Category name is required.");
+      hasEmptyField = true;
+    } else {
+      setCategoryNameError(null);
+    }
+
+    if (!budget || budget <= 0) {
+      setBudgetError("Enter valid budget.");
+      hasEmptyField = true;
+    } else {
+      setBudgetError(null);
+    }
+
+    if (hasEmptyField) return;
+
     console.log("Category Name:", categoryName);
     console.log("Budget:", budget);
     console.log("Background Color:", backgroundColor);
     console.log("Background Image:", backgroundImage);
+
+    // const {data} = await supabase
+    // .from('Category')
+    // .insert([
+    //   {categoryName, budget, backgroundColor, backgroundImage}])
+
+    // if (data) {
+    //   console.log(data)
+    // }
+    // };
+
+    const { data } = await supabase
+      .from("Category")
+      .insert([
+        {
+          budget: budget,
+          category_color: backgroundColor,
+          background_image_url: backgroundImage,
+          category_name: categoryName,
+        },
+      ]);
+
+    if (data) {
+      console.log(data);
+    }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,17 +104,18 @@ const AddCategory: React.FC = () => {
             id="categoryName"
             value={categoryName}
             onChange={(e) => setCategoryName(e.target.value)}
-            required
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-500"
+            className={`w-full p-2 border ${
+              categoryNameError ? "border-red-600" : "border-gray-300"
+            }`}
             placeholder="Enter category name"
           />
+          {categoryNameError && (
+            <p className="text-red-600 text-xs mt-1">{categoryNameError}</p>
+          )}
         </div>
 
         <div>
-          <label
-            htmlFor="budget"
-            className="text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="budget" className="text-sm font-medium text-gray-700">
             Budget:
           </label>
           <input
@@ -73,10 +123,14 @@ const AddCategory: React.FC = () => {
             id="budget"
             value={budget}
             onChange={(e) => setBudget(Number(e.target.value))}
-            required
-            className="block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-500"
+            className={`block w-full p-2 border ${
+              budgetError ? "border-red-600" : "border-gray-300"
+            }`}
             placeholder="Enter budget"
           />
+          {budgetError && (
+            <p className="text-red-500 text-xs mt-1">{budgetError}</p>
+          )}
         </div>
 
         <div>
