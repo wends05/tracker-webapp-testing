@@ -15,7 +15,7 @@ const AddCategory = () => {
   const [backgroundColor, setBackgroundColor] = useState<string>(
     category.category_color
   );
-  const [backgroundImage, setBackgroundImage] = useState<File | null>(null);
+  // const [backgroundImage, setBackgroundImage] = useState<File | null>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(
     category.background_image_url ?? null
   );
@@ -39,7 +39,7 @@ const AddCategory = () => {
     setCategoryName(category.category_name);
     setBudget(category.budget);
     setBackgroundColor(category.category_color);
-    setBackgroundImage(null);
+    // setBackgroundImage(null);
     setImagePreviewUrl(category.background_image_url ?? "");
   };
 
@@ -57,13 +57,13 @@ const AddCategory = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setBackgroundImage(file);
+      // setBackgroundImage(file);
       setImagePreviewUrl(URL.createObjectURL(file));
     }
   };
 
   const removeImage = () => {
-    setBackgroundImage(null);
+    // setBackgroundImage(null);
     setImagePreviewUrl(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
