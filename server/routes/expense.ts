@@ -26,7 +26,6 @@ expenseRouter.put("/:id", async (req: Request, res: Response) => {
     const { id } = req.params
     const { expense_name, price, quantity, total }: Expense = req.body
     
-    console.log(expense_name, price, quantity, total)
     const data = await pool.query('UPDATE "Expense" SET expense_name = $1, price = $2, quantity = $3, total = $4 WHERE expense_id = $5 RETURNING *', [expense_name, price, quantity, total, id])
 
     res.status(200).json({

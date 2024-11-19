@@ -4,7 +4,6 @@ import { BackendResponse } from "../../../interfaces/response";
 import Expense from "../../../types/Expense";
 import { FormEvent, useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { MdPauseCircleFilled } from "react-icons/md";
 
 const EditExpense = () => {
   const { data: expense } = useLoaderData() as BackendResponse<Expense>;
@@ -30,6 +29,8 @@ const EditExpense = () => {
         },
         body: JSON.stringify(newExpense),
       });
+    },
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["expense", expense.expense_id],
       });
