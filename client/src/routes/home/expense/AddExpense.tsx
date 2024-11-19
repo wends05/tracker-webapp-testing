@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Expense from "../../../types/Expense";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 const AddExpense = () => {
   const queryClient = useQueryClient();
+  const { category } = useParams()
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState(1.0);
@@ -14,29 +16,27 @@ const AddExpense = () => {
     setTotal(price * quantity);
   }, [price, quantity]);
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async (expense: Expense) => {
-      await fetch("http://localhost:3000/expense", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(expense),
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["categories"],
-      });
     },
+    onSuccess: () => {
+
+    },
+    onError: () => {
+
+    }
   });
 
-  const handleSubmit = async () => {
-    // add logic for error handling
-    // use mutate function
-    // mutate({});
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    const expense = {
+
+    }
+    // mutate(expense)
   };
 
   return (
-    <div className="bg-slate-600 w-screen h-full flex items-center justify-center">
+    <div className="bg-slate-600 h-full flex items-center justify-center">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-2 max-w-[350px] px-12 w-full"
@@ -52,11 +52,12 @@ const AddExpense = () => {
 
         <label htmlFor="price">Price</label>
         <input
-          type="text"
+          type="number"
           id="price"
           name="price"
-          value={price === 0 ? "" : price}
-          onChange={(e) => setPrice(Number(e.target.value) || 0)}
+          value={price}
+          step="0.01"
+          onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
         />
 
         <label htmlFor="quantity">Quantity</label>
@@ -65,13 +66,15 @@ const AddExpense = () => {
           id="quantity"
           name="quantity"
           value={quantity === 0 ? "" : quantity}
-          onChange={(e) => setQuantity(Number(e.target.value) || 0)}
+          onChange={(e) => setQuantity(parseInt(e.target.value) || 0)}
         />
 
         <label htmlFor="total">Total</label>
-        <input type="text" id="total" name="quantity" value={total} disabled />
+        <input type="text" id="total" name="quantity" value={total ? total : 0} disabled />
 
-        <button type="submit">Add Expense</button>
+        <button type="submit" disabled={isPending}>
+          Add Expense
+        </button>
       </form>
     </div>
   );
