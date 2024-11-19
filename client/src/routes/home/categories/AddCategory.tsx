@@ -50,16 +50,14 @@ const AddCategory: React.FC = () => {
     // }
     // };
 
-    const { data } = await supabase
-      .from("Category")
-      .insert([
-        {
-          budget: budget,
-          category_color: backgroundColor,
-          background_image_url: backgroundImage,
-          category_name: categoryName,
-        },
-      ]);
+    const { data } = await supabase.from("Category").insert([
+      {
+        budget: budget,
+        category_color: backgroundColor,
+        background_image_url: backgroundImage,
+        category_name: categoryName,
+      },
+    ]);
 
     if (data) {
       console.log(data);
@@ -121,8 +119,8 @@ const AddCategory: React.FC = () => {
           <input
             type="number"
             id="budget"
-            value={budget}
-            onChange={(e) => setBudget(Number(e.target.value))}
+            value={budget === 0 ? "" : budget}
+            onChange={(e) => setBudget(Number(e.target.value) || 0)}
             className={`block w-full p-2 border ${
               budgetError ? "border-red-600" : "border-gray-300"
             }`}
