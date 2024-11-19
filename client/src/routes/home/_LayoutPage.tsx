@@ -15,7 +15,7 @@ const LayoutPage = () => {
     });
   }, []);
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-screen">
       <Drawer />
       <div className="h-full">
         <Outlet />
