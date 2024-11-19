@@ -17,7 +17,7 @@ import Summary from "../routes/home/summary/Summary";
 import Saved from "../routes/home/Saved";
 import EditCategory from "../routes/home/categories/EditCategory";
 import EditExpense from "../routes/home/expense/EditExpense";
-import { getCategory } from "./loaders";
+import { getCategory, getExpense } from "./loaders";
 import ErrorPage from "../ErrorPage";
 import { queryClient } from "../_Root";
 
@@ -80,6 +80,7 @@ const router = createBrowserRouter([
                   {
                     path: ":expense/edit",
                     element: <EditExpense />,
+                    loader: getExpense(queryClient)
                   },
                 ],
               },

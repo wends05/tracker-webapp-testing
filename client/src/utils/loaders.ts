@@ -19,7 +19,7 @@ export const getExpense = (queryClient: QueryClient) => {
       queryKey: ["expense", expense],
       queryFn: () =>
         fetch(`http://localhost:3000/expense/${expense}`).then(
-          (res) => res.json
+          (res) => res.json()
         ),
     });
   };

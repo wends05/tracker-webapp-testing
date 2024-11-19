@@ -73,18 +73,10 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
-
-  /* * {
-    @apply border-border;
+  input[type="submit"], button[type="submit"] {
+    @apply py-2 px-4 w-max bg-copper disabled:bg-[#6f4717] hover:bg-[#6f4717] text-white rounded-lg cursor-pointer;
   }
-  body {
-    @apply bg-background text-foreground;
-  } */
   input {
-    @apply px-2 text-darkCopper;
-  }
-
-  input[type="submit"] {
-    @apply py-2 px-4 w-max bg-copper hover:bg-[#6f4717] text-white rounded-lg cursor-pointer;
+    @apply text-white rounded-md px-2 py-1;
   }
 }
