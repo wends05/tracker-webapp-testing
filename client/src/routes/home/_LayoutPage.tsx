@@ -13,9 +13,9 @@ const LayoutPage = () => {
         nav("/auth");
       }
     });
-  }, []);
+  }, [nav]);
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex h-screen flex-col">
       <Drawer />
       <div className="h-full">
         <Outlet />

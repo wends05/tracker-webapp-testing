@@ -1,8 +1,7 @@
 type User = {
-  user_id: number,
-  email: string,
-  isNew: boolean,
+  user_id: number;
+  email: string;
+  isNew: boolean;
+};
 
-}
-
-export default User
+export default User;

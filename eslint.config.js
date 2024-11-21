@@ -1,22 +1,18 @@
-import globals from "globals";
 import js from "@eslint/js";
-import tseslint from "typescript-eslint";
+import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
+import tseslint from "typescript-eslint";
 
-/** @type {import('eslint').Linter.Config[]} */
-export default [
+export default tseslint.config(
   { ignores: ["dist"] },
-  { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
   {
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    files: ["**/*.{ts,tsx}"],
     languageOptions: {
-      globals: { ...globals.browser, ...globals.node },
       ecmaVersion: 2020,
+      globals: globals.browser,
     },
-  },
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
-  {
     plugins: {
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
@@ -28,13 +24,5 @@ export default [
       "@typescript-eslint/no-require-imports": "off",
       "@typescript-eslint/no-unused-vars": "warn",
     },
-  },
-
-  // for shadcn/ui installed code
-  {
-    files: ["./src/hooks/use-toast.ts"],
-    rules: {
-      "@typescript-eslint/no-unused-vars": "off",
-    },
-  },
-];
+  }
+);

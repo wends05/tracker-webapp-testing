@@ -7,16 +7,16 @@ import { FormEvent, useEffect, useState } from "react";
 const EditExpense = () => {
   const { data: expense } = useLoaderData() as BackendResponse<Expense>;
 
-  const [name, setName] = useState(expense.name);
+  const [name, setName] = useState(expense.expense_name);
   const [price, setPrice] = useState(expense.price);
   const [quantity, setQuantity] = useState(1);
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    setTotal(price * quantity)
-  }, [price, quantity])
+    setTotal(price * quantity);
+  }, [price, quantity]);
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: async (newExpense: Expense) => {
       console.log(newExpense);
@@ -32,25 +32,22 @@ const EditExpense = () => {
         }
       );
       queryClient.invalidateQueries({
-        queryKey: ["expense", expense.expense_id]
-      })
+        queryKey: ["expense", expense.expense_id],
+      });
     },
   });
 
   const submitForm = (e: FormEvent) => {
-    
-    e.preventDefault()
+    e.preventDefault();
     // handle form logic
 
-
-
     // mutate()
-  }
+  };
 
   return (
     <div>
       <form>
-      <label htmlFor="name">Name</label>
+        <label htmlFor="name">Name</label>
         <input
           type="text"
           id="name"
