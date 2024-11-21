@@ -1,8 +1,5 @@
-
 const EditExpense = () => {
-  return (
-    <div>EditExpense</div>
-  )
-}
+  return <div>EditExpense</div>;
+};
 
-export default EditExpense
+export default EditExpense;

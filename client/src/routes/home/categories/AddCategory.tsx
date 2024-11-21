@@ -50,16 +50,14 @@ const AddCategory: React.FC = () => {
     // }
     // };
 
-    const { data } = await supabase
-      .from("Category")
-      .insert([
-        {
-          budget: budget,
-          category_color: backgroundColor,
-          background_image_url: backgroundImage,
-          category_name: categoryName,
-        },
-      ]);
+    const { data } = await supabase.from("Category").insert([
+      {
+        budget: budget,
+        category_color: backgroundColor,
+        background_image_url: backgroundImage,
+        category_name: categoryName,
+      },
+    ]);
 
     if (data) {
       console.log(data);
@@ -83,12 +81,12 @@ const AddCategory: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <form
         onSubmit={handleSubmit}
-        className="max-w-lg w-full flex flex-col gap-2"
+        className="flex w-full max-w-lg flex-col gap-2"
       >
-        <h1 className="text-2xl text-black font-bold text-center">
+        <h1 className="text-center text-2xl font-bold text-black">
           Add Category
         </h1>
 
@@ -104,13 +102,13 @@ const AddCategory: React.FC = () => {
             id="categoryName"
             value={categoryName}
             onChange={(e) => setCategoryName(e.target.value)}
-            className={`w-full p-2 border ${
+            className={`w-full border p-2 ${
               categoryNameError ? "border-red-600" : "border-gray-300"
             }`}
             placeholder="Enter category name"
           />
           {categoryNameError && (
-            <p className="text-red-600 text-xs mt-1">{categoryNameError}</p>
+            <p className="mt-1 text-xs text-red-600">{categoryNameError}</p>
           )}
         </div>
 
@@ -123,13 +121,13 @@ const AddCategory: React.FC = () => {
             id="budget"
             value={budget}
             onChange={(e) => setBudget(Number(e.target.value))}
-            className={`block w-full p-2 border ${
+            className={`block w-full border p-2 ${
               budgetError ? "border-red-600" : "border-gray-300"
             }`}
             placeholder="Enter budget"
           />
           {budgetError && (
-            <p className="text-red-500 text-xs mt-1">{budgetError}</p>
+            <p className="mt-1 text-xs text-red-500">{budgetError}</p>
           )}
         </div>
 
@@ -137,12 +135,12 @@ const AddCategory: React.FC = () => {
           <label className="text-sm font-medium text-gray-700">
             Select Background Color:
           </label>
-          <div className="flex space-x-2 mt-1">
+          <div className="mt-1 flex space-x-2">
             {CATEGORY_COLORS.map((color) => (
               <div
                 key={color}
                 onClick={() => setBackgroundColor(color)}
-                className={`w-10 h-10 cursor-pointer rounded-full border-2 ${
+                className={`h-10 w-10 cursor-pointer rounded-full border-2 ${
                   backgroundColor === color
                     ? "border-blue-500"
                     : "border-transparent"
@@ -168,7 +166,7 @@ const AddCategory: React.FC = () => {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="mt-1 bg-teal-800 text-white font-bold py-2 px-4 rounded-md"
+              className="mt-1 rounded-md bg-teal-800 px-4 py-2 font-bold text-white"
             >
               Choose File
             </button>
@@ -180,12 +178,12 @@ const AddCategory: React.FC = () => {
             <img
               src={imagePreviewUrl}
               alt="Preview"
-              className="w-full h-64 object-cover rounded-md"
+              className="h-64 w-full rounded-md object-cover"
             />
             <button
               type="button"
               onClick={removeImage}
-              className="absolute top-1 right-1 bg-gray-200 text-black rounded-full w-7 h-7 flex items-center justify-center hover:bg-red-600 transition duration-200"
+              className="absolute right-1 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-gray-200 text-black transition duration-200 hover:bg-red-600"
             >
               X
             </button>
@@ -194,7 +192,7 @@ const AddCategory: React.FC = () => {
 
         <button
           type="submit"
-          className="w-full bg-teal-800 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-200"
+          className="w-full rounded-md bg-teal-800 py-2 font-semibold text-white transition duration-200 hover:bg-blue-700"
         >
           Add Category
         </button>

@@ -3,8 +3,6 @@ import { pool } from "../db";
 
 const categoryRouter = express.Router();
 
-
-
 categoryRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

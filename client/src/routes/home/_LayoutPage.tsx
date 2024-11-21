@@ -13,7 +13,7 @@ const LayoutPage = () => {
         nav("/auth");
       }
     });
-  }, []);
+  }, [nav]);
   return (
     <div className="flex flex-col">
       <Drawer />
