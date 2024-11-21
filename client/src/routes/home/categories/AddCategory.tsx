@@ -1,6 +1,9 @@
 import React, { useState, useRef } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
 import supabase from "../../../routes/home/categories/supaDB";
+import { useMutation } from "@tanstack/react-query";
+import { Category } from "@/utils/types";
+import { useNavigate } from "react-router-dom";
 
 const AddCategory: React.FC = () => {
   const [categoryName, setCategoryName] = useState<string>("");
@@ -13,6 +16,13 @@ const AddCategory: React.FC = () => {
   );
   const [budgetError, setBudgetError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const nav = useNavigate();
+  const { mutate } = useMutation({
+    mutationFn: async (category: Category) => {},
+    onSuccess: () => {},
+    onError: () => {},
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,16 +49,6 @@ const AddCategory: React.FC = () => {
     console.log("Budget:", budget);
     console.log("Background Color:", backgroundColor);
     console.log("Background Image:", backgroundImage);
-
-    // const {data} = await supabase
-    // .from('Category')
-    // .insert([
-    //   {categoryName, budget, backgroundColor, backgroundImage}])
-
-    // if (data) {
-    //   console.log(data)
-    // }
-    // };
 
     const { data } = await supabase.from("Category").insert([
       {
@@ -80,11 +80,19 @@ const AddCategory: React.FC = () => {
     }
   };
 
+  const cancelForm = () => {
+    nav(-1);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
+    <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
+      <div
+        className="absolute h-full w-full bg-black opacity-60"
+        onClick={cancelForm}
+      ></div>
       <form
         onSubmit={handleSubmit}
-        className="flex w-full max-w-lg flex-col gap-2"
+        className="z-10 flex h-max w-full max-w-lg flex-col gap-2 rounded-md bg-neutral-400 p-5"
       >
         <h1 className="text-center text-2xl font-bold text-black">
           Add Category
