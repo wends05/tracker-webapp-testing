@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   lint-and-prettier:
@@ -18,22 +18,24 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: Install Packages
-      working-directory: client/
-      run: npm install
-    - working-directory: server/
-      run: npm install
-    - run: npm run prettier
-    - run: npm run lint
-    - name: Run build on client
-      working-directory: client/
-      run: npm run build
-      
-    
-    
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+      - name: Install Packages (Client)
+        working-directory: client/
+        run: npm install
+      - name: Install Packages (Server)
+        working-directory: server/
+        run: npm install
+        
+      - name: Install Prettier Plugins
+        run: npm i prettier-plugin-tailwindcss
+
+      - run: npm run prettier
+      - run: npm run lint
+      - name: Run build on client
+        working-directory: client/
+        run: npm run build
