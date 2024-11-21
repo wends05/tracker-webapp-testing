@@ -31,7 +31,7 @@ jobs:
       run: npm install
     - name: Run Prettier and Lint
     - run: npm run prettier
-    - npm run lint
+    - run: npm run lint
     - name: Run build on client
       working-directory: client/
       run: npm run build
