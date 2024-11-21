@@ -1,11 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Expense from "../../../types/Expense";
 import { FormEvent, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { redirect, useNavigate, useParams } from "react-router-dom";
 
 const AddExpense = () => {
   const queryClient = useQueryClient();
   const { category } = useParams();
+  const nav = useNavigate();
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState(1.0);
@@ -28,12 +29,26 @@ const AddExpense = () => {
     // mutate(expense)
   };
 
+  const cancelForm = () => {
+    nav(-1);
+    console.log("ror");
+  };
+
   return (
-    <div className="flex h-full items-center justify-center bg-slate-600">
+    <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
+      <div
+        onClick={cancelForm}
+        className="absolute h-full w-full bg-black opacity-60"
+      ></div>
       <form
         onSubmit={handleSubmit}
-        className="flex w-full max-w-[350px] flex-col gap-2 px-12"
+        className="z-10 flex h-max max-w-[350px] flex-col gap-2 rounded-md bg-neutral-500 p-5 px-12 sm:w-full"
       >
+        <h2>Add an Expense</h2>
+        <p>
+          Label a name, individual price, and the quantity of the expense. The
+          total will be calculated for you.
+        </p>
         <label htmlFor="name">Name</label>
         <input
           type="text"
@@ -48,7 +63,7 @@ const AddExpense = () => {
           type="number"
           id="price"
           name="price"
-          value={price}
+          value={price === 0 ? "" : price}
           step="0.01"
           onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
         />
@@ -70,7 +85,9 @@ const AddExpense = () => {
           value={total ? total : 0}
           disabled
         />
-
+        <button type="button" className="cancel" onClick={cancelForm}>
+          Cancel
+        </button>
         <button type="submit" disabled={isPending}>
           Add Expense
         </button>

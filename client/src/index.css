@@ -7,9 +7,7 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #ececec;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -71,11 +69,34 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+
+  h1 {
+    @apply text-3xl;
+  }
+
+  h2 {
+    @apply text-xl;
+  }
+
+  h3 {
+    @apply text-lg;
+  }
+
   input[type="submit"],
   button[type="submit"] {
-    @apply bg-copper w-max cursor-pointer rounded-lg px-4 py-2 text-white hover:bg-[#6f4717] disabled:bg-[#6f4717];
+    @apply bg-copper cursor-pointer rounded-lg px-4 py-2 text-white hover:bg-[#6f4717] disabled:bg-[#6f4717];
   }
   input {
-    @apply rounded-md px-2 py-1 text-white;
+    @apply focus:outline-darkCopper focus:border-darkCopper rounded-md px-2 py-1 text-black text-white;
+  }
+
+  button {
+    @apply rounded-md px-4 py-2;
+  }
+}
+
+@layer utilities {
+  button.cancel {
+    @apply bg-neutral-700 hover:bg-neutral-800;
   }
 }

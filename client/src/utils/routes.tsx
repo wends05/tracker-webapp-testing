@@ -65,24 +65,39 @@ const router = createBrowserRouter([
               {
                 path: ":category",
                 element: <Category />,
-              },
-              {
-                path: ":category/expense",
                 children: [
                   {
-                    path: "add",
-                    element: <AddExpense />,
-                  },
-                  {
-                    path: ":expense",
-                    element: <Expense />,
-                  },
-                  {
-                    path: ":expense/edit",
-                    element: <EditExpense />,
+                    path: "expense",
+                    children: [
+                      {
+                        path: "add",
+                        element: <AddExpense />,
+                      },
+                      {
+                        path: ":expense/edit",
+                        element: <EditExpense />,
+                      },
+                    ],
                   },
                 ],
               },
+              // {
+              //   path: ":category/expense",
+              //   children: [
+              //     {
+              //       path: "add",
+              //       element: <AddExpense />,
+              //     },
+              //     {
+              //       path: ":expense",
+              //       element: <Expense />,
+              //     },
+              //     {
+              //       path: ":expense/edit",
+              //       element: <EditExpense />,
+              //     },
+              //   ],
+              // },
             ],
           },
           {
