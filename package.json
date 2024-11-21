@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "prettier": "prettier --write .",
+    "prettier": "npx prettier --write .",
     "prepare": "husky",
     "lint": "eslint ."
   },
