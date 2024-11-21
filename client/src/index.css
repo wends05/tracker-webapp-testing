@@ -87,7 +87,7 @@
     @apply bg-copper cursor-pointer rounded-lg px-4 py-2 text-white hover:bg-[#6f4717] disabled:bg-[#6f4717];
   }
   input {
-    @apply focus:outline-darkCopper focus:border-darkCopper rounded-md px-2 py-1 text-black text-white;
+    @apply focus:outline-darkCopper focus:border-darkCopper rounded-md px-2 py-1 text-black;
   }
 
   button {
