@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLoaderData } from "react-router-dom";
 import { BackendResponse } from "../../../interfaces/response";
-import Expense from "../../../types/Expense";
+import { Expense } from "@/utils/types";
 import { FormEvent, useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -20,8 +20,20 @@ const EditExpense = () => {
   }, [price, quantity]);
 
   const queryClient = useQueryClient();
+
   const { mutate, isPending } = useMutation({
-    mutationFn: async (newExpense: Expense) => {
+    mutationFn: async (e: FormEvent) => {
+      e.preventDefault();
+      // handle form logic
+      const newExpense: Expense = {
+        expense_id: expense.expense_id,
+        expense_name: name,
+        price,
+        quantity,
+        total,
+        category_id: expense.category_id,
+      };
+
       await fetch(`http://localhost:3000/expense/${expense.expense_id}`, {
         method: "PUT",
         headers: {
@@ -46,24 +58,10 @@ const EditExpense = () => {
     },
   });
 
-  const submitForm = (e: FormEvent) => {
-    e.preventDefault();
-    // handle form logic
-    const newExpense: Expense = {
-      expense_id: expense.expense_id,
-      expense_name: name,
-      price,
-      quantity,
-      total,
-      category_id: expense.category_id,
-    };
-    mutate(newExpense);
-  };
-
   return (
     <div className="h-full flex items-center justify-center">
       <form
-        onSubmit={submitForm}
+        onSubmit={mutate}
         className="flex flex-col gap-2 items-center justify-center max-w-sm w-screen"
       >
         <label htmlFor="name">Name</label>
@@ -103,7 +101,9 @@ const EditExpense = () => {
           disabled
         />
 
-        <button type="submit" disabled={isPending}>Edit Expense</button>
+        <button type="submit" disabled={isPending}>
+          Edit Expense
+        </button>
       </form>
     </div>
   );
