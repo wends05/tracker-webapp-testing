@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "prettier": "npx prettier --write .",
+    "prettier": "prettier --write .",
     "prepare": "husky",
-    "eslint": "npx eslint ."
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
