@@ -1,2 +1,3 @@
 npx prettier --write .
 npx eslint .
+git update-index --again

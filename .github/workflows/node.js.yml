@@ -30,7 +30,7 @@ jobs:
       - name: Install Packages (Server)
         working-directory: server/
         run: npm install
-        
+
       - name: Install Prettier Plugins
         run: npm i prettier-plugin-tailwindcss
 
