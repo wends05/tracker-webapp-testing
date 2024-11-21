@@ -29,4 +29,12 @@ export default [
       "@typescript-eslint/no-unused-vars": "warn",
     },
   },
+
+  // for shadcn/ui installed code
+  {
+    files: ["./src/hooks/use-toast.ts"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
 ];
