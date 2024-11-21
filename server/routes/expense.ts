@@ -10,7 +10,7 @@ expenseRouter.put(":expense_id", async (req: Request, res: Response) => {
     const { expense_name, price, quantity, total }: Expense = req.body;
     const data = await pool.query(
       'UPDATE "Expense" SET name = $1, price = $2, quantity = $3, total = $4 WHERE expense_id = $5 RETURNING *',
-      [name, price, quantity, total, expense_id]
+      [expense_name, price, quantity, total, expense_id]
     );
 
     res.json({
