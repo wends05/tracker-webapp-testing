@@ -43,18 +43,18 @@ const Sidebar = () => {
   const logOut = async () => {
     await supabase.auth.signOut();
     nav("/auth");
-  }
+  };
 
   return (
     <div>
-      <header className="flex w-full justify-between items-center text-black px-16 bg-vanilla drop-shadow-md h-16">
+      <header className="bg-vanilla flex h-16 w-full items-center justify-between px-16 text-black drop-shadow-md">
         <button onClick={toggleMenu} className="text-2xl">
           <FontAwesomeIcon icon={faBarsProgress} />
         </button>
       </header>
 
       <div
-        className={`fixed top-0 left-0 h-full bg-white shadow-lg transition-transform transform flex-col px-8 py-2 flex z-10 ${
+        className={`fixed left-0 top-0 z-10 flex h-full transform flex-col bg-white px-8 py-2 shadow-lg transition-transform ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -74,11 +74,11 @@ const Sidebar = () => {
           {navLinks.map(({ name, path }, idx) => (
             <Link
               to={path}
-              className="text-lg font-semibold hover:bg-gray-200 w-full rounded-md"
+              className="w-full rounded-md text-lg font-semibold hover:bg-gray-200"
               key={idx}
             >
               <button
-              className="w-full p-2"
+                className="w-full p-2"
                 onClick={() => {
                   setIsMenuOpen(false);
                 }}
@@ -88,7 +88,7 @@ const Sidebar = () => {
             </Link>
           ))}
         </nav>
-        
+
         <button
           onClick={logOut}
           className="absolute bottom-4 right-4 text-2xl text-black hover:text-red-600"
@@ -100,7 +100,7 @@ const Sidebar = () => {
       {isMenuOpen && (
         <div
           onClick={toggleMenu}
-          className="fixed inset-0 bg-black bg-opacity-50 "
+          className="fixed inset-0 bg-black bg-opacity-50"
         />
       )}
     </div>

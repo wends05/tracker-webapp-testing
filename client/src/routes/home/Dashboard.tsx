@@ -1,10 +1,6 @@
-import { useNavigate } from "react-router-dom";
-import { supabase } from "../../utils/UserContext";
-
 const Dashboard = () => {
-  const nav = useNavigate()
   return (
-    <div className="flex flex-col gap-5 h-[50vh] items-center justify-center">
+    <div className="flex h-[50vh] flex-col items-center justify-center gap-5">
       <p>Dashboard</p>
     </div>
   );
