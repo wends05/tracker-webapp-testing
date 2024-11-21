@@ -1,10 +1,8 @@
 import { Outlet } from "react-router-dom";
 
 const Dashboard = () => {
-
-
   return (
-    <div className="flex flex-col gap-5 h-[50vh] items-center justify-center">
+    <div className="flex h-[50vh] flex-col items-center justify-center gap-5">
       <Outlet />
       <p>Dashboard</p>
     </div>

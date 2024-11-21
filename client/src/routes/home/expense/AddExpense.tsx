@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 
 const AddExpense = () => {
   const queryClient = useQueryClient();
-  const { category } = useParams()
+  const { category } = useParams();
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState(1.0);
@@ -17,29 +17,22 @@ const AddExpense = () => {
   }, [price, quantity]);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (expense: Expense) => {
-    },
-    onSuccess: () => {
-
-    },
-    onError: () => {
-
-    }
+    mutationFn: async (expense: Expense) => {},
+    onSuccess: () => {},
+    onError: () => {},
   });
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
-    const expense = {
-
-    }
+    e.preventDefault();
+    const expense = {};
     // mutate(expense)
   };
 
   return (
-    <div className="bg-slate-600 h-full flex items-center justify-center">
+    <div className="flex h-full items-center justify-center bg-slate-600">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-2 max-w-[350px] px-12 w-full"
+        className="flex w-full max-w-[350px] flex-col gap-2 px-12"
       >
         <label htmlFor="name">Name</label>
         <input
@@ -70,7 +63,13 @@ const AddExpense = () => {
         />
 
         <label htmlFor="total">Total</label>
-        <input type="text" id="total" name="quantity" value={total ? total : 0} disabled />
+        <input
+          type="text"
+          id="total"
+          name="quantity"
+          value={total ? total : 0}
+          disabled
+        />
 
         <button type="submit" disabled={isPending}>
           Add Expense
