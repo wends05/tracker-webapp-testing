@@ -1,6 +1,5 @@
-import { Pool } from 'pg'
+import { Pool } from "pg";
 
-require("dotenv").config()
+require("dotenv").config();
 
-export const pool = new Pool()
-
+export const pool = new Pool();

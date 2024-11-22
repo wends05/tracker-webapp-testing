@@ -59,10 +59,10 @@ const EditExpense = () => {
   });
 
   return (
-    <div className="h-full flex items-center justify-center">
+    <div className="flex h-full items-center justify-center">
       <form
         onSubmit={mutate}
-        className="flex flex-col gap-2 items-center justify-center max-w-sm w-screen"
+        className="flex w-screen max-w-sm flex-col items-center justify-center gap-2"
       >
         <label htmlFor="name">Name</label>
         <input

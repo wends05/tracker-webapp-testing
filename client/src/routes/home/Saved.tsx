@@ -1,8 +1,5 @@
-
 const Saved = () => {
-  return (
-    <div>Saved</div>
-  )
-}
+  return <div>Saved</div>;
+};
 
-export default Saved
+export default Saved;
