@@ -1,9 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, FormEvent } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
 import supabase from "../../../routes/home/categories/supaDB";
 // import { useMutation } from "@tanstack/react-query";
 // import { Category } from "@/utils/types";
 import { useNavigate } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
 
 const AddCategory: React.FC = () => {
   const [categoryName, setCategoryName] = useState<string>("");
@@ -18,51 +20,64 @@ const AddCategory: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const nav = useNavigate();
-  // const { mutate } = useMutation({
-  //   mutationFn: async (category: Category) => {},
-  //   onSuccess: () => {},
-  //   onError: () => {},
-  // });
+  const { mutate } = useMutation({
+    mutationFn: async (e: FormEvent) => {
+      e.preventDefault();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+      let hasEmptyField = false;
 
-    let hasEmptyField = false;
+      if (!categoryName) {
+        setCategoryNameError("Category name is required.");
+        hasEmptyField = true;
+      } else {
+        setCategoryNameError(null);
+      }
 
-    if (!categoryName) {
-      setCategoryNameError("Category name is required.");
-      hasEmptyField = true;
-    } else {
-      setCategoryNameError(null);
-    }
+      if (!budget || budget <= 0) {
+        setBudgetError("Enter valid budget.");
+        hasEmptyField = true;
+      } else {
+        setBudgetError(null);
+      }
 
-    if (!budget || budget <= 0) {
-      setBudgetError("Enter valid budget.");
-      hasEmptyField = true;
-    } else {
-      setBudgetError(null);
-    }
+      if (hasEmptyField) throw Error("Some fields are empty.");
 
-    if (hasEmptyField) return;
+      console.log("Category Name:", categoryName);
+      console.log("Budget:", budget);
+      console.log("Background Color:", backgroundColor);
+      console.log("Background Image:", backgroundImage);
 
-    console.log("Category Name:", categoryName);
-    console.log("Budget:", budget);
-    console.log("Background Color:", backgroundColor);
-    console.log("Background Image:", backgroundImage);
+      const { data, error } = await supabase.from("Category").insert([
+        {
+          budget: budget,
+          category_color: backgroundColor,
+          background_image_url: backgroundImage,
+          category_name: categoryName,
+        },
+      ]);
 
-    const { data } = await supabase.from("Category").insert([
-      {
-        budget: budget,
-        category_color: backgroundColor,
-        background_image_url: backgroundImage,
-        category_name: categoryName,
-      },
-    ]);
+      if (error) {
+        throw Error(error.message);
+      }
 
-    if (data) {
-      console.log(data);
-    }
-  };
+      if (data) {
+        console.log(data);
+      }
+    },
+    onSuccess: () => {
+      toast({
+        description: "",
+      });
+      returnToDashboard();
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
+    },
+  });
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -80,7 +95,7 @@ const AddCategory: React.FC = () => {
     }
   };
 
-  const cancelForm = () => {
+  const returnToDashboard = () => {
     nav(-1);
   };
 
@@ -88,10 +103,10 @@ const AddCategory: React.FC = () => {
     <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
       <div
         className="absolute h-full w-full bg-black opacity-60"
-        onClick={cancelForm}
+        onClick={returnToDashboard}
       ></div>
       <form
-        onSubmit={handleSubmit}
+        onSubmit={mutate}
         className="z-10 flex h-max w-full max-w-lg flex-col gap-2 rounded-md bg-neutral-400 p-5"
       >
         <h1 className="text-center text-2xl font-bold text-black">
