@@ -23,5 +23,12 @@ export default tseslint.config(
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-require-imports": "off",
     },
+  },
+  // shadcn files
+  {
+    files: ["./client/src/hooks/use-toast.ts"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": "off",
+    },
   }
 );
