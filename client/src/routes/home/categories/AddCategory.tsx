@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
-import supabase from "../../../routes/home/categories/supaDB";
+import supabase from "./supaDB";
 
 const AddCategory: React.FC = () => {
   const [categoryName, setCategoryName] = useState<string>("");
