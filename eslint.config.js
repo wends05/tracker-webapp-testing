@@ -6,6 +6,14 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   { ignores: ["dist"] },
+  // shadcn files
+  {
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    files: ["/client/src/hooks/use-toast.ts"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
@@ -23,12 +31,6 @@ export default tseslint.config(
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-require-imports": "off",
     },
-  },
-  // shadcn files
-  {
-    files: ["./client/src/hooks/use-toast.ts"],
-    rules: {
-      "@typescript-eslint/no-unused-vars": "off",
-    },
+    ignores: ["client/src/hooks/use-toast.ts"],
   }
 );
