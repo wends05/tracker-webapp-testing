@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "pre-deploy"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "pre-deploy"]
 
 jobs:
   lint-and-prettier:
