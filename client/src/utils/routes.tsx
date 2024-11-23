@@ -78,6 +78,7 @@ const router = createBrowserRouter([
                       {
                         path: ":expense/edit",
                         element: <EditExpense />,
+                        loader: getExpense(queryClient),
                       },
                     ],
                   },

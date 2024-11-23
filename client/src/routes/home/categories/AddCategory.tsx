@@ -1,8 +1,8 @@
 import React, { useState, useRef } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
 import supabase from "../../../routes/home/categories/supaDB";
-import { useMutation } from "@tanstack/react-query";
-import { Category } from "@/utils/types";
+// import { useMutation } from "@tanstack/react-query";
+// import { Category } from "@/utils/types";
 import { useNavigate } from "react-router-dom";
 
 const AddCategory: React.FC = () => {
@@ -18,11 +18,11 @@ const AddCategory: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const nav = useNavigate();
-  const { mutate } = useMutation({
-    mutationFn: async (category: Category) => {},
-    onSuccess: () => {},
-    onError: () => {},
-  });
+  // const { mutate } = useMutation({
+  //   mutationFn: async (category: Category) => {},
+  //   onSuccess: () => {},
+  //   onError: () => {},
+  // });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

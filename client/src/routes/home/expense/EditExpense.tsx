@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { BackendResponse } from "../../../interfaces/response";
 import { Expense } from "@/utils/types";
 import { FormEvent, useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 const EditExpense = () => {
   const { data: expense } = useLoaderData() as BackendResponse<Expense>;
 
+  const nav = useNavigate();
   const { toast } = useToast();
 
   const [name, setName] = useState(expense.expense_name);
@@ -58,11 +59,19 @@ const EditExpense = () => {
     },
   });
 
+  const returnToDashboard = () => {
+    nav(-1);
+  };
+
   return (
-    <div className="flex h-full items-center justify-center">
+    <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
+      <div
+        onClick={returnToDashboard}
+        className="absolute h-full w-full bg-black opacity-60"
+      ></div>
       <form
         onSubmit={mutate}
-        className="flex w-screen max-w-sm flex-col items-center justify-center gap-2"
+        className="z-10 flex w-full max-w-sm flex-col items-center justify-center gap-2 rounded-lg bg-neutral-600 px-2 py-10 text-white"
       >
         <label htmlFor="name">Name</label>
         <input
