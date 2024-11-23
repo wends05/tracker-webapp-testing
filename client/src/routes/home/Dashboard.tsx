@@ -1,11 +1,11 @@
-import { useNavigate } from "react-router-dom";
-import { supabase } from "../../utils/UserContext";
+import { Link, Outlet } from "react-router-dom";
 
 const Dashboard = () => {
-  const nav = useNavigate()
   return (
-    <div className="flex flex-col gap-5 h-[50vh] items-center justify-center">
+    <div className="relative flex h-full flex-col items-center justify-center gap-5">
       <p>Dashboard</p>
+      <Link to={"category/add"}>Add Category</Link>
+      <Outlet />
     </div>
   );
 };

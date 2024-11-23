@@ -40,8 +40,8 @@ userRouter.post("", async (req: Request, res: Response) => {
     );
 
     res.json({
-      user
-    })
+      user,
+    });
   } catch (error: any) {
     console.error(error);
     res.status(500).json({
