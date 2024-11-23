@@ -14,6 +14,7 @@ const LayoutPage = () => {
       }
     });
   }, [nav]);
+
   return (
     <div className="flex h-screen flex-col">
       <Drawer />

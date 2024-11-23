@@ -9,7 +9,7 @@ import Dashboard from "../routes/home/Dashboard";
 import Onboarding from "../routes/home/Onboarding";
 import AddCategory from "../routes/home/categories/AddCategory";
 import Category from "../routes/home/categories/Category";
-import Expense from "../routes/home/expense/Expense";
+// import Expense from "../routes/home/expense/Expense";
 import AddExpense from "../routes/home/expense/AddExpense";
 import Profile from "../routes/home/Profile";
 import Summaries from "../routes/home/summary/Summaries";
@@ -49,14 +49,16 @@ const router = createBrowserRouter([
           {
             path: "dashboard",
             element: <Dashboard />,
+            children: [
+              {
+                path: "category/add",
+                element: <AddCategory />,
+              },
+            ],
           },
           {
             path: "category",
             children: [
-              {
-                path: "add",
-                element: <AddCategory />,
-              },
               {
                 path: ":category/edit",
                 element: <EditCategory />,
@@ -65,22 +67,19 @@ const router = createBrowserRouter([
               {
                 path: ":category",
                 element: <Category />,
-              },
-              {
-                path: ":category/expense",
                 children: [
                   {
-                    path: "add",
-                    element: <AddExpense />,
-                  },
-                  {
-                    path: ":expense",
-                    element: <Expense />,
-                  },
-                  {
-                    path: ":expense/edit",
-                    element: <EditExpense />,
-                    loader: getExpense(queryClient),
+                    path: "expense",
+                    children: [
+                      {
+                        path: "add",
+                        element: <AddExpense />,
+                      },
+                      {
+                        path: ":expense/edit",
+                        element: <EditExpense />,
+                      },
+                    ],
                   },
                 ],
               },
