@@ -1,3 +1,2 @@
-npx prettier --write .
-npx eslint .
+npx lint-staged -v
 git update-index --again
