@@ -71,12 +71,12 @@ const AddCategory = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <form
         onSubmit={handleSubmit}
-        className="max-w-lg w-full flex flex-col gap-2"
+        className="flex w-full max-w-lg flex-col gap-2"
       >
-        <h1 className="text-2xl text-black font-bold text-center">
+        <h1 className="text-center text-2xl font-bold text-black">
           Edit Category
         </h1>
 
@@ -93,7 +93,7 @@ const AddCategory = () => {
             value={categoryName}
             onChange={(e) => setCategoryName(e.target.value)}
             required
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-500"
+            className="w-full rounded-md border border-gray-300 p-2 focus:ring focus:ring-blue-500"
             placeholder="Enter category name"
           />
         </div>
@@ -108,7 +108,7 @@ const AddCategory = () => {
             value={budget}
             onChange={(e) => setBudget(Number(e.target.value))}
             required
-            className="block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-500"
+            className="block w-full rounded-md border border-gray-300 p-2 focus:ring focus:ring-blue-500"
             placeholder="Enter budget"
           />
         </div>
@@ -117,12 +117,12 @@ const AddCategory = () => {
           <label className="text-sm font-medium text-gray-700">
             Select Background Color
           </label>
-          <div className="flex space-x-2 mt-1">
+          <div className="mt-1 flex space-x-2">
             {CATEGORY_COLORS.map((color) => (
               <div
                 key={color}
                 onClick={() => setBackgroundColor(color)}
-                className={`w-10 h-10 cursor-pointer rounded-full border-2 ${
+                className={`h-10 w-10 cursor-pointer rounded-full border-2 ${
                   backgroundColor === color
                     ? "border-blue-500"
                     : "border-transparent"
@@ -148,7 +148,7 @@ const AddCategory = () => {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="mt-1 bg-teal-800 text-white font-bold py-2 px-4 rounded-md"
+              className="mt-1 rounded-md bg-teal-800 px-4 py-2 font-bold text-white"
             >
               Choose File
             </button>
@@ -160,25 +160,25 @@ const AddCategory = () => {
             <img
               src={imagePreviewUrl}
               alt="Preview"
-              className="w-full h-64 object-cover rounded-md"
+              className="h-64 w-full rounded-md object-cover"
             />
             <button
               type="button"
               onClick={removeImage}
-              className="absolute top-1 right-1 bg-gray-200 text-black rounded-full w-7 h-7 flex items-center justify-center hover:bg-red-600 transition duration-200"
+              className="absolute right-1 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-gray-200 text-black transition duration-200 hover:bg-red-600"
             >
               X
             </button>
           </div>
         )}
         <button
-          className="w-full bg-neutral-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-200"
+          className="w-full rounded-md bg-neutral-600 py-2 font-semibold text-white transition duration-200 hover:bg-blue-700"
           type="button"
         >
           <Link to={`/category/${category.category_id}`}>Cancel</Link>
         </button>
         <button
-          className="w-full bg-red-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-200"
+          className="w-full rounded-md bg-red-600 py-2 font-semibold text-white transition duration-200 hover:bg-blue-700"
           type="reset"
           onClick={handleReset}
         >
@@ -187,7 +187,7 @@ const AddCategory = () => {
 
         <button
           type="submit"
-          className="w-full bg-teal-800 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-200"
+          className="w-full rounded-md bg-teal-800 py-2 font-semibold text-white transition duration-200 hover:bg-blue-700"
         >
           Edit Category
         </button>

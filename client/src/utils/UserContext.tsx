@@ -10,11 +10,11 @@ interface IUserContext {
 export const UserContext = createContext<IUserContext>({
   user: null,
   setUser: () => {},
-  supabaseSession: null, //ngalan sang crayon
+  supabaseSession: null,
 });
 
 export const supabase = createClient(
-  "https://cjqudvdhgvyupoehxgfq.supabase.co",
+  import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_KEY!
 );
 
@@ -31,7 +31,6 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setSupabaseSession(session);
 
       // console.log(ev);
-      
     });
 
     return () => subscription.unsubscribe();

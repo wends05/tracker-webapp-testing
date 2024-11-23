@@ -1,11 +1,15 @@
-const Category = () => {
-  
+import { Link, Outlet } from "react-router-dom";
 
+const Category = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <h1 className="text-2xl text-black font-bold mb-4 text-center">
-      
+    <div className="relative flex h-full items-center justify-center">
+      <h1 className="mb-4 text-center text-2xl font-bold text-black">
+        Category Page
       </h1>
+      <Link to={"expense/add"}>Add Expense</Link>
+      <div>
+        <Outlet />
+      </div>
     </div>
   );
 };
