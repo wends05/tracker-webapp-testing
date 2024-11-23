@@ -5,7 +5,7 @@ import supabase from "../../../routes/home/categories/supaDB";
 // import { Category } from "@/utils/types";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const AddCategory: React.FC = () => {
   const [categoryName, setCategoryName] = useState<string>("");
@@ -20,6 +20,8 @@ const AddCategory: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const nav = useNavigate();
+  const queryClient = useQueryClient();
+
   const { mutate } = useMutation({
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
@@ -69,6 +71,9 @@ const AddCategory: React.FC = () => {
         description: "",
       });
       returnToDashboard();
+      queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
     },
     onError: (error) => {
       toast({
