@@ -1,20 +1,34 @@
-
 import React, { useState } from "react";
 import AddCategory from "../home/categories/AddCategory";
 
-
-
 const Dashboard = () => {
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
+  const [categories, setCategories] = useState([]); // Initialize as an empty array
 
-  const categories = [
-    { id: 1, name: "Lifestyle", budgetLeft: 1300 },
-    { id: 2, name: "Food", budgetLeft: 800 },
-    { id: 3, name: "Transport", budgetLeft: 500 },
-  ];
-
+  // Toggle Add Category Modal
   const toggleAddCategoryModal = () => {
     setIsAddCategoryOpen((prev) => !prev);
+  };
+
+  // Add New Category
+  const addCategory = (newCategory) => {
+    if (newCategory) {
+      const id = Date.now(); // Generate unique ID for category
+      setCategories((prevCategories) => [
+        ...prevCategories,
+        {
+          id,
+          name: newCategory.categoryName,
+          budget: newCategory.budget,
+          budgetLeft: newCategory.budget, // Initially, budgetLeft equals the budget
+          backgroundColor: newCategory.backgroundColor,
+          backgroundImage: newCategory.backgroundImage
+            ? URL.createObjectURL(newCategory.backgroundImage)
+            : null,
+        },
+      ]);
+    }
+    setIsAddCategoryOpen(false); // Close modal
   };
 
   return (
@@ -32,7 +46,6 @@ const Dashboard = () => {
         <div className="col-span-2 bg-white shadow rounded-lg p-4">
           <h2 className="text-lg font-medium text-black">Summary</h2>
           <div className="flex items-center justify-around mt-4">
-            {/* Placeholder for bars of the bar graph */}
             {Array.from({ length: 7 }).map((_, index) => (
               <div key={index} className="flex flex-col items-center">
                 <div
@@ -71,7 +84,7 @@ const Dashboard = () => {
               Total Expenses
             </h2>
             <p className="text-2xl font-bold text-center text-black mt-2">
-                ₱5,300
+              ₱5,300
             </p>
           </div>
         </div>
@@ -89,18 +102,29 @@ const Dashboard = () => {
             <span className="text-4xl">+</span>
           </button>
 
-          {/* Existing Categories */}
+          {/* Render Existing Categories */}
           {categories.map((category) => (
             <div
               key={category.id}
-              className="bg-rose-300 text-white shadow rounded-lg p-4 flex justify-between"
+              className="relative text-black rounded-lg p-4 shadow"
+              style={{
+                backgroundColor: category.backgroundColor || "#f3f3f3",
+              }}
             >
-              <div>
+              {/* Category Background Image */}
+              {category.backgroundImage && (
+                <img
+                  src={category.backgroundImage}
+                  alt="Category Background"
+                  className="absolute inset-0 h-full w-full object-cover opacity-20 rounded-lg"
+                />
+              )}
+              <div className="relative z-10">
                 <h3 className="text-lg font-medium">{category.name}</h3>
-                <p className="text-sm">Budget Left: ${category.budgetLeft}</p>
+                <p className="text-sm mt-1">Budget Left: ₱{category.budgetLeft}</p>
               </div>
               <button
-                className="text-xs bg-rose-500 rounded px-2 py-1 hover:bg-rose-600"
+                className="absolute top-2 right-2 text-xs bg-rose-500 rounded px-2 py-1 hover:bg-rose-600 text-white"
                 onClick={() => alert(`Edit ${category.name}`)}
               >
                 Edit
@@ -122,7 +146,7 @@ const Dashboard = () => {
               ✖
             </button>
             {/* AddCategory Component */}
-            <AddCategory />
+            <AddCategory onAddCategory={addCategory} />
           </div>
         </div>
       )}
