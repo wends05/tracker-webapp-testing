@@ -31,6 +31,8 @@ jobs:
       - name: Install Packages (Server)
         working-directory: server/
         run: npm install
+      - name: Installing packages
+        run: npm i
 
       - run: npm run lint
 
