@@ -1,5 +1,4 @@
 import { Category } from "@/utils/types";
-import React from "react";
 import { Link } from "react-router-dom";
 
 const CategoryView = ({
