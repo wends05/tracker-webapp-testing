@@ -1,20 +1,12 @@
 import React, { useState, useRef } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
+import { useNavigate } from "react-router-dom";
 
-interface AddCategoryProps {
-  onAddCategory: (category: {
-    categoryName: string;
-    budget: number;
-    backgroundColor: string;
-    backgroundImage: File | null;
-  }) => void;
-}
-
-const AddCategory: React.FC<AddCategoryProps> = ({ onAddCategory }) => {
+const AddCategory: React.FC = () => {
   const [categoryName, setCategoryName] = useState<string>("");
   const [budget, setBudget] = useState<number | "">("");
   const [backgroundColor, setBackgroundColor] = useState<string>("");
-  const [backgroundImage, setBackgroundImage] = useState<File | null>(null);
+  // const [backgroundImage, setBackgroundImage] = useState<File | null>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [categoryNameError, setCategoryNameError] = useState<string | null>(
     null
@@ -22,6 +14,7 @@ const AddCategory: React.FC<AddCategoryProps> = ({ onAddCategory }) => {
   const [budgetError, setBudgetError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  const nav = useNavigate();
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -43,34 +36,31 @@ const AddCategory: React.FC<AddCategoryProps> = ({ onAddCategory }) => {
 
     if (hasEmptyField) return;
 
-    onAddCategory({
-      categoryName,
-      budget: Number(budget),
-      backgroundColor,
-      backgroundImage,
-    });
-
     setCategoryName("");
     setBudget("");
     setBackgroundColor("");
-    setBackgroundImage(null);
+    // setBackgroundImage(null);
     setImagePreviewUrl(null);
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setBackgroundImage(file);
+      // setBackgroundImage(file);
       setImagePreviewUrl(URL.createObjectURL(file));
     }
   };
 
   const removeImage = () => {
-    setBackgroundImage(null);
+    // setBackgroundImage(null);
     setImagePreviewUrl(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+  };
+
+  const returnToDashboard = () => {
+    nav(-1);
   };
 
   return (
@@ -78,8 +68,8 @@ const AddCategory: React.FC<AddCategoryProps> = ({ onAddCategory }) => {
       <div className="relative w-full max-w-lg rounded-lg bg-white p-6 shadow-lg">
         {/* Close Button */}
         <button
-          onClick={() => onAddCategory(null)} // Close the modal
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+          className="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
+          onClick={returnToDashboard}
         >
           ✖
         </button>
@@ -112,7 +102,10 @@ const AddCategory: React.FC<AddCategoryProps> = ({ onAddCategory }) => {
           </div>
 
           <div>
-            <label htmlFor="budget" className="text-sm font-medium text-gray-700">
+            <label
+              htmlFor="budget"
+              className="text-sm font-medium text-gray-700"
+            >
               Budget:
             </label>
             <input

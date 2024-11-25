@@ -13,6 +13,16 @@ export const getCategory = (queryClient: QueryClient) => {
   };
 };
 
+export const getCategories = (queryClient: QueryClient) => {
+  return async () => {
+    return await queryClient.ensureQueryData({
+      queryKey: ["categories"],
+      queryFn: () =>
+        fetch(`http://localhost:3000/category`).then((res) => res.json()),
+    });
+  };
+};
+
 export const getExpense = (queryClient: QueryClient) => {
   return async ({ params: { expense } }: LoaderFunctionArgs) => {
     return await queryClient.ensureQueryData({
