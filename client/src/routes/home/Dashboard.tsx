@@ -1,20 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Outlet, useLoaderData } from "react-router-dom";
-import { BackendResponse } from "@/interfaces/response";
+import { BackendResponse } from "@/interfaces/BackendResponse";
 import { Category } from "@/utils/types";
 import CategoryView from "@/components/CategoryView";
 
 const Dashboard = () => {
   const { data: categories } = useLoaderData() as BackendResponse<Category[]>;
-  const [
-    totalBudget,
-    // setTotalBudget
-  ] = useState(0);
-  // useEffect(() => {
-  //   setTotalBudget(() => {
-  //     categories.reduce((acc, category) => {...acc, acc.budget + category.budget});
-  //   });
-  // }, [categories]);
+  const [totalBudget, setTotalBudget] = useState(0);
+  const [totalSpent, setTotalSpent] = useState(0);
+  const [totalNotSpent, settotalNotSpent] = useState(0);
+  useEffect(() => {
+    setTotalBudget(() => {
+      return categories.reduce((acc, cat) => acc + cat.budget, 0);
+    });
+    setTotalSpent(() => {
+      return categories.reduce(
+        (acc, category) => acc + category.amount_spent,
+        0
+      );
+    });
+    settotalNotSpent(() => {
+      return categories.reduce(
+        (acc, category) => acc + category.amount_left,
+        0
+      );
+    });
+  }, [categories]);
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -47,7 +58,9 @@ const Dashboard = () => {
           <h2 className="mb-2 text-center text-lg font-medium text-black">
             Money Left
           </h2>
-          <p className="text-center text-4xl font-bold text-black">₱5,300</p>
+          <p className="text-center text-4xl font-bold text-black">
+            {totalNotSpent}
+          </p>
         </div>
 
         {/* Budget and Expenses */}
@@ -67,7 +80,9 @@ const Dashboard = () => {
             <h2 className="mb-2 text-center text-sm font-medium text-black">
               Total Expenses
             </h2>
-            <p className="text-center text-3xl font-bold text-black">₱5,300</p>
+            <p className="text-center text-3xl font-bold text-black">
+              {totalSpent}
+            </p>
           </div>
         </div>
       </div>
@@ -90,26 +105,9 @@ const Dashboard = () => {
           </Link>
 
           {/* Render Existing Categories */}
-          {categories.map(
-            ({
-              budget,
-              description,
-              user_id,
-              category_color,
-              category_name,
-              category_id,
-            }) => (
-              <CategoryView
-                budget={budget}
-                description={description}
-                user_id={user_id}
-                category_color={category_color}
-                category_name={category_name}
-                category_id={category_id}
-                key={category_id}
-              />
-            )
-          )}
+          {categories.map((category) => (
+            <CategoryView category={category} key={category.category_id} />
+          ))}
         </div>
       </div>{" "}
       <Outlet />
