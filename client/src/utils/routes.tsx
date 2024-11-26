@@ -67,6 +67,7 @@ const router = createBrowserRouter([
               {
                 path: ":category",
                 element: <Category />,
+                loader: getCategory(queryClient),
                 children: [
                   {
                     path: "expense",
