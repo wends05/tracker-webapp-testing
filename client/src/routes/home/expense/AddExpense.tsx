@@ -1,7 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Expense from "../../../types/Expense";
 import { FormEvent, useEffect, useState } from "react";
-import { redirect, useNavigate, useParams } from "react-router-dom";
+import { Link, redirect, useNavigate, useParams } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
+import { X } from "lucide-react";
 
 const AddExpense = () => {
   const queryClient = useQueryClient();
@@ -12,36 +14,79 @@ const AddExpense = () => {
   const [price, setPrice] = useState(1.0);
   const [quantity, setQuantity] = useState(1);
   const [total, setTotal] = useState(0);
+  
 
   useEffect(() => {
     setTotal(price * quantity);
   }, [price, quantity]);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (expense: Expense) => {},
-    onSuccess: () => {},
-    onError: () => {},
+    mutationFn:async(e: FormEvent) => {
+      e.preventDefault()
+
+      if (!name.trim()) {
+        throw Error("Name is required.")  
+      }
+
+      if (price <= 0) {
+        throw Error("Price must be greater than zero.") 
+      }
+
+      if (quantity <= 0) {
+        throw Error("Quantity must be greater than zero.")
+      }
+      
+      const expense: Expense = {
+        expense_name: name,
+        price: price,
+        quantity: quantity,
+        total: total,
+        category_id: Number(category)
+      }
+      await fetch('http://localhost:3000/expense', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(expense)
+      })
+    },
+    onSuccess: () => {
+      toast({
+        description: "Expense Added!"
+      })
+      closeForm()
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: error.message
+      })
+    },
   });
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    const expense = {};
-    // mutate(expense)
-  };
 
-  const cancelForm = () => {
+  const closeForm = () => {
     nav(-1);
-    console.log("ror");
   };
 
   return (
-    <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
-      <div
-        onClick={cancelForm}
+    <div className="absolute  left-0 top-0 flex h-full w-full items-center justify-center">
+     <div
+        onClick={closeForm}
         className="absolute h-full w-full bg-black opacity-60"
-      ></div>
+      ></div> <div className="relative ">
+
+      
+      <button onClick={closeForm} className="absolute z-10 right-2 top-2">
+      <X
+      width={30} height={30}
+      />
+      </button>
+      
       <form
-        onSubmit={handleSubmit}
+        onSubmit={mutate}
         className="z-10 flex h-max max-w-[350px] flex-col gap-2 rounded-md bg-neutral-500 p-5 px-12 sm:w-full"
       >
         <h2>Add an Expense</h2>
@@ -85,13 +130,14 @@ const AddExpense = () => {
           value={total ? total : 0}
           disabled
         />
-        <button type="button" className="cancel" onClick={cancelForm}>
+        <button type="button" className="cancel" onClick={closeForm}>
           Cancel
         </button>
         <button type="submit" disabled={isPending}>
           Add Expense
         </button>
       </form>
+      </div>
     </div>
   );
 };
