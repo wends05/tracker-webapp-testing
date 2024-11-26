@@ -1,6 +1,7 @@
 import { createClient, Session } from "@supabase/supabase-js";
 import React, { createContext, useEffect, useState } from "react";
-import User from "../types/User";
+import { BackendResponse } from "@/interfaces/BackendResponse";
+import { User } from "./types";
 
 interface IUserContext {
   user: User | null;
@@ -22,8 +23,17 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [supabaseSession, setSupabaseSession] = useState<Session | null>(null);
   useEffect(() => {
+    const getUser = (userEmail: string) =>
+      fetch(`http://localhost:3000/user?email=${userEmail}`).then(
+        async (res) => {
+          const { data } = (await res.json()) as BackendResponse<User>;
+          setUser(data);
+        }
+      );
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSupabaseSession(session);
+      const userEmail = session!.user.email!;
+      getUser(userEmail);
     });
     const {
       data: { subscription },
@@ -33,9 +43,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       // console.log(ev);
       if (event == "SIGNED_IN") {
         const userEmail = session!.user.email!;
-        fetch(`http://localhost:3000/user?email=${userEmail}`).then(
-          async (res) => setUser(await res.json())
-        );
+        getUser(userEmail);
       }
 
       if (event == "SIGNED_OUT") {
