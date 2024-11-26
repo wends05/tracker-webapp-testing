@@ -13,7 +13,7 @@ export type Category = {
   category_name: string;
   description: string;
   budget: number;
-  category_color: number;
+  category_color: string;
   not_spent: number;
   amount_left: number;
 };
