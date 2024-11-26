@@ -65,7 +65,7 @@ const AddCategory: React.FC = () => {
         category_color: backgroundColor,
         category_name: categoryName,
         description: "hello world",
-        user_id: user!.user_id,
+        user_id: user!.user_id!,
         amount_left: budget || 0,
         amount_spent: 0,
       };
