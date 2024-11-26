@@ -2,7 +2,7 @@ import { createClient, Session } from "@supabase/supabase-js";
 import React, { createContext, useEffect, useState } from "react";
 import { User } from "./types";
 import { queryClient } from "@/_Root";
-import getUser from "./getuser";
+import getUser from "./fetchuser";
 
 interface IUserContext {
   user: User | null;

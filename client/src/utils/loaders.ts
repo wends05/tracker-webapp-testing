@@ -1,7 +1,7 @@
 import { QueryClient } from "@tanstack/react-query";
 import { LoaderFunctionArgs } from "react-router-dom";
 import { User } from "./types";
-import getUser from "./getuser";
+import getUser from "./fetchuser";
 
 export const getCategory = (queryClient: QueryClient) => {
   return async ({ params: { category } }: LoaderFunctionArgs) => {
