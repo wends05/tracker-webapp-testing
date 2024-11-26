@@ -9,11 +9,13 @@ export type Expense = {
 
 export type Category = {
   category_id?: number;
+  user_id: number;
   category_name: string;
+  description: string;
   budget: number;
   category_color: number;
-  user_id: number;
-  description: string;
+  not_spent: number;
+  amount_left: number;
 };
 
 export type WeeklySummary = {
@@ -32,13 +34,11 @@ export type WeeklySummarySavedCategories = {
   saved_category_id: number;
 };
 
-export enum Decimal {}
-
 export type User = {
   user_id?: number;
   created_at: Date;
   username: string;
   email: string;
   isNew: boolean;
-  decimal_separator: Decimal;
+  decimal_separator: string;
 };
