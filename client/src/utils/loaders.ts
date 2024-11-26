@@ -18,8 +18,8 @@ export const getExpense = (queryClient: QueryClient) => {
     return await queryClient.ensureQueryData({
       queryKey: ["expense", expense],
       queryFn: () =>
-        fetch(`http://localhost:3000/expense/${expense}`).then(
-          (res) => res.json
+        fetch(`http://localhost:3000/expense/${expense}`).then((res) =>
+          res.json()
         ),
     });
   };

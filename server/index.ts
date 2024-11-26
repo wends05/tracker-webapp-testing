@@ -14,6 +14,7 @@ app.use(cors());
 app.use("/expense", expenseRouter);
 app.use("/category", categoryRouter);
 app.use("/user", userRouter);
+app.use("/expense", expenseRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.json({

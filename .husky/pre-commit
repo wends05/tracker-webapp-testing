@@ -1,4 +1,2 @@
-npx prettier --write .
-git update-index --again
-npx eslint .
-git update-index --again
+npx lint-staged -v
+eslint .
