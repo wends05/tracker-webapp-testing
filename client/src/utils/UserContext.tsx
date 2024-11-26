@@ -27,10 +27,20 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     });
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSupabaseSession(session);
 
       // console.log(ev);
+      if (event == "SIGNED_IN") {
+        const userEmail = session!.user.email!;
+        fetch(`http://localhost:3000/user?email=${userEmail}`).then(
+          async (res) => setUser(await res.json())
+        );
+      }
+
+      if (event == "SIGNED_OUT") {
+        setUser(null);
+      }
     });
 
     return () => subscription.unsubscribe();
