@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  FormEvent,
-  useContext,
-  useEffect,
-} from "react";
+import React, { useState, FormEvent, useContext, useEffect } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
@@ -22,14 +16,11 @@ const AddCategory: React.FC = () => {
   const [categoryName, setCategoryName] = useState<string>("");
   const [budget, setBudget] = useState<number>(0);
   const [backgroundColor, setBackgroundColor] = useState<string>("");
-  const [backgroundImage, setBackgroundImage] = useState<File | null>(null);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [categoryNameError, setCategoryNameError] = useState<string | null>(
     null
   );
   // const [description, setDescription] = useState<string>("");
   const [budgetError, setBudgetError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const nav = useNavigate();
   const queryClient = useQueryClient();
@@ -56,10 +47,6 @@ const AddCategory: React.FC = () => {
 
       if (hasEmptyField) throw Error("Some fields are empty.");
 
-      console.log("Category Name:", categoryName);
-      console.log("Budget:", budget);
-      console.log("Background Color:", backgroundColor);
-      console.log("Background Image:", backgroundImage);
       const category: Category = {
         budget: budget || 0,
         category_color: backgroundColor,
@@ -99,22 +86,6 @@ const AddCategory: React.FC = () => {
       });
     },
   });
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setBackgroundImage(file);
-      setImagePreviewUrl(URL.createObjectURL(file));
-    }
-  };
-
-  const removeImage = () => {
-    setBackgroundImage(null);
-    setImagePreviewUrl(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
 
   const returnToDashboard = () => {
     nav(-1);
@@ -195,45 +166,6 @@ const AddCategory: React.FC = () => {
             ))}
           </div>
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Upload Background Image:
-          </label>
-          <div className="flex items-center">
-            <input
-              type="file"
-              id="backgroundImage"
-              onChange={handleImageUpload}
-              ref={fileInputRef}
-              className="hidden"
-            />
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="mt-1 rounded-md bg-teal-800 px-4 py-2 font-bold text-white"
-            >
-              Choose File
-            </button>
-          </div>
-        </div>
-
-        {imagePreviewUrl && (
-          <div className="relative mb-4">
-            <img
-              src={imagePreviewUrl}
-              alt="Preview"
-              className="h-64 w-full rounded-md object-cover"
-            />
-            <button
-              type="button"
-              onClick={removeImage}
-              className="absolute right-1 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-gray-200 text-black transition duration-200 hover:bg-red-600"
-            >
-              X
-            </button>
-          </div>
-        )}
 
         <button
           type="submit"
