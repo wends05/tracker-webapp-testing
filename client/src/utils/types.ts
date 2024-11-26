@@ -14,7 +14,7 @@ export type Category = {
   description: string;
   budget: number;
   category_color: string;
-  not_spent: number;
+  amount_spent: number;
   amount_left: number;
 };
 
