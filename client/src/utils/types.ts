@@ -11,7 +11,7 @@ export type Category = {
   category_id?: number;
   category_name: string;
   budget: number;
-  category_color: number;
+  category_color: string;
   user_id: number;
   description: string;
 };

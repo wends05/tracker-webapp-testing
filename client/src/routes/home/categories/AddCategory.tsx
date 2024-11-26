@@ -1,13 +1,13 @@
 import React, { useState, useRef, FormEvent } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
-import supabase from "../../../routes/home/categories/supaDB";
-// import { useMutation } from "@tanstack/react-query";
-// import { Category } from "@/utils/types";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Category } from "@/utils/types";
+// import { UserContext } from "@/utils/UserContext";
 
 const AddCategory: React.FC = () => {
+  // const { user } = useContext(UserContext);
   const [categoryName, setCategoryName] = useState<string>("");
   const [budget, setBudget] = useState<number | "">("");
   const [backgroundColor, setBackgroundColor] = useState<string>("");
@@ -16,6 +16,7 @@ const AddCategory: React.FC = () => {
   const [categoryNameError, setCategoryNameError] = useState<string | null>(
     null
   );
+  // const [description, setDescription] = useState<string>("");
   const [budgetError, setBudgetError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -48,27 +49,26 @@ const AddCategory: React.FC = () => {
       console.log("Budget:", budget);
       console.log("Background Color:", backgroundColor);
       console.log("Background Image:", backgroundImage);
-
-      const { data, error } = await supabase.from("Category").insert([
-        {
-          budget: budget,
-          category_color: backgroundColor,
-          background_image_url: backgroundImage,
-          category_name: categoryName,
+      const category: Category = {
+        budget: budget || 0,
+        category_color: backgroundColor,
+        category_name: categoryName,
+        description: "hello world",
+        user_id: 89,
+      };
+      fetch(`http://localhost:3000/category`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      ]);
-
-      if (error) {
-        throw Error(error.message);
-      }
-
-      if (data) {
-        console.log(data);
-      }
+        body: JSON.stringify(category),
+      }).catch((err) => {
+        throw Error(err.message);
+      });
     },
     onSuccess: () => {
       toast({
-        description: "",
+        description: "Added category!",
       });
       returnToDashboard();
       queryClient.invalidateQueries({

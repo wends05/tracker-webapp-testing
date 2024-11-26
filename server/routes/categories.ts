@@ -1,7 +1,30 @@
 import express, { Request, Response } from "express";
 import { pool } from "../db";
+import { Category } from "../types";
 
 const categoryRouter = express.Router();
+
+categoryRouter.post("", async (req: Request, res: Response) => {
+  try {
+    const {
+      budget,
+      category_color,
+      category_name,
+      description,
+      user_id,
+    }: Category = req.body;
+    const data = await pool.query(
+      `INSERT "Category" (budget, category_color, category_name, user_id, description) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [budget, category_color, category_name, user_id, description]
+    );
+    res.status(200).json({ data: data.rows[0] });
+  } catch (error: any) {
+    res.status(500).json({
+      message: "An error has occured",
+      error: error.message,
+    });
+  }
+});
 
 categoryRouter.get("/:id", async (req: Request, res: Response) => {
   try {
