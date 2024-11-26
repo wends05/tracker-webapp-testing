@@ -1,12 +1,9 @@
 import { Category } from "@/utils/types";
 import { Link } from "react-router-dom";
 
-const CategoryView = ({
-  budget,
-  category_color,
-  category_name,
-  category_id,
-}: Category) => {
+const CategoryView = (category: { category: Category }) => {
+  const { category_id, category_color, category_name, budget } =
+    category.category;
   return (
     <div className="relative">
       <Link to={`/category/${category_id}`}>
