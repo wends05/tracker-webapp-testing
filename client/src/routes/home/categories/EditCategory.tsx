@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
 import { Link, useLoaderData } from "react-router-dom";
 import { Category } from "../../../interfaces/Category";
-import { BackendResponse } from "../../../interfaces/response";
+import { BackendResponse } from "../../../interfaces/BackendResponse";
 import { useMutation } from "@tanstack/react-query";
 
 const AddCategory = () => {
