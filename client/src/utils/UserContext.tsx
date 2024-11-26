@@ -1,7 +1,8 @@
 import { createClient, Session } from "@supabase/supabase-js";
 import React, { createContext, useEffect, useState } from "react";
-import { BackendResponse } from "@/interfaces/BackendResponse";
 import { User } from "./types";
+import { queryClient } from "@/_Root";
+import getUser from "./getuser";
 
 interface IUserContext {
   user: User | null;
@@ -22,18 +23,16 @@ export const supabase = createClient(
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [supabaseSession, setSupabaseSession] = useState<Session | null>(null);
+
   useEffect(() => {
-    const getUser = (userEmail: string) =>
-      fetch(`http://localhost:3000/user?email=${userEmail}`).then(
-        async (res) => {
-          const { data } = (await res.json()) as BackendResponse<User>;
-          setUser(data);
-        }
-      );
+    const getDBUser = () =>
+      queryClient.ensureQueryData({
+        queryKey: ["user"],
+        queryFn: getUser,
+      });
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSupabaseSession(session);
-      const userEmail = session!.user.email!;
-      getUser(userEmail);
+      getDBUser();
     });
     const {
       data: { subscription },
@@ -42,12 +41,12 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
       // console.log(ev);
       if (event == "SIGNED_IN") {
-        const userEmail = session!.user.email!;
-        getUser(userEmail);
+        getDBUser();
       }
 
       if (event == "SIGNED_OUT") {
         setUser(null);
+        queryClient.removeQueries({ queryKey: ["user"] });
       }
     });
 
