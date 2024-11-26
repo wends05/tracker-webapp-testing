@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLoaderData, useNavigate } from "react-router-dom";
-import { BackendResponse } from "../../../interfaces/response";
+import { BackendResponse } from "../../../interfaces/BackendResponse";
 import { Expense } from "@/utils/types";
 import { FormEvent, useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -89,7 +89,7 @@ const EditExpense = () => {
           name="price"
           value={price}
           step="0.01"
-          onChange={(e) => setPrice(parseFloat(e.target.value))}
+          onChange={(e) => setPrice(parseFloat(e.target.value) || price)}
         />
 
         <label htmlFor="quantity">Quantity</label>
