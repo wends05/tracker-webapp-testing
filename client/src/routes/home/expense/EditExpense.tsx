@@ -89,7 +89,7 @@ const EditExpense = () => {
           name="price"
           value={price}
           step="0.01"
-          onChange={(e) => setPrice(parseFloat(e.target.value))}
+          onChange={(e) => setPrice(parseFloat(e.target.value) || price)}
         />
 
         <label htmlFor="quantity">Quantity</label>

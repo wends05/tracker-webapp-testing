@@ -20,7 +20,7 @@ const AddCategory: React.FC = () => {
   }, [user]);
 
   const [categoryName, setCategoryName] = useState<string>("");
-  const [budget, setBudget] = useState<number | "">("");
+  const [budget, setBudget] = useState<number>(0);
   const [backgroundColor, setBackgroundColor] = useState<string>("");
   const [backgroundImage, setBackgroundImage] = useState<File | null>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
@@ -163,8 +163,9 @@ const AddCategory: React.FC = () => {
           <input
             type="number"
             id="budget"
-            value={budget === 0 ? "" : budget}
-            onChange={(e) => setBudget(Number(e.target.value) || 0)}
+            step={0.01}
+            value={budget}
+            onChange={(e) => setBudget(parseFloat(e.target.value) || budget)}
             className={`block w-full border p-2 ${
               budgetError ? "border-red-600" : "border-gray-300"
             }`}
