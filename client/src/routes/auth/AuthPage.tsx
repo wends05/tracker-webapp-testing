@@ -31,7 +31,7 @@ const AuthPage = () => {
         setLoading(false);
       }
     });
-  }, []);
+  }, [nav]);
 
   const handleSubmit = async (ev: FormEvent) => {
     ev.preventDefault();
@@ -142,25 +142,25 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="flex bg-gradient-to-t items-center justify-center from-[#4C9182] to-[#D9DBBC] w-full h-screen">
+    <div className="flex h-screen w-full items-center justify-center bg-gradient-to-t from-[#4C9182] to-[#D9DBBC]">
       {loading ? (
         <>
           <div>
-            <div className="py-10 justify-center px-10 bg-white/50 rounded-3xl shadow-md ">
-              <p className="text-[#292421] text-[40px] font-bold">Loading...</p>
+            <div className="justify-center rounded-3xl bg-white/50 px-10 py-10 shadow-md">
+              <p className="text-[40px] font-bold text-[#292421]">Loading...</p>
             </div>
           </div>
         </>
       ) : (
-        <div className="flex justify-center items-center w-full h-full">
-          <div className="flex flex-col items-center py-10 justify-center w-4/4  bg-white/50 rounded-3xl shadow-md ">
-            <p className="text-[#292421] text-[40px] font-bold">{change}</p>
+        <div className="flex h-full w-full items-center justify-center">
+          <div className="w-4/4 flex flex-col items-center justify-center rounded-3xl bg-white/50 py-10 shadow-md">
+            <p className="text-[40px] font-bold text-[#292421]">{change}</p>
             <div className="flex">
               <button
                 className={
                   change === "SIGN UP"
-                    ? "w-[151px] h-[50px] rounded-l-full bg-[#F1E7DD] p-[10px] mx- text-[#292421] hover:bg-[#e4e4e4]"
-                    : "w-[151px] h-[50px] rounded-l-full bg-[#2F4F4F] p-[10px] mx- hover:bg-[#7A9590]"
+                    ? "mx- h-[50px] w-[151px] rounded-l-full bg-[#F1E7DD] p-[10px] text-[#292421] hover:bg-[#e4e4e4]"
+                    : "mx- h-[50px] w-[151px] rounded-l-full bg-[#2F4F4F] p-[10px] hover:bg-[#7A9590]"
                 }
                 onClick={() => {
                   setChange("LOG IN");
@@ -171,8 +171,8 @@ const AuthPage = () => {
               <button
                 className={
                   change === "LOG IN"
-                    ? "w-[151px] h-[50px] rounded-r-full bg-[#F1E7DD] p-[10px] mx- text-[#292421] hover:bg-[#e4e4e4]"
-                    : "w-[151px] h-[50px] rounded-r-full bg-[#2F4F4F] p-[10px] mx- hover:bg-[#7A9590]"
+                    ? "mx- h-[50px] w-[151px] rounded-r-full bg-[#F1E7DD] p-[10px] text-[#292421] hover:bg-[#e4e4e4]"
+                    : "mx- h-[50px] w-[151px] rounded-r-full bg-[#2F4F4F] p-[10px] hover:bg-[#7A9590]"
                 }
                 onClick={() => {
                   setChange("SIGN UP");
@@ -184,13 +184,13 @@ const AuthPage = () => {
 
             <form
               onSubmit={handleSubmit}
-              className="inputs flex flex-col px-20 py-10 items-center"
+              className="inputs flex flex-col items-center px-20 py-10"
             >
               <div className="username relative">
                 {change === "SIGN UP" && (
                   <>
                     <input
-                      className="w-[400px] h-[54px] rounded-[50px] my-4 bg-[#e9e9e9] hover:bg-[#D9D9D9CC] focus:outline-none focus:outline-[#2F4F4F] placeholder:[#6b7280] ps-[70px] font-light overflow-x-auto"
+                      className="placeholder:[#6b7280] my-4 h-[54px] w-[400px] overflow-x-auto rounded-[50px] bg-[#e9e9e9] ps-[70px] font-light hover:bg-[#D9D9D9CC] focus:outline-none focus:outline-[#2F4F4F]"
                       placeholder="username"
                       type="text"
                       value={username}
@@ -205,7 +205,7 @@ const AuthPage = () => {
               </div>
               <div className="email relative">
                 <input
-                  className="w-[400px] h-[54px] rounded-[30px] my-4 bg-[#e9e9e9] hover:bg-[#D9D9D9CC] focus:outline-none focus:outline-[#2F4F4F] placeholder:[#6b7280] ps-[70px] font-light overflow-x-auto"
+                  className="placeholder:[#6b7280] my-4 h-[54px] w-[400px] overflow-x-auto rounded-[30px] bg-[#e9e9e9] ps-[70px] font-light hover:bg-[#D9D9D9CC] focus:outline-none focus:outline-[#2F4F4F]"
                   placeholder="email"
                   type="text"
                   value={email}
@@ -219,7 +219,7 @@ const AuthPage = () => {
 
               <div className="password relative">
                 <input
-                  className="w-[400px] h-[54px] rounded-[30px] my-4 bg-[#e9e9e9] hover:bg-[#D9D9D9CC] focus:outline-none focus:outline-[#2F4F4F] placeholder:[#6b7280] ps-[70px] font-light overflow-x-auto"
+                  className="placeholder:[#6b7280] my-4 h-[54px] w-[400px] overflow-x-auto rounded-[30px] bg-[#e9e9e9] ps-[70px] font-light hover:bg-[#D9D9D9CC] focus:outline-none focus:outline-[#2F4F4F]"
                   placeholder="password"
                   type="password"
                   value={password}
