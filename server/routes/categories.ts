@@ -12,10 +12,28 @@ categoryRouter.post("", async (req: Request, res: Response) => {
       category_name,
       description,
       user_id,
+      amount_left,
+      amount_spent,
     }: Category = req.body;
     const data = await pool.query(
-      `INSERT "Category" (budget, category_color, category_name, user_id, description) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [budget, category_color, category_name, user_id, description]
+      `INSERT INTO "Category" (
+        budget,
+        category_color,
+        category_name,
+        user_id,
+        description,
+        amount_left,
+        amount_spent
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
+      [
+        budget,
+        category_color,
+        category_name,
+        user_id,
+        description,
+        amount_left,
+        amount_spent,
+      ]
     );
     res.status(200).json({ data: data.rows[0] });
   } catch (error: any) {

@@ -1,13 +1,24 @@
-import React, { useState, useRef, FormEvent } from "react";
+import React, {
+  useState,
+  useRef,
+  FormEvent,
+  useContext,
+  useEffect,
+} from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Category } from "@/utils/types";
-// import { UserContext } from "@/utils/UserContext";
+import { UserContext } from "@/utils/UserContext";
 
 const AddCategory: React.FC = () => {
-  // const { user } = useContext(UserContext);
+  const { user } = useContext(UserContext);
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
+
   const [categoryName, setCategoryName] = useState<string>("");
   const [budget, setBudget] = useState<number | "">("");
   const [backgroundColor, setBackgroundColor] = useState<string>("");
@@ -54,17 +65,22 @@ const AddCategory: React.FC = () => {
         category_color: backgroundColor,
         category_name: categoryName,
         description: "hello world",
-        user_id: 89,
+        user_id: user!.user_id,
+        amount_left: budget || 0,
+        amount_spent: 0,
       };
-      fetch(`http://localhost:3000/category`, {
+      const response = await fetch(`http://localhost:3000/category`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(category),
-      }).catch((err) => {
-        throw Error(err.message);
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to add category");
+      }
     },
     onSuccess: () => {
       toast({
