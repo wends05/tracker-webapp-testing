@@ -1,23 +1,26 @@
-import React, { useState, useRef, FormEvent } from "react";
+import React, { useState, FormEvent, useContext, useEffect } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
-import supabase from "../../../routes/home/categories/supaDB";
-// import { useMutation } from "@tanstack/react-query";
-// import { Category } from "@/utils/types";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Category } from "@/utils/types";
+import { UserContext } from "@/utils/UserContext";
 
 const AddCategory: React.FC = () => {
+  const { user } = useContext(UserContext);
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
+
   const [categoryName, setCategoryName] = useState<string>("");
-  const [budget, setBudget] = useState<number | "">("");
+  const [budget, setBudget] = useState<number>(0);
   const [backgroundColor, setBackgroundColor] = useState<string>("");
-  const [backgroundImage, setBackgroundImage] = useState<File | null>(null);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [categoryNameError, setCategoryNameError] = useState<string | null>(
     null
   );
+  // const [description, setDescription] = useState<string>("");
   const [budgetError, setBudgetError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const nav = useNavigate();
   const queryClient = useQueryClient();
@@ -44,31 +47,31 @@ const AddCategory: React.FC = () => {
 
       if (hasEmptyField) throw Error("Some fields are empty.");
 
-      console.log("Category Name:", categoryName);
-      console.log("Budget:", budget);
-      console.log("Background Color:", backgroundColor);
-      console.log("Background Image:", backgroundImage);
-
-      const { data, error } = await supabase.from("Category").insert([
-        {
-          budget: budget,
-          category_color: backgroundColor,
-          background_image_url: backgroundImage,
-          category_name: categoryName,
+      const category: Category = {
+        budget: budget || 0,
+        category_color: backgroundColor,
+        category_name: categoryName,
+        description: "hello world",
+        user_id: user!.user_id!,
+        amount_left: budget || 0,
+        amount_spent: 0,
+      };
+      const response = await fetch(`http://localhost:3000/category`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      ]);
+        body: JSON.stringify(category),
+      });
 
-      if (error) {
-        throw Error(error.message);
-      }
-
-      if (data) {
-        console.log(data);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to add category");
       }
     },
     onSuccess: () => {
       toast({
-        description: "",
+        description: "Added category!",
       });
       returnToDashboard();
       queryClient.invalidateQueries({
@@ -83,22 +86,6 @@ const AddCategory: React.FC = () => {
       });
     },
   });
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setBackgroundImage(file);
-      setImagePreviewUrl(URL.createObjectURL(file));
-    }
-  };
-
-  const removeImage = () => {
-    setBackgroundImage(null);
-    setImagePreviewUrl(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
 
   const returnToDashboard = () => {
     nav(-1);
@@ -147,8 +134,9 @@ const AddCategory: React.FC = () => {
           <input
             type="number"
             id="budget"
-            value={budget === 0 ? "" : budget}
-            onChange={(e) => setBudget(Number(e.target.value) || 0)}
+            step={0.01}
+            value={budget}
+            onChange={(e) => setBudget(parseFloat(e.target.value) || budget)}
             className={`block w-full border p-2 ${
               budgetError ? "border-red-600" : "border-gray-300"
             }`}
@@ -178,45 +166,6 @@ const AddCategory: React.FC = () => {
             ))}
           </div>
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Upload Background Image:
-          </label>
-          <div className="flex items-center">
-            <input
-              type="file"
-              id="backgroundImage"
-              onChange={handleImageUpload}
-              ref={fileInputRef}
-              className="hidden"
-            />
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="mt-1 rounded-md bg-teal-800 px-4 py-2 font-bold text-white"
-            >
-              Choose File
-            </button>
-          </div>
-        </div>
-
-        {imagePreviewUrl && (
-          <div className="relative mb-4">
-            <img
-              src={imagePreviewUrl}
-              alt="Preview"
-              className="h-64 w-full rounded-md object-cover"
-            />
-            <button
-              type="button"
-              onClick={removeImage}
-              className="absolute right-1 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-gray-200 text-black transition duration-200 hover:bg-red-600"
-            >
-              X
-            </button>
-          </div>
-        )}
 
         <button
           type="submit"
