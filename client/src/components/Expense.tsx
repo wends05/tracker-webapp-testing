@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/drawer";
 import { toast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { useNavigate } from "react-router-dom";
 // import { DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
 
 const ExpenseBox = ({
@@ -25,6 +26,7 @@ const ExpenseBox = ({
   total,
   category_id,
 }: Expense) => {
+  const nav = useNavigate();
   const queryClient = useQueryClient();
   const { mutate: handleDeleteExpense } = useMutation({
     mutationFn: async () => {
@@ -64,7 +66,7 @@ const ExpenseBox = ({
     },
   });
   const handleEditExpense = () => {
-    console.log("edit this.. this is edit");
+    nav(`expense/${expense_id}/edit`);
   };
 
   return (
