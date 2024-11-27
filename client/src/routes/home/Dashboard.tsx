@@ -98,7 +98,7 @@ const Dashboard = () => {
 
           </button> */}
           <Link
-            className="flex h-32 items-center justify-center rounded-lg bg-gray-100 text-gray-500 shadow hover:bg-gray-200"
+            className="flex h-48 items-center justify-center rounded-lg bg-gray-100 text-gray-500 shadow-lg hover:bg-gray-200 mx-5 my-5"
             to="category/add"
           >
             <span className="text-4xl">+</span>
