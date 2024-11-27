@@ -13,29 +13,31 @@ const CategoryPage = () => {
       fetch(
         `http://localhost:3000/category/${category.category_id}/expenses`
       ).then(async (res) => {
-        console.log("working")
-        console.log(await res.json())
-        return await res.json()}),
+        const { data } = (await res.json()) as BackendResponse<Expense[]>;
+        console.log(data);
+        return data;
+      }),
   });
   return (
-    <div className="relative flex h-full items-center justify-center">
-      <h1 className="mb-4 text-center text-2xl font-bold text-black"></h1>
+    <div className="relative flex h-full w-full flex-col items-center justify-center">
+      <h1 className="mb-4 text-center text-2xl font-bold text-black">ho</h1>
       {/* <Link to={"expense/add"}>Add Expense</Link> */}
 
-      <div>
-        {expenses && expenses.map((expense) => (
-          <ExpenseBox
-            category_id={expense.category_id}
-            price={expense.price}
-            expense_name={expense.expense_name}
-            quantity={expense.quantity}
-            total={expense.total}
-            expense_id={Number(expense.expense_id)}
-            key={expense.expense_id}
-
-          />
-        ))}
+      <div className="flex w-full flex-col">
+        {expenses &&
+          expenses.map((expense: Expense) => (
+            <ExpenseBox
+              category_id={expense.category_id}
+              price={expense.price}
+              expense_name={expense.expense_name}
+              quantity={expense.quantity}
+              total={expense.total}
+              expense_id={Number(expense.expense_id)}
+              key={expense.expense_id}
+            />
+          ))}
       </div>
+      <div></div>
       <div>
         <Outlet />
       </div>
