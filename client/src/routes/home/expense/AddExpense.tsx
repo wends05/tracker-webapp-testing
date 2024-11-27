@@ -42,13 +42,17 @@ const AddExpense = () => {
         total: total,
         category_id: Number(category),
       };
-      await fetch("http://localhost:3000/expense", {
+      const response = await fetch("http://localhost:3000/expense", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(expense),
       });
+      if (!response.ok) {
+        const errorMessage = await response.json();
+        throw Error(errorMessage.error);
+      }
     },
     onSuccess: () => {
       toast({

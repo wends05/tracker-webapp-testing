@@ -85,23 +85,6 @@ const router = createBrowserRouter([
                   },
                 ],
               },
-              // {
-              //   path: ":category/expense",
-              //   children: [
-              //     {
-              //       path: "add",
-              //       element: <AddExpense />,
-              //     },
-              //     {
-              //       path: ":expense",
-              //       element: <Expense />,
-              //     },
-              //     {
-              //       path: ":expense/edit",
-              //       element: <EditExpense />,
-              //     },
-              //   ],
-              // },
             ],
           },
           {
