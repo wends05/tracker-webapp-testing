@@ -13,61 +13,66 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { useNavigate } from "react-router-dom";
 // import { DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
 
-const ExpenseBox = ({ expense_name, price, quantity, total }: Expense) => {
+const ExpenseBox = ({
+  expense_name,
+  price,
+  quantity,
+  total,
+  expense_id,
+}: Expense) => {
+  const nav = useNavigate();
   const { mutate: handleDeleteExpense } = useMutation({
-    mutationFn: async () => {},
+    mutationFn: async () => {
+      console.log("deleted expense");
+    },
   });
   const handleEditExpense = () => {
-    console.log("edit this.. this is edit");
+    nav(`expense/${expense_id}/edit`);
   };
 
   return (
-    <div className="flex h-auto flex-row flex-nowrap justify-between border-2 border-black p-3">
-      <div className="flex flex-col">
-        <h1 className="flex h-auto truncate text-wrap">
-          {expense_name}
-          titlejdahfiauhsdifuadskhadjbdkjhgfkasdgfladsfhdklsafhadklsfhjldafhkjkldsafhjlkfbadosfhiodjsdguastdaysfdasfdyafdsafhoadjhadkfjk
-        </h1>
-        <div>
-          <div className="flex">
-            {price}100
-            <div className="flex">{quantity}1000</div>
+    <Drawer>
+      <div className="flex h-auto flex-row flex-nowrap justify-between border-b-2 border-black p-3">
+        <div className="flex flex-col">
+          <h1 className="flex h-auto truncate text-wrap">{expense_name}</h1>
+          <div>
+            <div className="flex">
+              {price} x {quantity}
+            </div>
           </div>
+          <div>{total}</div>
         </div>
-        <div>{total}10000</div>
-      </div>
 
-      <div className="flex flex-col items-end">
-        <button className="" onClick={handleEditExpense}>
-          <PiNotePencil size={30} className="wx-32" />
-        </button>
-        <button onClick={() => handleDeleteExpense()} className="p-0">
-          <Drawer>
-            <DrawerTrigger>
-              <PiTrash size={30} className="m-0 p-0" />
-            </DrawerTrigger>
-            <DrawerContent className="sm:max-w-[425px]">
-              <DrawerHeader>
-                <DrawerTitle>
-                  Are you sure you want to delete this expense?
-                </DrawerTitle>
-                <DrawerDescription>
-                  This action cannot be undone.
-                </DrawerDescription>
-              </DrawerHeader>
-              <DrawerFooter>
-                <Button variant="outline"> Yes </Button>
-                <DrawerClose>
-                  <Button variant="outline"> No </Button>
-                </DrawerClose>
-              </DrawerFooter>
-            </DrawerContent>
-          </Drawer>
-        </button>
+        <div className="flex flex-col items-end">
+          <button className="" onClick={handleEditExpense}>
+            <PiNotePencil size={30} className="wx-32" />
+          </button>
+
+          <DrawerTrigger>
+            <PiTrash size={30} className="m-0 p-0" />
+          </DrawerTrigger>
+        </div>
       </div>
-    </div>
+      <DrawerContent className="mx-auto w-full">
+        <DrawerHeader>
+          <DrawerTitle>
+            Are you sure you want to delete this expense?
+          </DrawerTitle>
+          <DrawerDescription>This action cannot be undone.</DrawerDescription>
+        </DrawerHeader>
+        <DrawerFooter className="flex flex-col items-start p-5">
+          <Button variant="outline" onClick={() => handleDeleteExpense()}>
+            Yes
+          </Button>
+          <DrawerClose className="p-0">
+            <Button variant="outline"> No </Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 };
 

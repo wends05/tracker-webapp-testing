@@ -8,7 +8,7 @@ import LayoutPage from "../routes/home/_LayoutPage";
 import Dashboard from "../routes/home/Dashboard";
 import Onboarding from "../routes/home/Onboarding";
 import AddCategory from "../routes/home/categories/AddCategory";
-import Category from "../routes/home/categories/Category";
+import Category from "../routes/home/categories/CategoryPage";
 // import Expense from "../routes/home/expense/Expense";
 import AddExpense from "../routes/home/expense/AddExpense";
 import Profile from "../routes/home/Profile";
