@@ -141,7 +141,7 @@ const Dashboard = () => {
               <CategoryView category={category} key={category.category_id} />
             ))}
         </div>
-      </div>{" "}
+      </div>
       <Outlet />
     </div>
   );
