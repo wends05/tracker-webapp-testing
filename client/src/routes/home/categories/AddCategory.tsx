@@ -1,13 +1,16 @@
-import React, { useState, FormEvent, useContext, useEffect } from "react";
+import React, { useState, FormEvent, useEffect } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Category } from "@/utils/types";
-import { UserContext } from "@/utils/UserContext";
+import getUser from "@/utils/fetchuser";
 
 const AddCategory: React.FC = () => {
-  const { user } = useContext(UserContext);
+  const { data: user } = useQuery({
+    queryKey: ["user"],
+    queryFn: getUser,
+  });
 
   useEffect(() => {
     console.log(user);
@@ -92,7 +95,7 @@ const AddCategory: React.FC = () => {
   };
 
   return (
-    <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
+    <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center">
       <div
         className="absolute h-full w-full bg-black opacity-60"
         onClick={returnToDashboard}

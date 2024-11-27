@@ -1,33 +1,64 @@
 import { useEffect, useState } from "react";
-import { Link, Outlet, useLoaderData } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { BackendResponse } from "@/interfaces/BackendResponse";
 import { Category } from "@/utils/types";
 import CategoryView from "@/components/CategoryView";
+import { useQuery } from "@tanstack/react-query";
+import getUser from "@/utils/fetchuser";
 
 const Dashboard = () => {
-  const { data: categories } = useLoaderData() as BackendResponse<Category[]>;
+  const { data: user } = useQuery({
+    queryKey: ["user"],
+    queryFn: getUser,
+  });
+
+  const { data: categories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      if (!user) {
+        throw Error("No user provided");
+      }
+      const response = await fetch(
+        `http://localhost:3000/user/${user.user_id!}/categories`
+      );
+
+      if (!response.ok) {
+        throw Error("WALA CATEGORIES");
+      }
+
+      const { data } = (await response.json()) as BackendResponse<Category[]>;
+      console.log(data);
+      return data;
+    },
+  });
   const [totalBudget, setTotalBudget] = useState(0);
   const [totalSpent, setTotalSpent] = useState(0);
   const [totalNotSpent, settotalNotSpent] = useState(0);
   useEffect(() => {
-    setTotalBudget(() => {
-      return categories.reduce((acc, cat) => acc + cat.budget, 0);
-    });
-    setTotalSpent(() => {
-      return categories.reduce(
-        (acc, category) => acc + category.amount_spent,
-        0
-      );
-    });
-    settotalNotSpent(() => {
-      return categories.reduce(
-        (acc, category) => acc + category.amount_left,
-        0
-      );
-    });
+    if (categories) {
+      setTotalBudget(() => {
+        return categories!.reduce((acc, cat) => acc + cat.budget, 0);
+      });
+      setTotalSpent(() => {
+        return categories!.reduce(
+          (acc, category) => acc + category.amount_spent,
+          0
+        );
+      });
+      settotalNotSpent(() => {
+        return categories!.reduce(
+          (acc, category) => acc + category.amount_left,
+          0
+        );
+      });
+    }
   }, [categories]);
 
-  return (
+  return !categories ? (
+    <>
+      <h1>Please wait</h1>{" "}
+    </>
+  ) : (
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Header */}
       <header className="mb-8">
@@ -98,16 +129,17 @@ const Dashboard = () => {
 
           </button> */}
           <Link
-            className="flex h-32 items-center justify-center rounded-lg bg-gray-100 text-gray-500 shadow hover:bg-gray-200"
+            className="flex items-center justify-center rounded-lg bg-gray-100 text-gray-500 shadow hover:bg-gray-200"
             to="category/add"
           >
             <span className="text-4xl">+</span>
           </Link>
 
           {/* Render Existing Categories */}
-          {categories.map((category) => (
-            <CategoryView category={category} key={category.category_id} />
-          ))}
+          {categories &&
+            categories.map((category) => (
+              <CategoryView category={category} key={category.category_id} />
+            ))}
         </div>
       </div>{" "}
       <Outlet />

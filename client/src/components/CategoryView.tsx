@@ -5,7 +5,7 @@ const CategoryView = (category: { category: Category }) => {
   const { category_id, category_color, category_name, budget } =
     category.category;
   return (
-    <div className="relative">
+    <div className="relative h-full w-full">
       <Link to={`/category/${category_id}`}>
         <div
           className="relative rounded-lg p-4 text-black shadow"
@@ -13,7 +13,7 @@ const CategoryView = (category: { category: Category }) => {
             backgroundColor: category_color || "#f3f3f3",
           }}
         >
-          <div className="relative z-10">
+          <div className="relative">
             <h3 className="text-lg font-medium">{category_name}</h3>
             <p className="mt-1 text-sm">Total Budget: ₱{budget}</p>
           </div>
