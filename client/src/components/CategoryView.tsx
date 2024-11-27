@@ -13,17 +13,17 @@ const CategoryView = (category: { category: Category }) => {
           backgroundColor: category_color || "#f3f3f3",
         }}
       >
-        <div className="relative z-10">
+        <div className="relative">
           <h3 className="text-lg font-medium">{category_name}</h3>
           <p className="mt-1 text-sm">Total Budget: ₱{budget}</p>
         </div>
       </Link>
-      <button
+      <Link
         className="absolute right-2 top-2 rounded bg-rose-500 px-2 py-1 text-xs text-white hover:bg-rose-600"
-        onClick={() => alert(`Edit ${category_name}`)}
+        to={`category/${category_id}/edit`}
       >
         Edit
-      </button>
+      </Link>
     </div>
   );
 };
