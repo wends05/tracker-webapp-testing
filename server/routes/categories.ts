@@ -65,6 +65,7 @@ categoryRouter.get("/:id", async (req: Request, res: Response) => {
     });
   }
 });
+
 categoryRouter.put("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
