@@ -23,7 +23,7 @@ const Dashboard = () => {
       );
 
       if (!response.ok) {
-        throw Error("WALA CATEGORIES");
+        throw Error("Error Fetched");
       }
 
       const { data } = (await response.json()) as BackendResponse<Category[]>;
@@ -63,7 +63,7 @@ const Dashboard = () => {
       {/* Header */}
       <header className="mb-8">
         <h1 className="text-2xl font-bold text-black">
-          Welcome, Xai <span className="wave">👋</span>
+          Welcome, {user?.username} <span className="wave">👋</span>
         </h1>
       </header>
       {/* Summary Part */}
@@ -120,14 +120,8 @@ const Dashboard = () => {
       {/* Categories */}
       <div className="mt-8">
         <h2 className="mb-4 text-lg font-medium text-black">Categories</h2>
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {/* Add New Category */}
-          {/* <button
-            onClick={() => {}}
-            className="flex h-32 items-center justify-center rounded-lg bg-gray-100 text-gray-500 shadow hover:bg-gray-200" 
-          >
-
-          </button> */}
           <Link
             className="mx-5 my-5 flex h-48 items-center justify-center rounded-lg bg-gray-100 text-gray-500 shadow-lg hover:bg-gray-200"
             to="category/add"
