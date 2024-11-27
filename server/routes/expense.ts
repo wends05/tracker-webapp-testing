@@ -44,23 +44,23 @@ expenseRouter.put("/:id", async (req: Request, res: Response) => {
   }
 });
 
-expenseRouter.delete("/:id", async (req:Request, res: Response)=> {
+expenseRouter.delete("/:id", async (req: Request, res: Response) => {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
     const delete_data = await pool.query(
-    'DELETE * from "Expense" WHERE expense_id = $1', [id]
+      'DELETE from "Expense" WHERE expense_id = $1 RETURNING *',
+      [id]
     );
 
     res.status(200).json({
-      data: delete_data.rows[0]
-    })
-
+      data: delete_data.rows[0],
+    });
   } catch (error: any) {
     res.status(500).json({
       message: "An error has occured",
-      error: error.message, 
+      error: error.message,
     });
   }
-})
+});
 
 export default expenseRouter;
