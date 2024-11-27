@@ -18,6 +18,7 @@ import { ToastAction } from "@/components/ui/toast";
 // import { DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
 
 const ExpenseBox = ({
+  expense_id,
   expense_name,
   price,
   quantity,
@@ -26,13 +27,15 @@ const ExpenseBox = ({
 }: Expense) => {
   const queryClient = useQueryClient();
   const { mutate: handleDeleteExpense } = useMutation({
-    mutationFn: async (expense_id) => {
+    mutationFn: async () => {
       const response = await fetch(
         `http://localhost:3000/expense/${expense_id}`,
         {
           method: "DELETE",
         }
       );
+      console.log("Expense ID:", expense_id);
+      console.log("Response status:", response.status);
 
       if (!response.ok) {
         const errorResponse = await response.json();
@@ -45,6 +48,7 @@ const ExpenseBox = ({
     onSuccess: () => {
       toast({
         description: "Expense successfully deleted",
+        className: "bg-  text-white",
       });
       queryClient.invalidateQueries({
         queryKey: ["category", category_id, "expenses"],
@@ -64,51 +68,52 @@ const ExpenseBox = ({
   };
 
   return (
-    <div className="w-364 flex-col border-2 border-black p-3">
-      <div className="flex justify-evenly">
-        <h1 className="justify-start">{expense_name}title</h1>
-        <button onClick={handleEditExpense}>
-          <PiNotePencil size={30} className="" />
-        </button>
-      </div>
-      <div>
-        <div className="flex">
-          {price}100
-          <div className="flex">{quantity}x 10</div>
+    <div className="mx-16 mt-3 flex h-auto flex-row flex-nowrap justify-between border-b-2 border-b-black p-3">
+      <div className="flex flex-col">
+        <h2 className="flex truncate text-wrap font-bold"> {expense_name} </h2>
+        <h6 className="flex">
+          {" "}
+          {price} x {quantity}{" "}
+        </h6>
+
+        {/* <h6 className="flex">1000</h6> */}
+
+        <div className="mt-7">
+          <h2>{total} PHP</h2>
         </div>
       </div>
 
-      <div className="flex justify-evenly">
-        {total}1000
-        <button onClick={() => handleDeleteExpense()}>
-          <Drawer>
-            <DrawerTrigger>
-              <PiTrash size={30} />
-            </DrawerTrigger>
-            <DrawerContent className="sm:max-w-[425px]">
-              <DrawerHeader>
-                <DrawerTitle>
-                  Are you sure you want to delete this expense?
-                </DrawerTitle>
-                <DrawerDescription>
-                  This action cannot be undone.
-                </DrawerDescription>
-              </DrawerHeader>
-              <DrawerFooter>
-                <Button variant="outline"> Yes </Button>
-                <DrawerClose>
-                  <Button
-                    variant="outline"
-                    onClick={() => handleDeleteExpense()}
-                  >
-                    {" "}
-                    No{" "}
-                  </Button>
-                </DrawerClose>
-              </DrawerFooter>
-            </DrawerContent>
-          </Drawer>
+      <div className="flex flex-col items-end">
+        <button className="" onClick={handleEditExpense}>
+          <PiNotePencil size={30} className="wx-32" />
         </button>
+
+        <Drawer>
+          <DrawerTrigger>
+            <PiTrash size={30} className="m-0 mt-5 flex p-0" />
+          </DrawerTrigger>
+          <DrawerContent className="mx-auto items-center justify-center rounded-lg bg-white shadow-lg sm:max-w-[425px]">
+            <DrawerHeader>
+              <DrawerTitle>
+                Are you sure you want to delete this expense? Expense name:{" "}
+                {expense_name}
+              </DrawerTitle>
+              <DrawerDescription>
+                This action cannot be undone.
+              </DrawerDescription>
+            </DrawerHeader>
+            <DrawerFooter className="flext flex-row justify-center">
+              <button onClick={() => handleDeleteExpense()}>
+                <Button variant="outline"> Yes </Button>
+              </button>
+              <DrawerClose>
+                <button>
+                  <Button variant="outline"> No </Button>
+                </button>
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
       </div>
     </div>
   );
