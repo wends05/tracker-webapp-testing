@@ -1,5 +1,6 @@
 import React, { useState, FormEvent, useContext, useEffect } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
+
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -23,8 +24,8 @@ const AddCategory: React.FC = () => {
   const [budgetError, setBudgetError] = useState<string | null>(null);
 
   const nav = useNavigate();
-  const queryClient = useQueryClient();
 
+  const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();

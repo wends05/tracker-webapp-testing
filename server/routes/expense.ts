@@ -4,6 +4,27 @@ import Expense from "../types/Expense";
 
 const expenseRouter = express.Router();
 
+expenseRouter.post("", async (req: Request, res: Response) => {
+try {
+  console.log("p")
+  const {expense_name, price, quantity, total, category_id}: Expense = req.body
+  const result = await pool.query(
+    'INSERT INTO "Expense"(expense_name, price, quantity, total, category_id) VALUES($1, $2, $3, $4, $5) RETURNING *',
+    [expense_name, price, quantity, total, category_id]
+  )
+
+res.status(200).json({
+  data: result.rows[0]
+})
+
+} catch (error: any) {
+  res.status(500).json({
+    message: "An error has occured",
+    error: error.message,
+  });
+}
+})
+
 expenseRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
