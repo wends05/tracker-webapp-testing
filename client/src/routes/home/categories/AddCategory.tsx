@@ -99,7 +99,7 @@ const AddCategory: React.FC = () => {
       ></div>
       <form
         onSubmit={mutate}
-        className="z-10 flex h-max w-full max-w-lg flex-col gap-2 rounded-md bg-neutral-400 p-5"
+        className="z-10 flex h-max w-full max-w-lg flex-col gap-2 rounded-md bg-white p-5"
       >
         <h1 className="text-center text-2xl font-bold text-black">
           Add Category
