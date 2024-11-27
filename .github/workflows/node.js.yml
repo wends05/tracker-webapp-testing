@@ -5,12 +5,12 @@ name: Node.js CI
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "pre-deploy"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "pre-deploy"]
 
 jobs:
-  lint-and-prettier:
+  lint-and-build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -24,18 +24,20 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
+
       - name: Install Packages (Client)
         working-directory: client/
         run: npm install
       - name: Install Packages (Server)
         working-directory: server/
         run: npm install
+      - name: Installing packages
+        run: npm i
 
-      - name: Install Prettier Plugins
-        run: npm i prettier-plugin-tailwindcss
-
-      - run: npm run prettier
       - run: npm run lint
+
       - name: Run build on client
         working-directory: client/
         run: npm run build
+
+      - run: echo "Completed on ${{ matrix.node-version }}"
