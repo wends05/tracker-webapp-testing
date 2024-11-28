@@ -50,8 +50,32 @@ const router = createBrowserRouter([
             element: <Dashboard />,
             children: [
               {
-                path: "category/add",
-                element: <AddCategory />,
+                path: "category",
+                children: [
+                  {
+                    path: "add",
+                    element: <AddCategory />,
+                  },
+                  {
+                    path: ":category/edit",
+                    element: <EditCategory />,
+                    loader: getCategory(queryClient),
+                  },
+                ],
+              },
+              {
+                path: "category",
+                children: [
+                  {
+                    path: "add",
+                    element: <AddCategory />,
+                  },
+                  {
+                    path: ":category/edit",
+                    element: <EditCategory />,
+                    loader: getCategory(queryClient),
+                  },
+                ],
               },
             ],
           },

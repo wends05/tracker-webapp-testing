@@ -96,10 +96,6 @@ const AddCategory: React.FC = () => {
 
   return (
     <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center">
-      <div
-        className="absolute h-full w-full bg-black opacity-60"
-        onClick={returnToDashboard}
-      ></div>
       <form
         onSubmit={mutate}
         className="z-10 flex h-max w-full max-w-lg flex-col gap-2 rounded-md bg-white p-5"
