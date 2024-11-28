@@ -1,6 +1,6 @@
 import { useState, FormEvent } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
-import { Link, useLoaderData } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { Category } from "@/utils/types";
 import { BackendResponse } from "../../../interfaces/BackendResponse";
 import { useMutation } from "@tanstack/react-query";
@@ -15,6 +15,8 @@ const AddCategory = () => {
   const [backgroundColor, setBackgroundColor] = useState<string>(
     category.category_color
   );
+
+  const nav = useNavigate();
 
   const [description, setDescription] = useState<string>("");
   const { mutate } = useMutation({
@@ -64,9 +66,20 @@ const AddCategory = () => {
     setBackgroundColor(category.category_color);
   };
 
+  const returnToDashboard = () => {
+    nav(-1);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <form onSubmit={mutate} className="flex w-full max-w-lg flex-col gap-2">
+    <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center">
+      <div
+        onClick={returnToDashboard}
+        className="absolute h-full w-full bg-black opacity-60"
+      ></div>
+      <form
+        onSubmit={mutate}
+        className="z-10 flex w-full max-w-lg flex-col gap-2 rounded-lg bg-neutral-200 px-5 py-10"
+      >
         <h1 className="text-center text-2xl font-bold text-black">
           Edit Category
         </h1>
