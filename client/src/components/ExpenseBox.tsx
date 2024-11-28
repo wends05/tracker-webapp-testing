@@ -78,8 +78,6 @@ const ExpenseBox = ({
           {price} x {quantity}{" "}
         </h6>
 
-        {/* <h6 className="flex">1000</h6> */}
-
         <div className="mt-7">
           <h2>{total} PHP</h2>
         </div>
