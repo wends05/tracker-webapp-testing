@@ -8,7 +8,7 @@ import LayoutPage from "../routes/home/_LayoutPage";
 import Dashboard from "../routes/home/Dashboard";
 import Onboarding from "../routes/home/Onboarding";
 import AddCategory from "../routes/home/categories/AddCategory";
-import Category from "../routes/home/categories/Category";
+import Category from "../routes/home/categories/CategoryPage";
 // import Expense from "../routes/home/expense/Expense";
 import AddExpense from "../routes/home/expense/AddExpense";
 import Profile from "../routes/home/Profile";
@@ -17,7 +17,7 @@ import Summary from "../routes/home/summary/Summary";
 import Saved from "../routes/home/Saved";
 import EditCategory from "../routes/home/categories/EditCategory";
 import EditExpense from "../routes/home/expense/EditExpense";
-import { getCategory, getExpense } from "./loaders";
+import { getCategories, getCategory, getExpense } from "./loaders";
 import ErrorPage from "../ErrorPage";
 import { queryClient } from "../_Root";
 
@@ -49,6 +49,7 @@ const router = createBrowserRouter([
           {
             path: "dashboard",
             element: <Dashboard />,
+            loader: getCategories(queryClient),
             children: [
               {
                 path: "category/add",

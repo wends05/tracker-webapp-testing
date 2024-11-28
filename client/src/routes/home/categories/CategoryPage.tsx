@@ -1,9 +1,8 @@
 import ExpenseBox from "@/components/Expense";
-import { BackendResponse } from "@/interfaces/response";
-import Expense from "@/types/Expense";
-import { Category } from "@/utils/types";
+import { BackendResponse } from "@/interfaces/BackendResponse";
+import { Expense, Category } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
-import { Outlet, useLoaderData } from "react-router-dom";
+import { Link, Outlet, useLoaderData } from "react-router-dom";
 
 const CategoryPage = () => {
   const { data: category } = useLoaderData() as BackendResponse<Category>;
@@ -19,11 +18,11 @@ const CategoryPage = () => {
       }),
   });
   return (
-    <div className="relative flex h-full w-full flex-col items-center justify-center">
+    <div className="relative flex w-full flex-col items-center justify-center py-5">
       <h1 className="mb-4 text-center text-2xl font-bold text-black">ho</h1>
-      {/* <Link to={"expense/add"}>Add Expense</Link> */}
+      <Link to={"expense/add"}>Add Expense</Link>
 
-      <div className="flex w-full flex-col">
+      <div className="flex w-full flex-col gap-4 px-10">
         {expenses &&
           expenses.map((expense: Expense) => (
             <ExpenseBox
