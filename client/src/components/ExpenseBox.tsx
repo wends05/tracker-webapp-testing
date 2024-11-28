@@ -49,7 +49,6 @@ const ExpenseBox = ({
     onSuccess: () => {
       toast({
         description: "Expense successfully deleted",
-        className: "text-white",
       });
       queryClient.invalidateQueries({
         queryKey: ["category", category_id, "expenses"],
@@ -69,7 +68,7 @@ const ExpenseBox = ({
   };
 
   return (
-    <div className="mx-16 mt-3 flex h-auto flex-row flex-nowrap justify-between border-b-2 border-b-black p-3">
+    <div className="flex h-auto flex-row flex-nowrap justify-between border-b-2 border-b-black p-3">
       <div className="flex flex-col">
         <h2 className="flex truncate text-wrap font-bold"> {expense_name} </h2>
         <h6 className="flex">
