@@ -15,6 +15,7 @@ const AddCategory: React.FC = () => {
 
   const [categoryName, setCategoryName] = useState<string>("");
   const [budget, setBudget] = useState<number>(0);
+  const [description, setDescription] = useState<string>("");
   const [backgroundColor, setBackgroundColor] = useState<string>("");
   const [categoryNameError, setCategoryNameError] = useState<string | null>(
     null
@@ -51,7 +52,7 @@ const AddCategory: React.FC = () => {
         budget: budget || 0,
         category_color: backgroundColor,
         category_name: categoryName,
-        description: "hello world",
+        description: description || "",
         user_id: user!.user_id!,
         amount_left: budget || 0,
         amount_spent: 0,
@@ -125,6 +126,25 @@ const AddCategory: React.FC = () => {
           {categoryNameError && (
             <p className="mt-1 text-xs text-red-600">{categoryNameError}</p>
           )}
+        </div>
+
+        <div>
+          <label
+            htmlFor="description"
+            className="text-sm font-medium text-gray-700"
+          >
+            Description:
+          </label>
+          <input
+            type="text"
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className={`w-full border p-2 ${
+              categoryNameError ? "border-red-600" : "border-gray-300"
+            }`}
+            placeholder="Enter category description"
+          />
         </div>
 
         <div>
