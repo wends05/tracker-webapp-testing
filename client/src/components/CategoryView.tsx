@@ -1,11 +1,10 @@
 import { Category } from "@/utils/types";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const CategoryView = (category: { category: Category }) => {
   const { category_id, category_color, category_name, budget } =
     category.category;
 
-  const nav = useNavigate();
   return (
     <div className="relative mx-5 my-5 flex h-48 items-center justify-center rounded-lg shadow-lg">
       <Link
@@ -20,12 +19,12 @@ const CategoryView = (category: { category: Category }) => {
           <p className="mt-1 text-sm">Total Budget: ₱{budget}</p>
         </div>
       </Link>
-      <button
+      <Link
         className="absolute right-2 top-2 rounded bg-rose-500 px-2 py-1 text-xs text-white hover:bg-rose-600"
-        onClick={() => nav(`category/${category_id}/edit`)}
+        to={`category/${category_id}/edit`}
       >
         Edit
-      </button>
+      </Link>
     </div>
   );
 };

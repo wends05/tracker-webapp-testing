@@ -63,6 +63,20 @@ const router = createBrowserRouter([
                   },
                 ],
               },
+              {
+                path: "category",
+                children: [
+                  {
+                    path: "add",
+                    element: <AddCategory />,
+                  },
+                  {
+                    path: ":category/edit",
+                    element: <EditCategory />,
+                    loader: getCategory(queryClient),
+                  },
+                ],
+              },
             ],
           },
           {
