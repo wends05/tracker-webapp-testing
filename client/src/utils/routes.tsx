@@ -64,34 +64,15 @@ const router = createBrowserRouter([
                   },
                 ],
               },
-              {
-                path: "category",
-                children: [
-                  {
-                    path: "add",
-                    element: <AddCategory />,
-                  },
-                  {
-                    path: ":category/edit",
-                    element: <EditCategory />,
-                    loader: getCategory(queryClient),
-                  },
-                ],
-              },
             ],
           },
           {
             path: "category",
             children: [
               {
-                path: ":category/edit",
-                element: <EditCategory />,
-                loader: getCategory(queryClient),
-              },
-              {
                 path: ":category",
-                element: <CategoryPage />,
                 loader: getCategory(queryClient),
+                element: <CategoryPage />,
                 children: [
                   {
                     path: "expense",
