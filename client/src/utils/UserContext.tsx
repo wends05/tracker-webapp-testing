@@ -41,7 +41,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
       // console.log(ev);
       if (event == "SIGNED_IN") {
-        setUser(user)
+        setUser(user);
       }
 
       if (event == "SIGNED_OUT") {

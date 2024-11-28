@@ -4,24 +4,21 @@ import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { supabase, UserContext } from "../../utils/UserContext";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks/use-toast";
 // import { ToastAction } from "@/components/ui/toast"
 
 const AuthPage = () => {
-  const { toast } = useToast()
-
+  const { toast } = useToast();
 
   const [change, setChange] = useState("LOG IN");
   const { setUser } = useContext(UserContext);
-  const nav = useNavigate();  
+  const nav = useNavigate();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(true);
-
-  
 
   useEffect(() => {
     supabase.auth.getSession().then((res) => {
@@ -38,16 +35,14 @@ const AuthPage = () => {
     try {
       if (change === "LOG IN") {
         if (email === "" || password === "") {
-          
           throw new Error("Empty email or password");
-         
         }
         console.log(change);
       } else {
-        if (email === "" || password === "" || username ==="")
-          throw new Error("Empty input fields")
+        if (email === "" || password === "" || username === "")
+          throw new Error("Empty input fields");
       }
-  
+
       if (change === "SIGN UP") {
         register();
       } else {
@@ -57,7 +52,7 @@ const AuthPage = () => {
       toast({
         variant: "destructive",
         description: error.message,
-      })
+      });
       console.log("ERROR FETCH: ", error.message);
     }
   };
@@ -73,7 +68,7 @@ const AuthPage = () => {
       toast({
         variant: "destructive",
         description: error.message,
-      })
+      });
       throw new Error("Error signing in: " + error.message);
     }
 
@@ -92,7 +87,7 @@ const AuthPage = () => {
     // if it does not exist then create a new user
 
     const { data } = await createUser();
-    
+
     setUser(data);
     nav("/dashboard");
 
@@ -118,15 +113,15 @@ const AuthPage = () => {
       toast({
         variant: "destructive",
         description: error.message,
-      })
+      });
       throw new Error("Error signing up: " + error.message);
     }
 
     await createUser();
     toast({
       title: "Congratulations!",
-      description: "Your account has been registered"
-    })
+      description: "Your account has been registered",
+    });
     console.log("registered!");
     setChange("LOG IN");
   };
@@ -232,7 +227,7 @@ const AuthPage = () => {
               </div>
               <button
                 type="submit"
-                className="py-2 px-4 w-max bg-green hover:bg-[#6f4717] text-white rounded-lg "
+                className="bg-green w-max rounded-lg px-4 py-2 text-white hover:bg-[#6f4717]"
                 id="submit"
               >
                 {change}
