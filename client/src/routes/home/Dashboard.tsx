@@ -69,7 +69,7 @@ const Dashboard = () => {
       {/* Summary Part */}
       <div className="grid grid-cols-4 gap-6">
         {/* Placeholder for Summary Graph */}
-        <div className="col-span-2 rounded-lg bg-white p-6 shadow">
+        <div className="col-span-2 rounded-lg bg-white p-6 shadow md:col-span-2">
           <h2 className="mb-4 text-lg font-medium text-black">Summary</h2>
           <div className="flex items-center justify-around">
             {Array.from({ length: 7 }).map((_, index) => (
@@ -95,7 +95,7 @@ const Dashboard = () => {
         </div>
 
         {/* Budget and Expenses */}
-        <div className="space-y-6">
+        <div className="flex flex-col gap-6">
           <div className="flex flex-col justify-center rounded-lg bg-white p-6 shadow">
             <h2 className="mb-2 text-center text-sm font-medium text-black">
               {" "}
@@ -120,7 +120,7 @@ const Dashboard = () => {
       {/* Categories */}
       <div className="mt-8">
         <h2 className="mb-4 text-lg font-medium text-black">Categories</h2>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-1 md:grid-cols-3">
           {/* Add New Category */}
           <Link
             className="mx-5 my-5 flex h-48 items-center justify-center rounded-lg bg-gray-100 text-gray-500 shadow-lg hover:bg-gray-200"

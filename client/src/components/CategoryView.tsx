@@ -1,5 +1,6 @@
 import { Category } from "@/utils/types";
 import { Link } from "react-router-dom";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
 
 const CategoryView = (category: { category: Category }) => {
   const { category_id, category_color, category_name, budget } =
@@ -18,11 +19,12 @@ const CategoryView = (category: { category: Category }) => {
           <p className="mt-1 text-sm">Total Budget: ₱{budget}</p>
         </div>
       </Link>
+      {/* Edit Icon */}
       <button
-        className="absolute right-2 top-2 rounded bg-rose-500 px-2 py-1 text-xs text-white hover:bg-rose-600"
+        className="absolute right-2 top-2 rounded-full bg-rose-500 p-2 text-white hover:bg-rose-600"
         onClick={() => alert(`Edit ${category_name}`)}
       >
-        Edit
+        <PencilSquareIcon className="h-6 w-6" />
       </button>
     </div>
   );
