@@ -1,4 +1,4 @@
-import ExpenseBox from "@/components/Expense";
+import ExpenseBox from "@/components/ExpenseBox";
 import { BackendResponse } from "@/interfaces/BackendResponse";
 import { Expense, Category } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
@@ -18,7 +18,7 @@ const CategoryPage = () => {
       }),
   });
   return (
-    <div className="relative flex w-full flex-col items-center justify-center py-5">
+    <div className="relative flex min-h-full w-full flex-col items-center justify-center py-5">
       <h1 className="mb-4 text-center text-2xl font-bold text-black">ho</h1>
       <Link to={"expense/add"}>Add Expense</Link>
 

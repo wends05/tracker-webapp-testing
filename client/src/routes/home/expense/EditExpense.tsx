@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { BackendResponse } from "../../../interfaces/BackendResponse";
 import { Expense } from "@/utils/types";
 import { FormEvent, useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 const EditExpense = () => {
   const { data: expense } = useLoaderData() as BackendResponse<Expense>;
 
+  const { category } = useParams();
   const nav = useNavigate();
   const { toast } = useToast();
 
@@ -45,8 +46,9 @@ const EditExpense = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["expense", expense.expense_id],
+        queryKey: ["category", category, "expenses"],
       });
+      closeForm();
       toast({
         description: "Expense Edited!",
       });
@@ -64,7 +66,7 @@ const EditExpense = () => {
   };
 
   return (
-    <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
+    <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center">
       <div
         onClick={closeForm}
         className="absolute h-full w-full bg-black opacity-60"
