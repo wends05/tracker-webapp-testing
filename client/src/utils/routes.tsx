@@ -17,7 +17,7 @@ import Summary from "../routes/home/summary/Summary";
 import Saved from "../routes/home/Saved";
 import EditCategory from "../routes/home/categories/EditCategory";
 import EditExpense from "../routes/home/expense/EditExpense";
-import { getCategories, getCategory, getExpense } from "./loaders";
+import { getCategory, getExpense } from "./loaders";
 import ErrorPage from "../ErrorPage";
 import { queryClient } from "../_Root";
 
@@ -49,22 +49,26 @@ const router = createBrowserRouter([
           {
             path: "dashboard",
             element: <Dashboard />,
-            loader: getCategories(queryClient),
             children: [
               {
-                path: "category/add",
-                element: <AddCategory />,
+                path: "category",
+                children: [
+                  {
+                    path: "add",
+                    element: <AddCategory />,
+                  },
+                  {
+                    path: ":category/edit",
+                    element: <EditCategory />,
+                    loader: getCategory(queryClient),
+                  },
+                ],
               },
             ],
           },
           {
             path: "category",
             children: [
-              {
-                path: ":category/edit",
-                element: <EditCategory />,
-                loader: getCategory(queryClient),
-              },
               {
                 path: ":category",
                 loader: getCategory(queryClient),

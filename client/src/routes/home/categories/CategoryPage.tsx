@@ -1,6 +1,8 @@
+import ExpenseBox from "@/components/Expense";
 import { BackendResponse } from "@/interfaces/BackendResponse";
-import { Category } from "@/utils/types";
-import { Outlet, useLoaderData } from "react-router-dom";
+import { Category, Expense } from "@/utils/types";
+import { useQuery } from "@tanstack/react-query";
+import { Link, Outlet, useLoaderData } from "react-router-dom";
 
 const CategoryPage = () => {
   const { data: category } = useLoaderData() as BackendResponse<Category>;
@@ -23,11 +25,22 @@ const CategoryPage = () => {
     category.amount_left,
     category.amount_spent
   );
+  const { data: expenses } = useQuery<Expense[]>({
+    queryKey: ["category", category.category_id, "expenses"],
+    queryFn: () =>
+      fetch(
+        `http://localhost:3000/category/${category.category_id}/expenses`
+      ).then(async (res) => {
+        const { data } = (await res.json()) as BackendResponse<Expense[]>;
+        console.log(data);
+        return data;
+      }),
+  });
 
   return (
     <div className={`relative mt-12 flex h-full justify-center px-16`}>
       <div className="flex h-96 w-1/3 flex-col items-center">
-        <h1 className="mb-8 text-2xl text-6xl font-bold text-black">
+        <h1 className="mb-8 text-2xl font-bold text-black">
           {category.category_name}
         </h1>
         <div className="mb-8 min-h-56 w-96 rounded-3xl bg-white drop-shadow-lg">
@@ -68,6 +81,22 @@ const CategoryPage = () => {
             </text>
             <text className="font-bold">₱{category.amount_spent}</text>
           </div>
+        </div>
+        <Link to={"expense/add"}>Add Expense</Link>
+
+        <div className="flex w-full flex-col gap-4 px-10">
+          {expenses &&
+            expenses.map((expense: Expense) => (
+              <ExpenseBox
+                category_id={expense.category_id}
+                price={expense.price}
+                expense_name={expense.expense_name}
+                quantity={expense.quantity}
+                total={expense.total}
+                expense_id={Number(expense.expense_id)}
+                key={expense.expense_id}
+              />
+            ))}
         </div>
       </div>
 
