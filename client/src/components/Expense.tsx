@@ -50,7 +50,7 @@ const ExpenseBox = ({
     onSuccess: () => {
       toast({
         description: "Expense successfully deleted",
-        className: "bg-  text-white",
+        className: "text-white",
       });
       queryClient.invalidateQueries({
         queryKey: ["category", category_id, "expenses"],
