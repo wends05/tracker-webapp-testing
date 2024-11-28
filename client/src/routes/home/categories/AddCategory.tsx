@@ -78,7 +78,7 @@ const AddCategory: React.FC = () => {
       toast({
         description: "Added category!",
       });
-      returnToDashboard();
+      closeForm();
       queryClient.invalidateQueries({
         queryKey: ["categories"],
       });
@@ -92,7 +92,7 @@ const AddCategory: React.FC = () => {
     },
   });
 
-  const returnToDashboard = () => {
+  const closeForm = () => {
     nav(-1);
   };
 

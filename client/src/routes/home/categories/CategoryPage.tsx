@@ -1,4 +1,4 @@
-import ExpenseBox from "@/components/Expense";
+import ExpenseBox from "@/components/ExpenseBox";
 import { BackendResponse } from "@/interfaces/BackendResponse";
 import { Category, Expense } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";

@@ -16,7 +16,6 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useNavigate } from "react-router-dom";
-// import { DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
 
 const ExpenseBox = ({
   expense_id,
@@ -77,8 +76,6 @@ const ExpenseBox = ({
           {" "}
           {price} x {quantity}{" "}
         </h6>
-
-        {/* <h6 className="flex">1000</h6> */}
 
         <div className="mt-7">
           <h2>{total} PHP</h2>
