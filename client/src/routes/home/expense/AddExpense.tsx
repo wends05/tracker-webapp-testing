@@ -54,6 +54,7 @@ const AddExpense = () => {
         throw Error(errorMessage.error);
       }
     },
+
     onSuccess: () => {
       toast({
         description: "Expense Added!",
