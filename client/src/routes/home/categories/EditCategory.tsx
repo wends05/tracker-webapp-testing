@@ -3,13 +3,15 @@ import { CATEGORY_COLORS } from "../../../utils/constants";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { Category } from "@/utils/types";
 import { BackendResponse } from "../../../interfaces/BackendResponse";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { Trash } from "lucide-react";
 
 const EditCategory = () => {
   const { data: category } = useLoaderData() as BackendResponse<Category>;
   const nav = useNavigate();
+
+  const queryClient = useQueryClient();
 
   const [categoryName, setCategoryName] = useState<string>(
     category.category_name
@@ -64,6 +66,10 @@ const EditCategory = () => {
       toast({
         description: "WHAHHAHSDHAHSAH",
       });
+      queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+      returnToDashboard();
     },
     onError: () => {
       toast({
@@ -98,8 +104,13 @@ const EditCategory = () => {
       }
     },
     onSuccess: () => {
-      toast({ description: "Category successfully deleted" });
-      nav("/dashboard");
+      toast({
+        description: "Category successfully deleted",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+      returnToDashboard();
     },
     onError: (error) => {
       toast({
