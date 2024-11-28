@@ -4,9 +4,12 @@ import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { Category } from "@/utils/types";
 import { BackendResponse } from "../../../interfaces/BackendResponse";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "@/hooks/use-toast";
+import { Trash } from "lucide-react";
 
-const AddCategory = () => {
+const EditCategory = () => {
   const { data: category } = useLoaderData() as BackendResponse<Category>;
+  const nav = useNavigate();
 
   const [categoryName, setCategoryName] = useState<string>(
     category.category_name
@@ -15,8 +18,6 @@ const AddCategory = () => {
   const [backgroundColor, setBackgroundColor] = useState<string>(
     category.category_color
   );
-
-  const nav = useNavigate();
 
   const [description, setDescription] = useState<string>("");
   const { mutate } = useMutation({
@@ -58,6 +59,18 @@ const AddCategory = () => {
         throw Error(error);
       }
     },
+
+    onSuccess: () => {
+      toast({
+        description: "WHAHHAHSDHAHSAH",
+      });
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        description: "hindi",
+      });
+    },
   });
 
   const handleReset = () => {
@@ -70,19 +83,54 @@ const AddCategory = () => {
     nav(-1);
   };
 
+  const deleteCategory = useMutation({
+    mutationFn: async () => {
+      const response = await fetch(
+        `http://localhost:3000/category/${category.category_id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        const { error } = await response.json();
+        throw new Error(error || "Failed to delete category");
+      }
+    },
+    onSuccess: () => {
+      toast({ description: "Category successfully deleted" });
+      nav("/dashboard");
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        description: error.message || "An error has occured huhuhu",
+      });
+    },
+  });
+
   return (
-    <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center">
+    <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-gray-100">
       <div
-        onClick={returnToDashboard}
         className="absolute h-full w-full bg-black opacity-60"
-      ></div>
+        onClick={returnToDashboard}
+      ></div>{" "}
       <form
         onSubmit={mutate}
-        className="z-10 flex w-full max-w-lg flex-col gap-2 rounded-lg bg-neutral-200 px-5 py-10"
+        className="z-10 flex w-full max-w-lg flex-col gap-2 rounded-md bg-white p-5"
       >
-        <h1 className="text-center text-2xl font-bold text-black">
-          Edit Category
-        </h1>
+        <div className="justify between flex items-center">
+          <h1 className="text-left text-2xl font-bold text-black">
+            Edit Category
+          </h1>
+          <button
+            className="p-1 text-red-500 hover:text-red-700"
+            type="button"
+            onClick={() => deleteCategory.mutate()}
+          >
+            <Trash className="h-6 w-6"></Trash>
+          </button>
+        </div>
 
         <div>
           <label
@@ -114,7 +162,6 @@ const AddCategory = () => {
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            required
             className="w-full rounded-md border border-gray-300 p-2 focus:ring focus:ring-blue-500"
             placeholder="Enter category description"
           />
@@ -181,4 +228,4 @@ const AddCategory = () => {
   );
 };
 
-export default AddCategory;
+export default EditCategory;
