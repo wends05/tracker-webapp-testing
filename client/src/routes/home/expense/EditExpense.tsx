@@ -59,14 +59,14 @@ const EditExpense = () => {
     },
   });
 
-  const returnToDashboard = () => {
+  const closeForm = () => {
     nav(-1);
   };
 
   return (
     <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
       <div
-        onClick={returnToDashboard}
+        onClick={closeForm}
         className="absolute h-full w-full bg-black opacity-60"
       ></div>
       <form

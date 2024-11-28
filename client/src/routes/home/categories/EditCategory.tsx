@@ -69,7 +69,7 @@ const EditCategory = () => {
       queryClient.invalidateQueries({
         queryKey: ["categories"],
       });
-      returnToDashboard();
+      closeForm();
     },
     onError: () => {
       toast({
@@ -85,7 +85,7 @@ const EditCategory = () => {
     setBackgroundColor(category.category_color);
   };
 
-  const returnToDashboard = () => {
+  const closeForm = () => {
     nav(-1);
   };
 
@@ -110,7 +110,7 @@ const EditCategory = () => {
       queryClient.invalidateQueries({
         queryKey: ["categories"],
       });
-      returnToDashboard();
+      closeForm();
     },
     onError: (error) => {
       toast({
@@ -124,7 +124,7 @@ const EditCategory = () => {
     <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-gray-100">
       <div
         className="absolute h-full w-full bg-black opacity-60"
-        onClick={returnToDashboard}
+        onClick={closeForm}
       ></div>{" "}
       <form
         onSubmit={mutate}
