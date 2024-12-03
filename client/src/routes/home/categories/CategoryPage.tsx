@@ -2,10 +2,11 @@ import ExpenseBox from "@/components/ExpenseBox";
 import { BackendResponse } from "@/interfaces/BackendResponse";
 import { Category, Expense } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
-import { Link, Outlet, useLoaderData } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, Outlet, useParams } from "react-router-dom";
 
 const CategoryPage = () => {
-  const { data: category } = useLoaderData() as BackendResponse<Category>;
+  const { category_id } = useParams();
 
   const calculatePercentages = (
     budget: number,
@@ -20,16 +21,28 @@ const CategoryPage = () => {
     return { savedPercentage, spentPercentage };
   };
 
-  const { savedPercentage, spentPercentage } = calculatePercentages(
-    category.budget,
-    category.amount_left,
-    category.amount_spent
-  );
+  const { data: category } = useQuery<Category>({
+    queryKey: ["category", category_id],
+    queryFn: async () => {
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/category/${category_id}`
+      );
+
+      if (!response.ok) {
+        const errorMessage = await response.json();
+        throw Error(errorMessage);
+      }
+
+      const { data } = await response.json();
+      return data;
+    },
+  });
+
   const { data: expenses } = useQuery<Expense[]>({
-    queryKey: ["category", category.category_id, "expenses"],
+    queryKey: ["category", category_id, "expenses"],
     queryFn: () =>
       fetch(
-        `${import.meta.env.VITE_SERVER_URL}/category/${category.category_id}/expenses`
+        `${import.meta.env.VITE_SERVER_URL}/category/${category_id}/expenses`
       ).then(async (res) => {
         const { data } = (await res.json()) as BackendResponse<Expense[]>;
         console.log(data);
@@ -37,11 +50,43 @@ const CategoryPage = () => {
       }),
   });
 
+  useEffect(() => {
+    if (category) {
+      const { savedPercentage, spentPercentage } = calculatePercentages(
+        category.budget,
+        category.amount_left,
+        category.amount_spent
+      );
+      setCategoryPercentages({
+        savedPercentage,
+        spentPercentage,
+      });
+    }
+  }, [category]);
+
+  const [{ savedPercentage, spentPercentage }, setCategoryPercentages] =
+    useState<{
+      savedPercentage: number;
+      spentPercentage: number;
+    }>({
+      savedPercentage: 0,
+      spentPercentage: 0,
+    });
+
+  const refreshData = () => {};
+
+  if (!category || !expenses)
+    return (
+      <p className="flex h-full items-center justify-center">Please wait...</p>
+    );
   return (
-    <div className={`relative mt-12 flex h-full flex-col justify-center px-16`}>
+    <div
+      className={`relative mt-12 flex min-h-full flex-col justify-center px-16`}
+    >
       <h1 className="text-center text-8xl font-bold text-black">
         {category.category_name}
       </h1>
+      <button onClick={refreshData}></button>
       <div className="flex w-full justify-center gap-2">
         <div className="flex w-1/3 flex-col items-center justify-center">
           {" "}
