@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, useEffect, useRef } from "react";
+import React, { useState, FormEvent, useEffect } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
 
 import { useNavigate } from "react-router-dom";
@@ -98,29 +98,8 @@ const AddCategory: React.FC = () => {
     nav(-1);
   };
 
-  const overlayRef = useRef<HTMLDivElement>(null);
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      overlayRef.current &&
-      !overlayRef.current.contains(event.target as Node)
-    ) {
-      closeForm();
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-      ref={overlayRef}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="relative w-11/12 max-w-md rounded-lg bg-white p-5 shadow-lg">
         <form onSubmit={mutate} className="flex flex-col gap-4">
           <h1 className="text-center text-2xl font-bold text-black">
