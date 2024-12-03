@@ -161,9 +161,9 @@ const AddCategory: React.FC = () => {
           <input
             type="number"
             id="budget"
-            step={0.01}
-            value={budget}
-            onChange={(e) => setBudget(parseFloat(e.target.value) || budget)}
+            // step={0}
+            // value={budget}
+            onChange={(e) => setBudget(parseFloat(e.target.value) || 0)}
             className={`w-full rounded-lg border p-3 shadow-sm ${
               budgetError ? "border-red-600" : "border-gray-300"
             }`}

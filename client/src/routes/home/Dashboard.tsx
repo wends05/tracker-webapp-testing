@@ -31,6 +31,7 @@ const Dashboard = () => {
       return data;
     },
   });
+
   const [totalBudget, setTotalBudget] = useState(0);
   const [totalSpent, setTotalSpent] = useState(0);
   const [totalNotSpent, settotalNotSpent] = useState(0);

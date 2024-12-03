@@ -191,8 +191,8 @@ const EditCategory = () => {
           <input
             type="number"
             id="budget"
-            step={0.01}
-            value={budget}
+            // step={0.01}
+            // value={budget}
             onChange={(e) => setBudget(Number(e.target.value) || budget)}
             required
             className="block w-full rounded-md border border-gray-300 p-2 focus:ring focus:ring-blue-500"

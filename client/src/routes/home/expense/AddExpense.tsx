@@ -66,6 +66,9 @@ const AddExpense = () => {
       queryClient.invalidateQueries({
         queryKey: ["category", category_id, "expenses"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["category", category_id],
+      });
     },
     onError: (error) => {
       toast({
@@ -81,7 +84,7 @@ const AddExpense = () => {
   };
 
   return (
-    <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
+    <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center">
       <div
         onClick={closeForm}
         className="absolute h-full w-full bg-black opacity-60"

@@ -41,6 +41,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
       // console.log(ev);
       if (event == "SIGNED_IN") {
+        const user = await getDBUser();
         setUser(user);
       }
 

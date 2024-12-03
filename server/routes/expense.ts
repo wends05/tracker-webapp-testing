@@ -1,6 +1,8 @@
 import express, { Request, Response } from "express";
 import { pool } from "../db";
 import Expense from "../types/Expense";
+import recalculateCategoryExpenses from "../utils/recalculateCategoryExpenses";
+import recalculatedWeekCategories from "../utils/recalculateWeekSummaryWithExpenses";
 
 const expenseRouter = express.Router();
 
@@ -23,6 +25,16 @@ expenseRouter.post("", async (req: Request, res: Response) => {
       `INSERT INTO "Expense" (expense_name, price, quantity, total, category_id) VALUES($1, $2, $3, $4, $5) RETURNING *`,
       [expense_name, price, quantity, total, category_id]
     );
+
+    await recalculateCategoryExpenses({
+      pool,
+      category_id,
+    });
+
+    await recalculatedWeekCategories({
+      pool,
+      category_id,
+    });
 
     res.status(200).json({
       data: result.rows[0],
@@ -64,6 +76,18 @@ expenseRouter.put("/:id", async (req: Request, res: Response) => {
       [expense_name, price, quantity, total, id]
     );
 
+    const { category_id } = data.rows[0] as Expense;
+
+    await recalculateCategoryExpenses({
+      pool,
+      category_id,
+    });
+
+    await recalculatedWeekCategories({
+      pool,
+      category_id,
+    });
+
     res.status(200).json({
       data: data.rows[0],
     });
@@ -78,13 +102,25 @@ expenseRouter.put("/:id", async (req: Request, res: Response) => {
 expenseRouter.delete("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const delete_data = await pool.query(
+    const deletedExpenseResult = await pool.query(
       'DELETE from "Expense" WHERE expense_id = $1 RETURNING *',
       [id]
     );
 
+    const { category_id } = deletedExpenseResult.rows[0] as Expense;
+
+    await recalculateCategoryExpenses({
+      pool,
+      category_id,
+    });
+
+    await recalculatedWeekCategories({
+      pool,
+      category_id,
+    });
+
     res.status(200).json({
-      data: delete_data.rows[0],
+      data: deletedExpenseResult.rows[0],
     });
   } catch (error: any) {
     res.status(500).json({
