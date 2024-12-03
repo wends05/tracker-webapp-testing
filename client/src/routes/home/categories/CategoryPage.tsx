@@ -1,5 +1,4 @@
 import ExpenseBox from "@/components/ExpenseBox";
-import { BackendResponse } from "@/interfaces/BackendResponse";
 import { Category, Expense } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -7,6 +6,12 @@ import { Link, Outlet, useParams } from "react-router-dom";
 
 const CategoryPage = () => {
   const { category_id } = useParams();
+
+  const [sortHighLow, setsortHighLow] = useState(false);
+  const [sortLowHigh, setsortLowHigh] = useState(false);
+
+  const [descending, setdescending] = useState<Expense[]>([]);
+  const [ascending, setascending] = useState<Expense[]>([]);
 
   const calculatePercentages = (
     budget: number,
@@ -40,15 +45,40 @@ const CategoryPage = () => {
 
   const { data: expenses } = useQuery<Expense[]>({
     queryKey: ["category", category_id, "expenses"],
-    queryFn: () =>
-      fetch(
+    queryFn: async () => {
+      const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/category/${category_id}/expenses`
-      ).then(async (res) => {
-        const { data } = (await res.json()) as BackendResponse<Expense[]>;
-        console.log(data);
-        return data;
-      }),
+      );
+
+      if (!response.ok) {
+        const errorMessage = await response.json();
+        throw Error(errorMessage);
+      }
+
+      const { data } = await response.json();
+      return data;
+    },
   });
+
+  const descendingSorted = () => {
+    if (expenses) {
+      console.log(expenses);
+      const sortedExpenses = [...expenses].sort((a, b) =>
+        a.total > b.total ? -1 : 1
+      );
+      console.log(sortedExpenses);
+      setdescending(sortedExpenses);
+    }
+  };
+
+  const ascendingSorted = () => {
+    if (expenses) {
+      const sortedExpenses = [...expenses].sort((a, b) =>
+        a.total < b.total ? -1 : 1
+      );
+      setascending(sortedExpenses);
+    }
+  };
 
   useEffect(() => {
     if (category) {
@@ -142,8 +172,85 @@ const CategoryPage = () => {
             Add Expense
           </div>
         </Link>
+
+        {/* toggle buttons */}
+        <div className="flex flex-row">
+          <div
+            className="mx-2 items-center justify-center align-middle"
+            onClick={() => {
+              // if (sortLowHigh === false)
+              setsortHighLow(!sortHighLow);
+              setsortLowHigh(false);
+
+              descendingSorted();
+            }}
+          >
+            <button
+              className={
+                sortHighLow === true
+                  ? "bg-green border-green rounded-full border-2 text-white"
+                  : "border-green rounded-full border-2 bg-none"
+              }
+            >
+              {" "}
+              Sort By: Descending Expense
+            </button>
+          </div>
+
+          <div
+            className="mx-2 items-center justify-center align-middle"
+            onClick={() => {
+              // if (sortHighLow == false)
+              setsortLowHigh(!sortLowHigh);
+              setsortHighLow(false);
+              ascendingSorted();
+            }}
+          >
+            <button
+              className={
+                sortLowHigh === true
+                  ? "bg-green border-green rounded-full border-2 text-white"
+                  : "border-green rounded-full border-2 bg-none"
+              }
+            >
+              {" "}
+              Sort By: Ascending Expense
+            </button>
+          </div>
+        </div>
+
         {expenses &&
+          sortHighLow === false &&
+          sortLowHigh === false &&
           expenses.map((expense: Expense) => (
+            <ExpenseBox
+              category_id={expense.category_id}
+              price={expense.price}
+              expense_name={expense.expense_name}
+              quantity={expense.quantity}
+              total={expense.total}
+              expense_id={Number(expense.expense_id)}
+              key={expense.expense_id}
+            />
+          ))}
+
+        {descending &&
+          sortHighLow === true &&
+          descending.map((expense: Expense) => (
+            <ExpenseBox
+              category_id={expense.category_id}
+              price={expense.price}
+              expense_name={expense.expense_name}
+              quantity={expense.quantity}
+              total={expense.total}
+              expense_id={Number(expense.expense_id)}
+              key={expense.expense_id}
+            />
+          ))}
+
+        {ascending &&
+          sortLowHigh === true &&
+          ascending.map((expense: Expense) => (
             <ExpenseBox
               category_id={expense.category_id}
               price={expense.price}
