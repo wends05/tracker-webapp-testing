@@ -8,7 +8,6 @@ const LayoutPage = () => {
 
   useEffect(() => {
     supabase.auth.getSession().then((res: any) => {
-      console.log(res);
       if (!res.data.session) {
         nav("/auth");
       }
@@ -16,7 +15,7 @@ const LayoutPage = () => {
   }, [nav]);
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="relative flex h-screen flex-col">
       <Drawer />
       <div className="h-full">
         <Outlet />

@@ -49,7 +49,10 @@ const EditExpense = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["category", category_id, "expenses"],
+        queryKey: ["categories"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["category", category_id],
       });
       closeForm();
       toast({
