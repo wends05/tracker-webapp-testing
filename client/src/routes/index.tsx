@@ -1,6 +1,7 @@
 import sampleDesign from "../assets/sample_design.png";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { Button } from "../components/ui/button";
 
 const Landing = () => {
   // Refs for each section
@@ -42,6 +43,7 @@ const Landing = () => {
                   phasellus ut netus sapien feugiat tristique class praesent
                   tellus. Bibendum dignissim sagittis sapien porta id posuere.
                 </p>
+                <Button className="mt-5 p-5 opacity-75"> Get Started </Button>
               </div>
             </motion.div>
           </div>
@@ -56,7 +58,7 @@ const Landing = () => {
             transition={{ duration: 1 }}
           >
             <div
-              className="absolute right-[-90px] top-[-280px] h-[400px] w-[496px] bg-cover bg-no-repeat shadow-2xl"
+              className="absolute right-[-90px] top-[-300px] h-[400px] w-[496px] bg-cover bg-no-repeat shadow-2xl"
               style={{
                 backgroundImage: `url(${sampleDesign})`,
                 zIndex: 1,
@@ -243,6 +245,12 @@ const Landing = () => {
           </motion.div>
         </section>
       </div>
+
+      <section>
+        <div>
+          <p>Get Started Now! or smthn</p>
+        </div>
+      </section>
     </div>
   );
 };
