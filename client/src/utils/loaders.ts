@@ -6,8 +6,8 @@ export const getCategory = (queryClient: QueryClient) => {
     return await queryClient.ensureQueryData({
       queryKey: ["category", category],
       queryFn: () =>
-        fetch(`${process.env.SERVER_URL}/category/${category}`).then((res) =>
-          res.json()
+        fetch(`${import.meta.env.VITE_SERVER_URL}/category/${category}`).then(
+          (res) => res.json()
         ),
     });
   };
@@ -18,8 +18,8 @@ export const getExpense = (queryClient: QueryClient) => {
     return await queryClient.ensureQueryData({
       queryKey: ["expense", expense],
       queryFn: () =>
-        fetch(`${process.env.SERVER_URL}/expense/${expense}`).then((res) =>
-          res.json()
+        fetch(`${import.meta.env.VITE_SERVER_URL}/expense/${expense}`).then(
+          (res) => res.json()
         ),
     });
   };

@@ -42,13 +42,16 @@ const AddExpense = () => {
         total: total,
         category_id: Number(category),
       };
-      const response = await fetch("http://localhost:3000/expense", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(expense),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/expense`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(expense),
+        }
+      );
       if (!response.ok) {
         const errorMessage = await response.json();
         throw Error(errorMessage.error);

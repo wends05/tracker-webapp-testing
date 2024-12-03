@@ -19,7 +19,7 @@ const Dashboard = () => {
         throw Error("No user provided");
       }
       const response = await fetch(
-        `http://localhost:3000/user/${user.user_id!}/categories`
+        `${import.meta.env.VITE_SERVER_URL}/user/${user.user_id!}/categories`
       );
 
       if (!response.ok) {

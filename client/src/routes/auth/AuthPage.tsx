@@ -74,7 +74,7 @@ const AuthPage = () => {
 
     // get user from database
     const fetchedUser = await fetch(
-      `${process.env.SERVER_URL}/user?email=${email}`
+      `${import.meta.env.VITE_SERVER_URL}/user?email=${email}`
     );
 
     if (fetchedUser.status === 200) {
@@ -119,7 +119,7 @@ const AuthPage = () => {
   };
 
   const createUser = async () => {
-    return await fetch(`${process.env.SERVER_URL}/user`, {
+    return await fetch(`${import.meta.env.VITE_SERVER_URL}/user`, {
       method: "POST",
       body: JSON.stringify({ username, email }),
       headers: {

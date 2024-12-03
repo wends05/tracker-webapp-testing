@@ -36,13 +36,16 @@ const EditExpense = () => {
         category_id: expense.category_id,
       };
 
-      await fetch(`${process.env.SERVER_URL}/expense/${expense.expense_id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newExpense),
-      });
+      await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/expense/${expense.expense_id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newExpense),
+        }
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
