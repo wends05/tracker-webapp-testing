@@ -14,6 +14,7 @@ import AddExpense from "../routes/home/expense/AddExpense";
 import Profile from "../routes/home/Profile";
 import Summaries from "../routes/home/summary/Summaries";
 import Summary from "../routes/home/summary/Summary";
+import WrapupEditCategory from "@/routes/home/summary/WrapupEditCategory";
 import Saved from "../routes/home/Saved";
 import EditCategory from "../routes/home/categories/EditCategory";
 import EditExpense from "../routes/home/expense/EditExpense";
@@ -95,6 +96,10 @@ const router = createBrowserRouter([
           {
             path: "profile",
             element: <Profile />,
+          },
+          {
+            path: "wrapup",
+            element: <WrapupEditCategory />,
           },
           {
             path: "weeklysummaries",
