@@ -27,8 +27,8 @@ export default async function recalculateCategoryExpenses({
 
   console.log(categoryBudgetRows);
 
-  const totalExpended = totalExpenseRows[0].total_expenses;
-  const budget = categoryBudgetRows[0].budget;
+  const totalExpended = totalExpenseRows[0].total_expenses || 0;
+  const budget = categoryBudgetRows[0].budget || 0;
   const amount_left = budget - totalExpended;
 
   console.log(totalExpended, budget, amount_left);

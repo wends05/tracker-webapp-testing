@@ -32,7 +32,7 @@ export default async function recalculateWeekSummaryWithExpenses({
   const { total_budget, total_spent } =
     calculatedWeekBudgetAndExpendedRows[0] as RecalculatedWeek;
 
-  const total_not_spent = total_budget - total_spent;
+  const total_not_spent = total_budget || 0 - total_spent || 0;
   const lastSunday = getLastSunday();
   console.log("hashdahsd");
   const res = await pool.query(
