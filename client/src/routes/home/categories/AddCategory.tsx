@@ -61,7 +61,7 @@ const AddCategory: React.FC = () => {
         amount_spent: 0,
       };
       const response = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/category`, // Corrected URL with backticks
+        `${import.meta.env.VITE_SERVER_URL}/category`,
         {
           method: "POST",
           headers: {

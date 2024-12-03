@@ -30,7 +30,7 @@ const ExpenseBox = ({
   const { mutate: handleDeleteExpense } = useMutation({
     mutationFn: async () => {
       const response = await fetch(
-        `http://localhost:3000/expense/${expense_id}`,
+        `${import.meta.env.VITE_SERVER_URL}/expense/${expense_id}`,
         {
           method: "DELETE",
         }

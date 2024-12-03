@@ -58,7 +58,7 @@ const router = createBrowserRouter([
                     element: <AddCategory />,
                   },
                   {
-                    path: ":category/edit",
+                    path: ":category_id/edit",
                     element: <EditCategory />,
                     loader: getCategory(queryClient),
                   },
@@ -70,7 +70,7 @@ const router = createBrowserRouter([
             path: "category",
             children: [
               {
-                path: ":category",
+                path: ":category_id",
                 loader: getCategory(queryClient),
                 element: <CategoryPage />,
                 children: [
@@ -82,7 +82,7 @@ const router = createBrowserRouter([
                         element: <AddExpense />,
                       },
                       {
-                        path: ":expense/edit",
+                        path: ":expense_id/edit",
                         element: <EditExpense />,
                         loader: getExpense(queryClient),
                       },
@@ -101,7 +101,7 @@ const router = createBrowserRouter([
             element: <Summaries />,
             children: [
               {
-                path: ":weeklysummary",
+                path: ":weeklysummary_id",
                 element: <Summary />,
               },
             ],
