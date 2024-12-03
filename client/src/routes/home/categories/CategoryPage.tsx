@@ -29,7 +29,7 @@ const CategoryPage = () => {
     queryKey: ["category", category.category_id, "expenses"],
     queryFn: () =>
       fetch(
-        `http://localhost:3000/category/${category.category_id}/expenses`
+        `${import.meta.env.VITE_SERVER_URL}/category/${category.category_id}/expenses`
       ).then(async (res) => {
         const { data } = (await res.json()) as BackendResponse<Expense[]>;
         console.log(data);

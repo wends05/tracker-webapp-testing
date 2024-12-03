@@ -61,13 +61,16 @@ const AddCategory: React.FC = () => {
         amount_left: budget || 0,
         amount_spent: 0,
       };
-      const response = await fetch(`http://localhost:3000/category`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(category),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/category`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(category),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();

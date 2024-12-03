@@ -46,7 +46,7 @@ const EditCategory = () => {
       };
 
       const response = await fetch(
-        `http://localhost:3000/category/${category.category_id}`,
+        `${import.meta.env.VITE_SERVER_URL}/category/${category.category_id}`,
         {
           method: "PUT",
           headers: {
@@ -95,7 +95,7 @@ const EditCategory = () => {
   const deleteCategory = useMutation({
     mutationFn: async () => {
       const response = await fetch(
-        `http://localhost:3000/category/${category.category_id}`,
+        `${import.meta.env.VITE_SERVER_URL}/category/${category.category_id}`,
         {
           method: "DELETE",
         }

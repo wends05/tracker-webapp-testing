@@ -74,7 +74,7 @@ const AuthPage = () => {
 
     // get user from database
     const fetchedUser = await fetch(
-      `http://localhost:3000/user?email=${email}`
+      `${import.meta.env.VITE_SERVER_URL}/user?email=${email}`
     );
 
     if (fetchedUser.status === 200) {
@@ -99,14 +99,6 @@ const AuthPage = () => {
       throw new Error("Empty username");
     }
 
-    // const fetchedUser = await fetch(
-    //   `http://localhost:3000/user?email=${email}`
-    // );
-
-    // if (fetchedUser.status === 200) {
-    //   throw new Error("User already exists");
-    // }
-
     const { error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
@@ -127,7 +119,7 @@ const AuthPage = () => {
   };
 
   const createUser = async () => {
-    return await fetch(`http://localhost:3000/user`, {
+    return await fetch(`${import.meta.env.VITE_SERVER_URL}/user`, {
       method: "POST",
       body: JSON.stringify({ username, email }),
       headers: {

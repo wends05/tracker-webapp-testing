@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 const EditExpense = () => {
   const { data: expense } = useLoaderData() as BackendResponse<Expense>;
 
-  const { category } = useParams();
+  const { category_id } = useParams();
   const nav = useNavigate();
   const { toast } = useToast();
 
@@ -36,17 +36,20 @@ const EditExpense = () => {
         category_id: expense.category_id,
       };
 
-      await fetch(`http://localhost:3000/expense/${expense.expense_id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newExpense),
-      });
+      await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/expense/${expense.expense_id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newExpense),
+        }
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["category", category, "expenses"],
+        queryKey: ["category", category_id, "expenses"],
       });
       closeForm();
       toast({

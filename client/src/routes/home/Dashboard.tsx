@@ -19,7 +19,7 @@ const Dashboard = () => {
         throw Error("No user provided");
       }
       const response = await fetch(
-        `http://localhost:3000/user/${user.user_id!}/categories`
+        `${import.meta.env.VITE_SERVER_URL}/user/${user.user_id!}/categories`
       );
 
       if (!response.ok) {
@@ -55,11 +55,11 @@ const Dashboard = () => {
   }, [categories]);
 
   return !categories ? (
-    <>
-      <h1>Please wait</h1>{" "}
-    </>
+    <div className="min-h-full">
+      <h1 className="">Please wait</h1>{" "}
+    </div>
   ) : (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-full bg-gray-50 p-6">
       {/* Header */}
       <header className="mb-8">
         <h1 className="text-2xl font-bold text-black">
