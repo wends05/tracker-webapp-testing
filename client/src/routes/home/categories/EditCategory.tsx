@@ -46,7 +46,7 @@ const EditCategory = () => {
       };
 
       const response = await fetch(
-        `http://localhost:3000/category/${category.category_id}`,
+        `${import.meta.env.VITE_SERVER_URL}/category/${category.category_id}`,
         {
           method: "PUT",
           headers: {
@@ -64,10 +64,13 @@ const EditCategory = () => {
 
     onSuccess: () => {
       toast({
-        description: "WHAHHAHSDHAHSAH",
+        description: "Category edited!",
       });
       queryClient.invalidateQueries({
         queryKey: ["categories"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["category", category.category_id],
       });
       closeForm();
     },
@@ -92,7 +95,7 @@ const EditCategory = () => {
   const deleteCategory = useMutation({
     mutationFn: async () => {
       const response = await fetch(
-        `http://localhost:3000/category/${category.category_id}`,
+        `${import.meta.env.VITE_SERVER_URL}/category/${category.category_id}`,
         {
           method: "DELETE",
         }
@@ -109,6 +112,9 @@ const EditCategory = () => {
       });
       queryClient.invalidateQueries({
         queryKey: ["categories"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["category", category.category_id],
       });
       closeForm();
     },
@@ -185,8 +191,8 @@ const EditCategory = () => {
           <input
             type="number"
             id="budget"
-            step={0.01}
-            value={budget}
+            // step={0.01}
+            // value={budget}
             onChange={(e) => setBudget(Number(e.target.value) || budget)}
             required
             className="block w-full rounded-md border border-gray-300 p-2 focus:ring focus:ring-blue-500"

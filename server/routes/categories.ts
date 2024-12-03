@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { pool } from "../db";
-import { Category } from "../types";
+import { Category } from "../utils/types";
+import recalculateCategoryExpenses from "../utils/recalculateCategoryExpenses";
 
 const categoryRouter = express.Router();
 
@@ -52,6 +53,11 @@ categoryRouter.get("/:id", async (req: Request, res: Response) => {
       [id]
     );
 
+    await recalculateCategoryExpenses({
+      pool,
+      category_id: Number(id),
+    });
+
     if (data.rows.length === 0) {
       throw new Error("Category not found");
     }
@@ -101,6 +107,11 @@ categoryRouter.put("/:id", async (req: Request, res: Response) => {
       ]
     );
 
+    await recalculateCategoryExpenses({
+      pool,
+      category_id: Number(id),
+    });
+
     res.json({
       data: data.rows[0],
     });
@@ -119,6 +130,12 @@ categoryRouter.get("/:id/expenses", async (req: Request, res: Response) => {
       'SELECT * FROM "Expense" WHERE category_id = $1',
       [id]
     );
+
+    await recalculateCategoryExpenses({
+      pool,
+      category_id: Number(id),
+    });
+
     res.status(200).json({
       data: data.rows,
     });

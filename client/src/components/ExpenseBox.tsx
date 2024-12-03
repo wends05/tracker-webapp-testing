@@ -30,7 +30,7 @@ const ExpenseBox = ({
   const { mutate: handleDeleteExpense } = useMutation({
     mutationFn: async () => {
       const response = await fetch(
-        `http://localhost:3000/expense/${expense_id}`,
+        `${import.meta.env.VITE_SERVER_URL}/expense/${expense_id}`,
         {
           method: "DELETE",
         }
@@ -53,12 +53,15 @@ const ExpenseBox = ({
       queryClient.invalidateQueries({
         queryKey: ["category", category_id, "expenses"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["category", category_id],
+      });
     },
-    onError: () => {
+    onError: (error) => {
       toast({
         variant: "destructive",
         title: "Oh no!",
-        description: "expense unsuccessfully deleted",
+        description: `expense unsuccessfully deleted: ${error.message}`,
         action: <ToastAction altText="Try again">Try again</ToastAction>,
       });
     },

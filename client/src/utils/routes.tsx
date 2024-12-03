@@ -14,6 +14,7 @@ import AddExpense from "../routes/home/expense/AddExpense";
 import Profile from "../routes/home/Profile";
 import Summaries from "../routes/home/summary/Summaries";
 import Summary from "../routes/home/summary/Summary";
+import WrapupEditCategory from "@/routes/home/summary/WrapupEditCategory";
 import Saved from "../routes/home/Saved";
 import EditCategory from "../routes/home/categories/EditCategory";
 import EditExpense from "../routes/home/expense/EditExpense";
@@ -58,7 +59,7 @@ const router = createBrowserRouter([
                     element: <AddCategory />,
                   },
                   {
-                    path: ":category/edit",
+                    path: ":category_id/edit",
                     element: <EditCategory />,
                     loader: getCategory(queryClient),
                   },
@@ -70,7 +71,7 @@ const router = createBrowserRouter([
             path: "category",
             children: [
               {
-                path: ":category",
+                path: ":category_id",
                 loader: getCategory(queryClient),
                 element: <CategoryPage />,
                 children: [
@@ -82,7 +83,7 @@ const router = createBrowserRouter([
                         element: <AddExpense />,
                       },
                       {
-                        path: ":expense/edit",
+                        path: ":expense_id/edit",
                         element: <EditExpense />,
                         loader: getExpense(queryClient),
                       },
@@ -97,11 +98,15 @@ const router = createBrowserRouter([
             element: <Profile />,
           },
           {
+            path: "wrapup",
+            element: <WrapupEditCategory />,
+          },
+          {
             path: "weeklysummaries",
             element: <Summaries />,
             children: [
               {
-                path: ":weeklysummary",
+                path: ":weeklysummary_id",
                 element: <Summary />,
               },
             ],
