@@ -56,7 +56,7 @@ const AddCategory: React.FC = () => {
         amount_left: budget || 0,
         amount_spent: 0,
       };
-      const response = await fetch(`http://localhost:3000/category`, {
+      const response = await fetch(`${process.env.SERVER_URL}/category`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

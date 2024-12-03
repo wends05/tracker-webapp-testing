@@ -58,7 +58,7 @@ const AuthPage = () => {
 
     // get user from database
     const fetchedUser = await fetch(
-      `http://localhost:3000/user?email=${email}`
+      `${process.env.SERVER_URL}/user?email=${email}`
     );
 
     if (fetchedUser.status === 200) {
@@ -83,7 +83,7 @@ const AuthPage = () => {
     }
 
     const fetchedUser = await fetch(
-      `http://localhost:3000/user?email=${email}`
+      `${process.env.SERVER_URL}/user?email=${email}`
     );
 
     if (fetchedUser.status === 200) {
@@ -102,7 +102,7 @@ const AuthPage = () => {
   };
 
   const createUser = async () => {
-    return await fetch(`http://localhost:3000/user`, {
+    return await fetch(`${process.env.SERVER_URL}/user`, {
       method: "POST",
       body: JSON.stringify({ username, email }),
       headers: {

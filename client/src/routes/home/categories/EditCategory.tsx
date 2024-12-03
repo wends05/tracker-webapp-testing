@@ -41,7 +41,7 @@ const AddCategory = () => {
       };
 
       const response = await fetch(
-        `http://localhost:3000/category/${category.category_id}`,
+        `${process.env.SERVER_URL}/category/${category.category_id}`,
         {
           method: "PUT",
           headers: {

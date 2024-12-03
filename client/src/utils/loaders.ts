@@ -8,7 +8,7 @@ export const getCategory = (queryClient: QueryClient) => {
     return await queryClient.ensureQueryData({
       queryKey: ["category", category],
       queryFn: () =>
-        fetch(`http://localhost:3000/category/${category}`).then((res) =>
+        fetch(`${process.env.SERVER_URL}/category/${category}`).then((res) =>
           res.json()
         ),
     });
@@ -25,7 +25,7 @@ export const getCategories = (queryClient: QueryClient) => {
       queryKey: ["categories"],
       queryFn: () =>
         fetch(
-          `http://localhost:3000/user/${userData.user_id!}/categories`
+          `${process.env.SERVER_URL}/user/${userData.user_id!}/categories`
         ).then((res) => res.json()),
     });
   };
@@ -36,7 +36,7 @@ export const getExpense = (queryClient: QueryClient) => {
     return await queryClient.ensureQueryData({
       queryKey: ["expense", expense],
       queryFn: () =>
-        fetch(`http://localhost:3000/expense/${expense}`).then((res) =>
+        fetch(`${process.env.SERVER_URL}/expense/${expense}`).then((res) =>
           res.json()
         ),
     });
