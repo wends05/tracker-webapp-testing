@@ -7,7 +7,7 @@ import { Expense } from "@/utils/types";
 
 const AddExpense = () => {
   const queryClient = useQueryClient();
-  const { category } = useParams();
+  const { category_id } = useParams();
   const nav = useNavigate();
 
   const [name, setName] = useState("");
@@ -40,15 +40,18 @@ const AddExpense = () => {
         price: price,
         quantity: quantity,
         total: total,
-        category_id: Number(category),
+        category_id: Number(category_id),
       };
-      const response = await fetch("http://localhost:3000/expense", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(expense),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/expense`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(expense),
+        }
+      );
       if (!response.ok) {
         const errorMessage = await response.json();
         throw Error(errorMessage.error);
@@ -61,7 +64,7 @@ const AddExpense = () => {
       });
       closeForm();
       queryClient.invalidateQueries({
-        queryKey: ["category", category, "expenses"],
+        queryKey: ["category", category_id, "expenses"],
       });
     },
     onError: (error) => {

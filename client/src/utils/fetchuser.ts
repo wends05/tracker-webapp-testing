@@ -6,7 +6,7 @@ const getUser = async () => {
   const user = await supabase.auth.getUser().then((res) => res.data.user);
 
   const response = await fetch(
-    `http://localhost:3000/user?email=${user!.email!}`
+    `${import.meta.env.VITE_SERVER_URL}/user?email=${user!.email!}`
   ).then(async (res) => {
     const { data } = (await res.json()) as BackendResponse<User>;
     console.log(data);
