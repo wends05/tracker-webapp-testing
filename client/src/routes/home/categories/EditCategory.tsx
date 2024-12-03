@@ -127,7 +127,7 @@ const EditCategory = () => {
   });
 
   return (
-    <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-gray-100">
+    <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center">
       <div
         className="absolute h-full w-full bg-black opacity-60"
         onClick={closeForm}
