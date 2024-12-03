@@ -64,10 +64,13 @@ const EditCategory = () => {
 
     onSuccess: () => {
       toast({
-        description: "WHAHHAHSDHAHSAH",
+        description: "Category edited!",
       });
       queryClient.invalidateQueries({
         queryKey: ["categories"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["category", category.category_id],
       });
       closeForm();
     },
@@ -109,6 +112,9 @@ const EditCategory = () => {
       });
       queryClient.invalidateQueries({
         queryKey: ["categories"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["category", category.category_id],
       });
       closeForm();
     },
