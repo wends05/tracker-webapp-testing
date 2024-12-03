@@ -59,9 +59,6 @@ userRouter.get("/:id/categories", async (req: Request, res: Response) => {
       [id]
     );
 
-    if (data.rows.length === 0) {
-      throw new Error("Category not found");
-    }
     res.json({
       data: data.rows,
     });

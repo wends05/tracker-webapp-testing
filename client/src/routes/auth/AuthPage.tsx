@@ -4,10 +4,13 @@ import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { supabase, UserContext } from "../../utils/UserContext";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+// import { ToastAction } from "@/components/ui/toast"
 
 const AuthPage = () => {
-  const [change, setChange] = useState("LOG IN");
+  const { toast } = useToast();
 
+  const [change, setChange] = useState("LOG IN");
   const { setUser } = useContext(UserContext);
   const nav = useNavigate();
 
@@ -30,10 +33,15 @@ const AuthPage = () => {
   const handleSubmit = async (ev: FormEvent) => {
     ev.preventDefault();
     try {
-      if (email === "" || password === "") {
-        throw new Error("Empty email or password");
+      if (change === "LOG IN") {
+        if (email === "" || password === "") {
+          throw new Error("Empty email or password");
+        }
+        console.log(change);
+      } else {
+        if (email === "" || password === "" || username === "")
+          throw new Error("Empty input fields");
       }
-      console.log(change);
 
       if (change === "SIGN UP") {
         register();
@@ -41,6 +49,10 @@ const AuthPage = () => {
         logIn();
       }
     } catch (error: any) {
+      toast({
+        variant: "destructive",
+        description: error.message,
+      });
       console.log("ERROR FETCH: ", error.message);
     }
   };
@@ -53,6 +65,10 @@ const AuthPage = () => {
     });
 
     if (error) {
+      toast({
+        variant: "destructive",
+        description: error.message,
+      });
       throw new Error("Error signing in: " + error.message);
     }
 
@@ -71,6 +87,7 @@ const AuthPage = () => {
     // if it does not exist then create a new user
 
     const { data } = await createUser();
+
     setUser(data);
     nav("/dashboard");
 
@@ -82,21 +99,21 @@ const AuthPage = () => {
       throw new Error("Empty username");
     }
 
-    const fetchedUser = await fetch(
-      `${process.env.SERVER_URL}/user?email=${email}`
-    );
-
-    if (fetchedUser.status === 200) {
-      throw new Error("User already exists");
-    }
-
     const { error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
+      toast({
+        variant: "destructive",
+        description: error.message,
+      });
       throw new Error("Error signing up: " + error.message);
     }
 
     await createUser();
+    toast({
+      title: "Congratulations!",
+      description: "Your account has been registered",
+    });
     console.log("registered!");
     setChange("LOG IN");
   };
@@ -202,9 +219,8 @@ const AuthPage = () => {
               </div>
               <button
                 type="submit"
-                className="bg-copper w-max rounded-lg px-4 py-2 text-white hover:bg-[#6f4717]"
+                className="bg-green w-max rounded-lg px-4 py-2 text-white hover:bg-[#6f4717]"
                 id="submit"
-                name="hahaha"
               >
                 {change}
               </button>
