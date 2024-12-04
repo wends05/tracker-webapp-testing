@@ -13,7 +13,7 @@ export type Category = {
   user_id: number;
   category_name: string;
   description: string;
-  date: Date;
+  date?: Date;
   budget: number;
   category_color: string;
   amount_spent: number;
@@ -36,12 +36,6 @@ export type SavedCategories = {
   amount_left: number;
   amount_spent: number;
   weekly_summary_id: number;
-};
-
-export type WeeklySummarySavedCategories = {
-  id: number;
-  weekly_summary_id: number;
-  saved_category_id: number;
 };
 
 export type User = {

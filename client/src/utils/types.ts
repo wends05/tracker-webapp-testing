@@ -38,12 +38,6 @@ export type SavedCategories = {
   weekly_summary_id: number;
 };
 
-export type WeeklySummarySavedCategories = {
-  id: number;
-  weekly_summary_id: number;
-  saved_category_id: number;
-};
-
 export type User = {
   user_id?: number;
   created_at: Date;
