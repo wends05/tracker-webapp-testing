@@ -2,6 +2,7 @@ import { createClient, Session } from "@supabase/supabase-js";
 import React, { createContext, useEffect, useState } from "react";
 import { User } from "./types";
 import { queryClient } from "@/_Root";
+import getUser from "./getUser";
 
 interface IUserContext {
   user: User | null;
@@ -33,6 +34,13 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSupabaseSession(session);
       console.log(event);
+
+      if (event == "SIGNED_IN") {
+        queryClient.ensureQueryData({
+          queryKey: ["user"],
+          queryFn: getUser,
+        });
+      }
 
       if (event == "SIGNED_OUT") {
         setUser(null);
