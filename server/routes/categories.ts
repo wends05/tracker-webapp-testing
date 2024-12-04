@@ -48,15 +48,14 @@ categoryRouter.post("", async (req: Request, res: Response) => {
 categoryRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const data = await pool.query(
-      'SELECT * FROM "Category" WHERE category_id = $1',
-      [id]
-    );
-
     await recalculateCategoryExpenses({
       pool,
       category_id: Number(id),
     });
+    const data = await pool.query(
+      'SELECT * FROM "Category" WHERE category_id = $1',
+      [id]
+    );
 
     if (data.rows.length === 0) {
       throw new Error("Category not found");

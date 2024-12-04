@@ -13,19 +13,6 @@ const CategoryPage = () => {
   const [descending, setdescending] = useState<Expense[]>([]);
   const [ascending, setascending] = useState<Expense[]>([]);
 
-  const calculatePercentages = (
-    budget: number,
-    amountSaved: number,
-    amountSpent: number
-  ) => {
-    if (budget === 0) {
-      return { savedPercentage: 0, spentPercentage: 0 };
-    }
-    const savedPercentage = (amountSaved / budget) * 100;
-    const spentPercentage = (amountSpent / budget) * 100;
-    return { savedPercentage, spentPercentage };
-  };
-
   const { data: category } = useQuery<Category>({
     queryKey: ["category", category_id],
     queryFn: async () => {
@@ -59,6 +46,19 @@ const CategoryPage = () => {
       return data;
     },
   });
+
+  const calculatePercentages = (
+    budget: number,
+    amountSaved: number,
+    amountSpent: number
+  ) => {
+    if (budget === 0) {
+      return { savedPercentage: 0, spentPercentage: 0 };
+    }
+    const savedPercentage = (amountSaved / budget) * 100;
+    const spentPercentage = (amountSpent / budget) * 100;
+    return { savedPercentage, spentPercentage };
+  };
 
   const descendingSorted = () => {
     if (expenses) {
