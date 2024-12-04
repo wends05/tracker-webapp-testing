@@ -2,13 +2,12 @@ import { useState, FormEvent } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { Category } from "@/utils/types";
-import { BackendResponse } from "../../../interfaces/BackendResponse";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { Trash } from "lucide-react";
 
 const EditCategory = () => {
-  const { data: category } = useLoaderData() as BackendResponse<Category>;
+  const category = useLoaderData() as Category;
   const nav = useNavigate();
 
   const queryClient = useQueryClient();

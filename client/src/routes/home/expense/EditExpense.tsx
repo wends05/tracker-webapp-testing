@@ -1,12 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
-import { BackendResponse } from "../../../interfaces/BackendResponse";
 import { Expense } from "@/utils/types";
 import { FormEvent, useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const EditExpense = () => {
-  const { data: expense } = useLoaderData() as BackendResponse<Expense>;
+  const expense = useLoaderData() as Expense;
 
   const { category_id } = useParams();
   const nav = useNavigate();
