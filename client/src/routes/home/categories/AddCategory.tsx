@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, useEffect, useRef } from "react";
+import React, { useState, FormEvent, useEffect } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
 
 import { useNavigate } from "react-router-dom";
@@ -98,24 +98,6 @@ const AddCategory: React.FC = () => {
   const closeForm = () => {
     nav(-1);
   };
-
-  const overlayRef = useRef<HTMLDivElement>(null);
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      overlayRef.current &&
-      !overlayRef.current.contains(event.target as Node)
-    ) {
-      closeForm();
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   return (
     <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center">
