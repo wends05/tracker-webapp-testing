@@ -32,17 +32,14 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       });
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSupabaseSession(session);
-      getDBUser();
     });
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSupabaseSession(session);
 
-      // console.log(ev);
       if (event == "SIGNED_IN") {
-        const user = await getDBUser();
-        setUser(user);
+        getDBUser();
       }
 
       if (event == "SIGNED_OUT") {
