@@ -14,13 +14,14 @@ import AddExpense from "../routes/home/expense/AddExpense";
 import Profile from "../routes/home/Profile";
 import Summaries from "../routes/home/summary/Summaries";
 import Summary from "../routes/home/summary/Summary";
-import WrapupEditCategory from "@/routes/home/summary/WrapupEditCategory";
-import Saved from "../routes/home/Saved";
+import WrapupEditCategory from "@/routes/home/wrapup/WrapupEditCategory";
 import EditCategory from "../routes/home/categories/EditCategory";
 import EditExpense from "../routes/home/expense/EditExpense";
 import { getCategory, getExpense } from "./loaders";
 import ErrorPage from "../ErrorPage";
 import { queryClient } from "../_Root";
+import WrapupInfoPage from "@/routes/home/wrapup/WrapupInfoPage";
+import SavedCategoryPage from "@/routes/home/summary/SavedCategoryPage";
 
 const router = createBrowserRouter([
   {
@@ -99,7 +100,16 @@ const router = createBrowserRouter([
           },
           {
             path: "wrapup",
-            element: <WrapupEditCategory />,
+            children: [
+              {
+                path: "1",
+                element: <WrapupInfoPage />,
+              },
+              {
+                path: "2",
+                element: <WrapupEditCategory />,
+              },
+            ],
           },
           {
             path: "weeklysummaries",
@@ -109,11 +119,16 @@ const router = createBrowserRouter([
                 path: ":weeklysummary_id",
                 element: <Summary />,
               },
+              {
+                path: "category",
+                children: [
+                  {
+                    path: ":id",
+                    element: <SavedCategoryPage />,
+                  },
+                ],
+              },
             ],
-          },
-          {
-            path: "saved",
-            element: <Saved />,
           },
           {
             path: "/about",
