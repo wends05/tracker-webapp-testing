@@ -34,7 +34,6 @@ export default async function recalculateWeekSummaryWithExpenses({
 
   const total_not_spent = total_budget || 0 - total_spent || 0;
   const lastSunday = getLastSunday();
-  console.log("hashdahsd");
   const res = await pool.query(
     `UPDATE "Weekly Summary" SET total_budget = $1, total_spent = $2, total_not_spent = $3 WHERE date_start = $4`,
     [total_budget, total_spent, total_not_spent, lastSunday]
