@@ -55,7 +55,7 @@ userRouter.get("/:id/categories", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const data = await pool.query(
-      'SELECT * FROM "Category" WHERE user_id = $1',
+      'SELECT * FROM "Category" WHERE user_id = $1 ORDER BY category_id',
       [id]
     );
 

@@ -60,6 +60,7 @@ const AddCategory: React.FC = () => {
         amount_left: parseFloat(budget) || 0,
         amount_spent: 0,
       };
+
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/category`,
         {

@@ -37,17 +37,18 @@ const Dashboard = () => {
   const [totalNotSpent, settotalNotSpent] = useState(0);
   useEffect(() => {
     if (categories) {
+      console.log(categories);
       setTotalBudget(() => {
-        return categories!.reduce((acc, cat) => acc + cat.budget, 0);
+        return categories.reduce((acc, cat) => acc + cat.budget, 0);
       });
       setTotalSpent(() => {
-        return categories!.reduce(
+        return categories.reduce(
           (acc, category) => acc + category.amount_spent,
           0
         );
       });
       settotalNotSpent(() => {
-        return categories!.reduce(
+        return categories.reduce(
           (acc, category) => acc + category.amount_left,
           0
         );
