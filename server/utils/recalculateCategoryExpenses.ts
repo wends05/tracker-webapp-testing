@@ -38,8 +38,8 @@ export default async function recalculateCategoryExpenses({
   }
 
   await pool.query(
-    `UPDATE "Category" SET amount_left = $1, amount_spent = $2`,
-    [amount_left, totalExpended]
+    `UPDATE "Category" SET amount_left = $1, amount_spent = $2 WHERE category_id = $3`,
+    [amount_left, totalExpended, category_id]
   );
 
   return {
