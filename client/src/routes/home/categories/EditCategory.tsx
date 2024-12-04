@@ -15,7 +15,7 @@ const EditCategory = () => {
   const [categoryName, setCategoryName] = useState<string>(
     category.category_name
   );
-  const [budget, setBudget] = useState<number | 0>(category.budget);
+  const [budget, setBudget] = useState<number | null>(category.budget);
   const [backgroundColor, setBackgroundColor] = useState<string>(
     category.category_color
   );
@@ -25,18 +25,20 @@ const EditCategory = () => {
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
 
-      if (budget < category.amount_spent) {
+      const final_budget = budget || 0;
+
+      if (final_budget < category.amount_spent) {
         throw Error(
           `Your budget is lower than your amount spent. Amount spent is ${category.amount_spent}.`
         );
       }
 
-      const newAmountLeft = budget - category.amount_spent;
+      const newAmountLeft = final_budget - category.amount_spent;
 
       const newCategory: Category = {
         category_id: category.category_id,
         category_name: categoryName,
-        budget: budget,
+        budget: final_budget,
         category_color: backgroundColor,
         amount_left: newAmountLeft,
         description: description,
@@ -73,10 +75,11 @@ const EditCategory = () => {
       });
       closeForm();
     },
-    onError: () => {
+    onError: (error) => {
       toast({
         variant: "destructive",
-        description: "hindi",
+        title: "Error editing category",
+        description: error.message,
       });
     },
   });
@@ -190,9 +193,9 @@ const EditCategory = () => {
           <input
             type="number"
             id="budget"
-            // step={0.01}
-            // value={budget}
-            onChange={(e) => setBudget(Number(e.target.value) || budget)}
+            step={0.01}
+            value={budget || ""}
+            onChange={(e) => setBudget(Number(e.target.value) || null)}
             required
             className="block w-full rounded-md border border-gray-300 p-2 focus:ring focus:ring-blue-500"
             placeholder="Enter budget"

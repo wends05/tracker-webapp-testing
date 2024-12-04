@@ -12,12 +12,13 @@ const EditExpense = () => {
   const { toast } = useToast();
 
   const [name, setName] = useState(expense.expense_name);
-  const [price, setPrice] = useState(expense.price);
+  const [price, setPrice] = useState<number | null>(expense.price);
   const [quantity, setQuantity] = useState(expense.quantity);
   const [total, setTotal] = useState(expense.total);
 
   useEffect(() => {
-    setTotal(price * quantity);
+    const final_price = price || 0;
+    setTotal(final_price * quantity);
   }, [price, quantity]);
 
   const queryClient = useQueryClient();
@@ -25,17 +26,19 @@ const EditExpense = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
+      const final_price = price || 0;
+
       // handle form logic
       const newExpense: Expense = {
         expense_id: expense.expense_id,
         expense_name: name,
-        price,
+        price: final_price,
         quantity,
         total,
         category_id: expense.category_id,
       };
 
-      await fetch(
+      const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/expense/${expense.expense_id}`,
         {
           method: "PUT",
@@ -45,6 +48,13 @@ const EditExpense = () => {
           body: JSON.stringify(newExpense),
         }
       );
+
+      if (!response.ok) {
+        const { error } = await response.json();
+        throw Error(error);
+      }
+
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -52,6 +62,9 @@ const EditExpense = () => {
       });
       queryClient.invalidateQueries({
         queryKey: ["category", category_id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["expense", expense.expense_id],
       });
       closeForm();
       toast({
@@ -61,7 +74,8 @@ const EditExpense = () => {
     onError: (error) => {
       toast({
         variant: "destructive",
-        description: `Expense not edited! Error: ${error.message}`,
+        title: "Expense not edited",
+        description: `Error: ${error.message}`,
       });
     },
   });
@@ -94,9 +108,9 @@ const EditExpense = () => {
           type="number"
           id="price"
           name="price"
-          value={price}
+          value={price || ""}
           step="0.01"
-          onChange={(e) => setPrice(parseFloat(e.target.value) || price)}
+          onChange={(e) => setPrice(parseFloat(e.target.value) || null)}
         />
 
         <label htmlFor="quantity">Quantity</label>
