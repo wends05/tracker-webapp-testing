@@ -23,10 +23,6 @@ const navLinks = [
     path: "/weeklysummaries",
   },
   {
-    name: "Saved Expenses",
-    path: "/saved",
-  },
-  {
     name: "About Us",
     path: "/about",
   },
