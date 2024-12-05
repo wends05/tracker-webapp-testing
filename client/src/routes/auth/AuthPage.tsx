@@ -8,21 +8,19 @@ import { useToast } from "@/hooks/use-toast";
 // import { ToastAction } from "@/components/ui/toast"
 
 const AuthPage = () => {
-  useEffect(() => {
-    supabase.auth.getSession().then((res) => {
-      if (res.data.session) {
-        nav("/dashboard");
-      } else {
-        setLoading(false);
-      }
-    });
-  });
+  const { supabaseSession } = useContext(UserContext);
+  const nav = useNavigate();
 
+  useEffect(() => {
+    if (supabaseSession) {
+      nav("/dashboard");
+    }
+    setLoading(false);
+  }, [supabaseSession]);
   const { toast } = useToast();
 
   const [change, setChange] = useState("LOG IN");
   const { setUser } = useContext(UserContext);
-  const nav = useNavigate();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
