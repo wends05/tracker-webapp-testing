@@ -1,12 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
 import _Root from "../_Root";
-import Landing from "../routes";
+import Landing from "../routes/Landing";
 import About from "../routes/About";
 import Register from "../routes/auth/AuthPage";
 import NotLoggedIn from "../routes/NotLoggedIn";
 import LayoutPage from "../routes/home/_LayoutPage";
 import Dashboard from "../routes/home/Dashboard";
-import Onboarding from "../routes/home/Onboarding";
 import AddCategory from "../routes/home/categories/AddCategory";
 import CategoryPage from "../routes/home/categories/CategoryPage";
 // import Expense from "../routes/home/expense/Expense";
@@ -39,10 +38,6 @@ const router = createBrowserRouter([
       {
         path: "not-logged-in",
         element: <NotLoggedIn />,
-      },
-      {
-        path: "onboarding",
-        element: <Onboarding />,
       },
       {
         element: <LayoutPage />,

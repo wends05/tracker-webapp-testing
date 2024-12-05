@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Category } from "@/utils/types";
-import getUser from "@/utils/fetchuser";
+import getUser from "@/utils/getUser";
 
 const AddCategory: React.FC = () => {
   const { data: user } = useQuery({

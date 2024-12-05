@@ -2,7 +2,7 @@ import { createClient, Session } from "@supabase/supabase-js";
 import React, { createContext, useEffect, useState } from "react";
 import { User } from "./types";
 import { queryClient } from "@/_Root";
-import getUser from "./fetchuser";
+import getUser from "./getUser";
 
 interface IUserContext {
   user: User | null;
@@ -25,24 +25,21 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [supabaseSession, setSupabaseSession] = useState<Session | null>(null);
 
   useEffect(() => {
-    const getDBUser = () =>
-      queryClient.ensureQueryData({
-        queryKey: ["user"],
-        queryFn: getUser,
-      });
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSupabaseSession(session);
-      getDBUser();
     });
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSupabaseSession(session);
+      console.log(event);
 
-      // console.log(ev);
       if (event == "SIGNED_IN") {
-        const user = await getDBUser();
-        setUser(user);
+        queryClient.ensureQueryData({
+          queryKey: ["user"],
+          queryFn: getUser,
+        });
       }
 
       if (event == "SIGNED_OUT") {

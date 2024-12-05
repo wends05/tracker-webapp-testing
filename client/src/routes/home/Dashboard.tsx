@@ -4,7 +4,7 @@ import { BackendResponse } from "@/interfaces/BackendResponse";
 import { Category } from "@/utils/types";
 import CategoryView from "@/components/CategoryView";
 import { useQuery } from "@tanstack/react-query";
-import getUser from "@/utils/fetchuser";
+import getUser from "@/utils/getUser";
 
 const Dashboard = () => {
   const { data: user } = useQuery({
