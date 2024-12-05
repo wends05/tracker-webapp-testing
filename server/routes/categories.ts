@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { pool } from "../db";
-import { Category } from "../types";
+import { Category } from "../utils/types";
+import recalculateCategoryExpenses from "../utils/recalculateCategoryExpenses";
 
 const categoryRouter = express.Router();
 
@@ -47,6 +48,10 @@ categoryRouter.post("", async (req: Request, res: Response) => {
 categoryRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    await recalculateCategoryExpenses({
+      pool,
+      category_id: Number(id),
+    });
     const data = await pool.query(
       'SELECT * FROM "Category" WHERE category_id = $1',
       [id]
@@ -101,6 +106,11 @@ categoryRouter.put("/:id", async (req: Request, res: Response) => {
       ]
     );
 
+    await recalculateCategoryExpenses({
+      pool,
+      category_id: Number(id),
+    });
+
     res.json({
       data: data.rows[0],
     });
@@ -119,6 +129,12 @@ categoryRouter.get("/:id/expenses", async (req: Request, res: Response) => {
       'SELECT * FROM "Expense" WHERE category_id = $1',
       [id]
     );
+
+    await recalculateCategoryExpenses({
+      pool,
+      category_id: Number(id),
+    });
+
     res.status(200).json({
       data: data.rows,
     });
