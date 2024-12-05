@@ -1,5 +1,6 @@
 import { QueryClient } from "@tanstack/react-query";
 import { LoaderFunctionArgs } from "react-router-dom";
+import getUser from "./fetchuser";
 
 export const getCategory = (queryClient: QueryClient) => {
   return async ({ params: { category_id } }: LoaderFunctionArgs) => {
@@ -31,6 +32,29 @@ export const getExpense = (queryClient: QueryClient) => {
           `${import.meta.env.VITE_SERVER_URL}/expense/${expense_id}`
         );
 
+        if (!response.ok) {
+          const errorMessage = await response.json();
+          throw Error(errorMessage);
+        }
+        const { data } = await response.json();
+        return data;
+      },
+    });
+  };
+};
+
+export const getPreviousWeekCategories = (queryClient: QueryClient) => {
+  return async () => {
+    return await queryClient.ensureQueryData({
+      queryKey: ["previousWeekCategories"],
+      queryFn: async () => {
+        const { user_id } = await queryClient.ensureQueryData({
+          queryKey: ["user"],
+          queryFn: getUser,
+        });
+        const response = await fetch(
+          `${import.meta.env.VITE_SERVER_URL}/summary/user/${user_id}/categories`
+        );
         if (!response.ok) {
           const errorMessage = await response.json();
           throw Error(errorMessage);
