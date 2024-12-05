@@ -9,7 +9,7 @@ export default tseslint.config(
   // shadcn files
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ["/client/src/hooks/use-toast.ts"],
+    files: ["/client/src/hooks/use-toast.ts", "client/src/components/ui/*"],
     rules: {
       "@typescript-eslint/no-unused-vars": "off",
     },
@@ -31,6 +31,6 @@ export default tseslint.config(
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-require-imports": "off",
     },
-    ignores: ["client/src/hooks/use-toast.ts"],
+    ignores: ["client/src/hooks/use-toast.ts", "client/src/components/ui/*"],
   }
 );

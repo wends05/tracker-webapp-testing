@@ -5,6 +5,7 @@ import { Category } from "@/utils/types";
 import CategoryView from "@/components/CategoryView";
 import { useQuery } from "@tanstack/react-query";
 import getUser from "@/utils/fetchuser";
+import { WeeklyChart } from "@/components/WeeklyChart";
 
 const Dashboard = () => {
   const { data: user } = useQuery({
@@ -70,18 +71,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-4 gap-6">
         {/* Placeholder for Summary Graph */}
         <div className="col-span-2 rounded-lg bg-white p-6 shadow md:col-span-2">
-          <h2 className="mb-4 text-lg font-medium text-black">Summary</h2>
-          <div className="flex items-center justify-around">
-            {Array.from({ length: 7 }).map((_, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div
-                  className="w-3 rounded bg-teal-400"
-                  style={{ height: `${(index + 1) * 20}px` }}
-                />
-                <p className="mt-1 text-xs">Day {index + 1}</p>
-              </div>
-            ))}
-          </div>
+          <WeeklyChart />
         </div>
 
         {/* Money Left */}
