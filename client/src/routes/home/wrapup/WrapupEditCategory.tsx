@@ -6,12 +6,23 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Category } from "@/utils/types";
+import {
+  Category,
+  Expense,
+  SavedCategories,
+  WeeklySummary,
+} from "@/utils/types";
 import { useLoaderData } from "react-router-dom";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import getUser from "@/utils/getUser";
 
 const WrapupEditCategory = () => {
   const categories = useLoaderData() as Category[];
+  const { data: user } = useQuery({
+    queryKey: ["user"],
+    queryFn: getUser,
+  });
 
   const [budgets, setBudgets] = useState(
     categories.reduce(
@@ -30,7 +41,7 @@ const WrapupEditCategory = () => {
     }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const changedBudgets = Object.entries(budgets).reduce(
       (acc, [id, budget]) => {
         const originalBudget = categories.find(
@@ -46,6 +57,60 @@ const WrapupEditCategory = () => {
     );
 
     console.log("Changed budgets:", changedBudgets);
+
+    const previousWeekSummary: WeeklySummary = await fetch(
+      `${import.meta.env.VITE_SERVER_URL}/summaries/user/${user.user_id}/recent`
+    ).then(async (res) => {
+      if (res.ok) {
+        const response = await res.json();
+        return response;
+      }
+    });
+
+    categories.forEach(async (category) => {
+      const newSavedCategory: SavedCategories = {
+        ...category,
+        weekly_summary_id: previousWeekSummary.weekly_summary_id!,
+      };
+      const savedCategory: SavedCategories = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/savedCategory`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newSavedCategory),
+        }
+      ).then(async (res) => {
+        if (res.ok) {
+          const response = await res.json();
+          return response;
+        }
+      });
+      const expenses: Expense[] = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/category/${category.category_id}/expenses`
+      ).then(async (res) => {
+        if (res.ok) {
+          const response = await res.json();
+          return response;
+        }
+      });
+      expenses.forEach((expense) => {
+        expense.saved_category_id = savedCategory.saved_category_id;
+        expense.category_id = undefined;
+
+        fetch(
+          `${import.meta.env.VITE_SERVER_URL}/expense/${expense.expense_id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(expense),
+          }
+        );
+      });
+    });
   };
 
   return (

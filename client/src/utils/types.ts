@@ -21,6 +21,7 @@ export type Category = {
 };
 
 export type WeeklySummary = {
+  weekly_summary_id?: number;
   date_start: Date;
   date_end: Date;
   total_budget: number;
@@ -29,7 +30,7 @@ export type WeeklySummary = {
 };
 
 export type SavedCategories = {
-  saved_category_id: number;
+  saved_category_id?: number;
   category_name: string;
   budget: number;
   category_color: string;
