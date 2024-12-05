@@ -2,14 +2,9 @@ import sampleDesign from "../assets/sample_design.png";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Button } from "../components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Landing = () => {
-  const nav = useNavigate();
-
-  const handleToAuth = () => {
-    nav("/auth");
-  };
   const section1Ref = useRef(null);
   const section2Ref = useRef(null);
   const section3Ref = useRef(null);
@@ -46,10 +41,11 @@ const Landing = () => {
                   phasellus ut netus sapien feugiat tristique class praesent
                   tellus. Bibendum dignissim sagittis sapien porta id posuere.
                 </p>
-                <Button onClick={handleToAuth} className="mt-5 p-5 opacity-75">
+
+                <Link to={"/auth"}>
                   {" "}
-                  Get Started{" "}
-                </Button>
+                  <Button className="mt-5 p-5 opacity-75">Get Started </Button>
+                </Link>
               </div>
             </motion.div>
           </div>
