@@ -15,13 +15,13 @@ const CategoryView = (category: { category: Category }) => {
           backgroundColor: category_color || "#f3f3f3",
         }}
       >
-        <div className="relative">
+        <div className="top- relative">
           <h3 className="text-lg font-medium">{category_name}</h3>
           <p className="mt-1 text-sm">Total Budget: ₱{budget}</p>
         </div>
       </Link>
       <Link
-        className="absolute right-2 top-2 rounded bg-rose-500 px-2 py-1 text-xs text-white hover:bg-rose-600"
+        className="absolute right-2 top-2 rounded px-2 py-1 text-xs text-white hover:text-rose-600"
         to={`category/${category_id}/edit`}
       >
         <PencilSquareIcon className="h-6 w-6" />
