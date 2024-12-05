@@ -26,6 +26,7 @@ export type WeeklySummary = {
   total_budget: number;
   total_spent: number;
   total_not_spent: number;
+  user_id?: number;
 };
 
 export type SavedCategories = {
