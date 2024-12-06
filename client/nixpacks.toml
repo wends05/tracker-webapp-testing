@@ -1,0 +1,10 @@
+[phases]
+install = "npm install"
+build = "npm run build"
+
+[static]
+path = "dist" # Path to the output directory after building with Vite
+
+[[static.routes]]
+path = "/*" # Catch-all for routes
+rewrite = "/index.html" # Redirect all non-static routes to index.html
