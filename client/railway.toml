@@ -1,6 +1,6 @@
-[build]
-buildCommand = "npm run build"
-startCommand = "npm run preview"
+[static]
+path = "dist" # Path to your build directory
 
-[routes]
-"/*" = "index.html"
+  [[static.routes]]
+  path = "/*" # Match all routes
+  rewrite = "/index.html" # Redirect to index.html
