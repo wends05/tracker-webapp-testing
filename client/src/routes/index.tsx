@@ -141,7 +141,7 @@ const Landing = () => {
                 transition={{ duration: 1, delay: 0.5 }}
                 className="p-5 text-5xl"
               >
-                FEATURE 1
+                Expense Tracking
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0, y: 50 }}
@@ -153,8 +153,11 @@ const Landing = () => {
                 transition={{ duration: 1, delay: 0.5 }}
                 className="p-5 text-lg"
               >
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                Effortlessly track your spending by logging expense names,
+                quantities, and amounts, with totals automatically calculated
+                for you. Get instant when you’re about to exceed your category
+                budgets, helping you stay on track with your financial goals and
+                make informed spending decisions.
               </motion.p>
             </div>
           </motion.div>
@@ -184,7 +187,7 @@ const Landing = () => {
                 transition={{ duration: 1, delay: 0.5 }}
                 className="p-5 text-5xl"
               >
-                FEATURE 2
+                Budgeting Made Simple
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0, y: 50 }}
@@ -196,9 +199,10 @@ const Landing = () => {
                 transition={{ duration: 1, delay: 0.5 }}
                 className="p-5 text-lg"
               >
-                Nulla facilisi. Cras vulputate urna ut ante iaculis, nec
-                elementum dolor aliquet. Aenean aliquam libero sit amet libero
-                sodales, ut scelerisque tortor luctus.
+                Easily create personalized spending categories, allocate
+                budgets, and monitor your expenses with ease. Keep your finances
+                organized and gain insights with intuitive progress bars and
+                detailed budget summaries.
               </motion.p>
             </div>
           </motion.div>
@@ -228,7 +232,7 @@ const Landing = () => {
                 transition={{ duration: 1, delay: 0.5 }}
                 className="p-5 text-5xl"
               >
-                FEATURE 3
+                Comprehensive Weekly Summary
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0, y: 50 }}
@@ -240,8 +244,11 @@ const Landing = () => {
                 transition={{ duration: 1, delay: 0.5 }}
                 className="p-5 text-lg"
               >
-                Sed vestibulum vehicula tortor, nec efficitur nisl posuere id.
-                Donec ut ligula ac eros pharetra consequat.
+                Detailed weekly summaries that offer a thorough analysis of your
+                spending, savings, and budget performance. Gain valuable
+                insights into your financial habits with easy-to-understand
+                reports and visual graphs, helping you make informed decisions
+                for the upcoming weeks.
               </motion.p>
             </div>
           </motion.div>
