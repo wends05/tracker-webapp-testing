@@ -1,4 +1,5 @@
 import sampleDesign from "../assets/sample_design.png";
+// import sampleLogo from "../assets/sample_logo.png";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Button } from "../components/ui/button";
@@ -24,6 +25,10 @@ const Landing = () => {
 
   return (
     <div className="overflow-x-hidden">
+      {/* <div>
+        <div className="absolute bg-contain bg-no-repeat w-20 h-20 " style={{backgroundImage: `url(${sampleLogo})`}}></div>
+      </div>
+       */}
       {/* Section 1 */}
       <section className="relative min-h-screen" ref={section1Ref}>
         <div className="h-full w-full">
@@ -97,7 +102,7 @@ const Landing = () => {
                 ? { opacity: 1, y: 0, filter: "blur(0)" }
                 : { opacity: 0, y: 50, filter: "blur(5px)" }
             }
-            transition={{ duration: 1 }}
+            transition={{ duration: 1, delay: 0.3 }}
           >
             <div className="mx-auto h-full w-4/5 p-6 text-center">
               <h1 className="mb-6 text-4xl font-bold">Our Mission</h1>
@@ -254,6 +259,17 @@ const Landing = () => {
           </motion.div>
         </section>
       </div>
+      {/* footer */}
+      <section className="bg-darkCopper relative flex h-60 flex-col items-center justify-center">
+        <div className="font-medium text-white">
+          <h3>Never lose track of your expenses again</h3>
+          <h1>Dive in to the world of digital tracking</h1>
+          <Button className="bg-vanilla text-darkCopper hover:text-vanilla mt-4 items-center justify-center px-5 align-middle">
+            {" "}
+            Track Now
+          </Button>
+        </div>
+      </section>
     </div>
   );
 };
