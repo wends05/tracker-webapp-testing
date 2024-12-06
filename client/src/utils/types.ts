@@ -21,6 +21,7 @@ export type Category = {
 };
 
 export type WeeklySummary = {
+  weekly_summary_id: number;
   date_start: Date;
   date_end: Date;
   total_budget: number;

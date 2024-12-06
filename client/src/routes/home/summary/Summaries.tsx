@@ -26,15 +26,13 @@ const WeeklySummaryPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold">Weekly Summaries</h1>
+      <header className="mb-10 ml-16">
+        <h1 className="text-3xl font-bold">Weekly Summaries</h1>
       </header>
-      <div className="space-y-6">
-        {summaries &&
-          summaries.map((summary, index) => (
-            <WeeklySummaryCard key={index} summary={summary} />
-          ))}
-      </div>
+      {summaries &&
+        summaries.map((summary, index) => (
+          <WeeklySummaryCard key={index} summary={summary} />
+        ))}
     </div>
   );
 };

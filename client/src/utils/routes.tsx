@@ -20,7 +20,7 @@ import { getCategory, getExpense, getPreviousWeekCategories } from "./loaders";
 import ErrorPage from "../ErrorPage";
 import { queryClient } from "../_Root";
 import WrapupInfoPage from "@/routes/home/wrapup/WrapupInfoPage";
-import SavedCategoryPage from "@/routes/home/summary/SavedCategoryPage";
+// import SavedCategoryPage from "@/routes/home/summary/SavedCategoryPage";
 
 const router = createBrowserRouter([
   {
@@ -110,19 +110,16 @@ const router = createBrowserRouter([
           {
             path: "weeklysummaries",
             element: <Summaries />,
+          },
+          {
+            path: "weeklysummary",
             children: [
               {
                 path: ":weeklysummary_id",
                 element: <Summary />,
               },
               {
-                path: "category",
-                children: [
-                  {
-                    path: ":id",
-                    element: <SavedCategoryPage />,
-                  },
-                ],
+                path: ":weeklysummary_id/category/:category_id",
               },
             ],
           },
