@@ -1,5 +1,5 @@
-import sampleDesign from "../assets/sample_design.png";
-// import sampleLogo from "../assets/sample_logo.png";
+import sampleDesign from "../assets/landing-mockupp.png";
+import categoryLanding from "../assets/Category-landing.jpg";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Button } from "../components/ui/button";
@@ -11,6 +11,7 @@ const Landing = () => {
   const handleToAuth = () => {
     nav("/auth");
   };
+
   const section1Ref = useRef(null);
   const section2Ref = useRef(null);
   const section3Ref = useRef(null);
@@ -45,11 +46,12 @@ const Landing = () => {
               <p className="bg-gradient-to-r from-[#4c9182] to-[#efd293] bg-clip-text text-8xl font-semibold text-transparent">
                 Wise tracking <br /> and saving <br /> with ease
               </p>
-              <div className="mt-3 w-72 text-[#7a958f]">
+              <div className="mt-3 w-[30rem] text-[#7a958f]">
                 <p>
-                  Lorem ipsum odor amet, consectetuer adipiscing elit. Ac
-                  phasellus ut netus sapien feugiat tristique class praesent
-                  tellus. Bibendum dignissim sagittis sapien porta id posuere.
+                  Take control of your finances effortlessly with WaEase.
+                  Whether you're managing a monthly budget, saving for the
+                  future, or simply keeping track of daily spending, WaEase
+                  offers a seamless way to organize your finances.
                 </p>
                 <Button onClick={handleToAuth} className="mt-5 p-5 opacity-75">
                   {" "}
@@ -69,10 +71,19 @@ const Landing = () => {
             transition={{ duration: 1 }}
           >
             <div
-              className="absolute right-0 top-[-300px] mr-48 h-[400px] w-[496px] bg-cover bg-no-repeat shadow-2xl"
+              className="absolute right-0 top-[-13rem] mr-[6rem] h-[350px] w-[550px] bg-cover bg-no-repeat"
               style={{
                 backgroundImage: `url(${sampleDesign})`,
                 zIndex: 1,
+                maxWidth: "100vw",
+                overflow: "hidden",
+              }}
+            ></div>
+            <div
+              className="absolute right-32 top-[-475px] mr-48 h-[600px] w-[550px] bg-cover bg-no-repeat shadow-2xl"
+              style={{
+                backgroundImage: `url(${categoryLanding})`,
+                zIndex: -1,
                 maxWidth: "100vw",
                 overflow: "hidden",
               }}
@@ -104,7 +115,7 @@ const Landing = () => {
             }
             transition={{ duration: 1, delay: 0.3 }}
           >
-            <div className="mx-auto h-full w-4/5 p-6 text-center">
+            <div className="mx-auto h-20 w-4/5 p-6 text-center">
               <h1 className="mb-6 text-4xl font-bold">Our Mission</h1>
               <p className="text-lg leading-relaxed">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -264,7 +275,10 @@ const Landing = () => {
         <div className="font-medium text-white">
           <h3>Never lose track of your expenses again</h3>
           <h1>Dive in to the world of digital tracking</h1>
-          <Button className="bg-vanilla text-darkCopper hover:text-vanilla mt-4 items-center justify-center px-5 align-middle">
+          <Button
+            onClick={handleToAuth}
+            className="bg-vanilla text-darkCopper hover:text-vanilla mt-4 items-center justify-center px-5 align-middle"
+          >
             {" "}
             Track Now
           </Button>
