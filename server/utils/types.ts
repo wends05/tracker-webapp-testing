@@ -4,8 +4,9 @@ export type Expense = {
   price: number;
   quantity: number;
   total: number;
-  category_id?: number;
+  category_id: number;
   saved_category_id?: number;
+  date: Date;
 };
 
 export type Category = {

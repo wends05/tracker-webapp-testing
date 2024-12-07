@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { pool } from "../db";
-import Expense from "../types/Expense";
+import { Expense } from "../utils/types";
 import recalculateCategoryExpenses from "../utils/recalculateCategoryExpenses";
 import recalculatedWeekCategories from "../utils/recalculateWeekSummaryWithExpenses";
 
@@ -8,7 +8,7 @@ const expenseRouter = express.Router();
 
 expenseRouter.post("", async (req: Request, res: Response) => {
   try {
-    const { expense_name, price, quantity, total, category_id }: Expense =
+    const { expense_name, price, quantity, total, category_id, date }: Expense =
       req.body;
     const budget = await pool.query(
       'SELECT amount_left FROM "Category" WHERE category_id= $1',
@@ -22,8 +22,8 @@ expenseRouter.post("", async (req: Request, res: Response) => {
     }
 
     const result = await pool.query(
-      `INSERT INTO "Expense" (expense_name, price, quantity, total, category_id) VALUES($1, $2, $3, $4, $5) RETURNING *`,
-      [expense_name, price, quantity, total, category_id]
+      `INSERT INTO "Expense" (expense_name, price, quantity, total, category_id, date) VALUES($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [expense_name, price, quantity, total, category_id, date]
     );
 
     await recalculateCategoryExpenses({

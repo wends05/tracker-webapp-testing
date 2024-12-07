@@ -24,6 +24,7 @@ const ExpenseBox = ({
   quantity,
   total,
   category_id,
+  date,
 }: Expense) => {
   const nav = useNavigate();
   const queryClient = useQueryClient();
@@ -70,6 +71,12 @@ const ExpenseBox = ({
     nav(`expense/${expense_id}/edit`);
   };
 
+  const monthString = new Date(date).toLocaleString("default", {
+    month: "long",
+  });
+  const dateString = new Date(date).getDate();
+  const yearString = new Date(date).getFullYear();
+
   return (
     <div className="flex h-auto flex-row flex-nowrap justify-between border-b-2 border-b-black p-3">
       <div className="flex flex-col">
@@ -80,7 +87,9 @@ const ExpenseBox = ({
         </h6>
 
         <div className="mt-7">
-          <h2>{total} PHP</h2>
+          <h2>
+            {total} PHP {monthString} {dateString}, {yearString}
+          </h2>
         </div>
       </div>
 

@@ -231,6 +231,7 @@ const CategoryPage = () => {
               total={expense.total}
               expense_id={Number(expense.expense_id)}
               key={expense.expense_id}
+              date={expense.date}
             />
           ))}
 
@@ -245,6 +246,7 @@ const CategoryPage = () => {
               total={expense.total}
               expense_id={Number(expense.expense_id)}
               key={expense.expense_id}
+              date={expense.date}
             />
           ))}
 
@@ -259,6 +261,7 @@ const CategoryPage = () => {
               total={expense.total}
               expense_id={Number(expense.expense_id)}
               key={expense.expense_id}
+              date={expense.date}
             />
           ))}
       </div>
