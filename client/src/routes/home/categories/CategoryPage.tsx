@@ -1,4 +1,5 @@
 import ExpenseBox from "@/components/ExpenseBox";
+import { BackendResponse } from "@/interfaces/BackendResponse";
 import { Category, Expense } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -21,11 +22,13 @@ const CategoryPage = () => {
       );
 
       if (!response.ok) {
-        const errorMessage = await response.json();
+        const { message: errorMessage } = (await response.json()) as {
+          message: string;
+        };
         throw Error(errorMessage);
       }
 
-      const { data } = await response.json();
+      const { data } = (await response.json()) as BackendResponse<Category>;
       return data;
     },
   });
@@ -103,8 +106,6 @@ const CategoryPage = () => {
       spentPercentage: 0,
     });
 
-  const refreshData = () => {};
-
   if (!category || !expenses)
     return (
       <p className="flex h-full items-center justify-center">Please wait...</p>
@@ -116,7 +117,6 @@ const CategoryPage = () => {
       <h1 className="text-center text-8xl font-bold text-black">
         {category.category_name}
       </h1>
-      <button onClick={refreshData}></button>
       <div className="flex w-full justify-center gap-2">
         <div className="flex w-1/3 flex-col items-center justify-center">
           {" "}
@@ -224,6 +224,7 @@ const CategoryPage = () => {
           sortLowHigh === false &&
           expenses.map((expense: Expense) => (
             <ExpenseBox
+              date={expense.date}
               category_id={expense.category_id}
               price={expense.price}
               expense_name={expense.expense_name}
@@ -238,6 +239,7 @@ const CategoryPage = () => {
           sortHighLow === true &&
           descending.map((expense: Expense) => (
             <ExpenseBox
+              date={expense.date}
               category_id={expense.category_id}
               price={expense.price}
               expense_name={expense.expense_name}
@@ -252,6 +254,7 @@ const CategoryPage = () => {
           sortLowHigh === true &&
           ascending.map((expense: Expense) => (
             <ExpenseBox
+              date={expense.date}
               category_id={expense.category_id}
               price={expense.price}
               expense_name={expense.expense_name}

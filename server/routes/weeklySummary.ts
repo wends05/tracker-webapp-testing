@@ -1,7 +1,123 @@
 import express, { Request, Response } from "express";
 import { pool } from "../db";
+import {
+  Category,
+  Expense,
+  SavedCategories,
+  WeeklySummary,
+} from "../utils/types";
+import getLastSunday from "../utils/getLastSunday";
 
 const weeklySummaryRouter = express.Router();
+
+weeklySummaryRouter.post("/user/:id", async (req: Request, res: Response) => {
+  try {
+    const { newBudgets } = req.body;
+    const { id } = req.params;
+    console.log(id);
+
+    // get recent weekly summary, either from last week or a few weeks ago basta recent
+
+    const { rows: recentWeeklySummaryRows } = await pool.query(
+      `
+      SELECT * FROM "Weekly Summary" WHERE user_id = $1 ORDER BY date_start DESC`,
+      [id]
+    ); // here
+
+    const weeklySummary: WeeklySummary = recentWeeklySummaryRows[0];
+
+    // get all user categories
+
+    const { rows: categories } = await pool.query<Category>(
+      `
+      SELECT * FROM "Category" WHERE user_id = $1`,
+      [id]
+    );
+
+    if (!categories) {
+      throw Error("Error fetching categories.");
+    }
+
+    // do something for each of the categories
+    categories.forEach(async (category) => {
+      // create a new saved category on the saved categories table
+
+      const newSavedCategory: SavedCategories = {
+        ...category,
+        weekly_summary_id: weeklySummary.weekly_summary_id!,
+      };
+
+      const { rows: savedCategoryRows } = await pool.query<SavedCategories>(
+        `INSERT INTO "Saved Categories"(category_name, budget, category_color, amount_left, amount_spent, weekly_summary_id, user_id, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+        [
+          newSavedCategory.category_name,
+          newSavedCategory.budget,
+          newSavedCategory.category_color,
+          newSavedCategory.amount_left,
+          newSavedCategory.amount_spent,
+          newSavedCategory.weekly_summary_id,
+          id,
+          newSavedCategory.description,
+        ]
+      );
+
+      const savedCategory = savedCategoryRows[0];
+
+      // get expenses of this category
+
+      const { rows: expensesRows } = await pool.query<Expense>(
+        `SELECT * FROM "Expense" WHERE category_id = $1`,
+        [category.category_id]
+      );
+
+      // edit each expense of this category to have an assigned saved_category, and have a null category_id
+
+      expensesRows.forEach(async (expense) => {
+        try {
+          await pool.query(
+            `UPDATE "Expense" SET category_id = $1, saved_category_id = $2 WHERE expense_id = $3`,
+            [null, savedCategory.saved_category_id!, expense.expense_id]
+          );
+        } catch (error: any) {
+          throw Error(error);
+          return;
+        }
+      });
+
+      // update category's budget
+
+      if (newBudgets[category.category_id!]) {
+        console.log("new category budget ", newBudgets[category.category_id!]);
+        console.log("category id ", category.category_id);
+
+        await pool.query(
+          'UPDATE "Category" SET budget = $1 WHERE category_id = $2',
+          [newBudgets[category.category_id!], category.category_id]
+        );
+      } else {
+        console.log(category.category_id);
+      }
+    });
+
+    const lastSunday = new Date(getLastSunday());
+
+    const nextSaturday = new Date(lastSunday);
+    nextSaturday.setDate(nextSaturday.getDate() + 6);
+
+    const { rows: weeklySummaryRows } = await pool.query(
+      `INSERT INTO "Weekly Summary"(date_start, date_end, user_id) VALUES($1, $2, $3) RETURNING *`,
+      [lastSunday.toUTCString(), nextSaturday.toUTCString(), id]
+    );
+
+    res.json({
+      data: weeklySummaryRows[0],
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+});
 
 weeklySummaryRouter.get(
   "/user/:id/categories",

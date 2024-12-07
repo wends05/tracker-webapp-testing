@@ -6,20 +6,16 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import {
-  Category,
-  Expense,
-  SavedCategories,
-  WeeklySummary,
-} from "@/utils/types";
+import { Category, User } from "@/utils/types";
 import { useLoaderData } from "react-router-dom";
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { FormEvent, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import getUser from "@/utils/getUser";
+import { toast } from "@/hooks/use-toast";
 
 const WrapupEditCategory = () => {
   const categories = useLoaderData() as Category[];
-  const { data: user } = useQuery({
+  const { data: user } = useQuery<User>({
     queryKey: ["user"],
     queryFn: getUser,
   });
@@ -41,77 +37,51 @@ const WrapupEditCategory = () => {
     }));
   };
 
-  const handleSave = async () => {
-    const changedBudgets = Object.entries(budgets).reduce(
-      (acc, [id, budget]) => {
-        const originalBudget = categories.find(
-          (category) => category.category_id === parseInt(id, 10)
-        )?.budget;
+  const { mutate } = useMutation({
+    mutationFn: async (e: FormEvent) => {
+      e.preventDefault();
+      const changedBudgets = Object.entries(budgets).reduce(
+        (acc, [id, budget]) => {
+          const originalBudget = categories.find(
+            (category) => category.category_id === parseInt(id, 10)
+          )?.budget;
+          if (originalBudget !== budget) {
+            acc[parseInt(id, 10)] = budget;
+          }
+          return acc;
+        },
+        {} as Record<number, number>
+      );
 
-        if (originalBudget !== budget) {
-          acc[parseInt(id, 10)] = budget;
-        }
-        return acc;
-      },
-      {} as Record<number, number>
-    );
-
-    console.log("Changed budgets:", changedBudgets);
-
-    const previousWeekSummary: WeeklySummary = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/summaries/user/${user.user_id}/recent`
-    ).then(async (res) => {
-      if (res.ok) {
-        const response = await res.json();
-        return response;
-      }
-    });
-
-    categories.forEach(async (category) => {
-      const newSavedCategory: SavedCategories = {
-        ...category,
-        weekly_summary_id: previousWeekSummary.weekly_summary_id!,
-      };
-      const savedCategory: SavedCategories = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/savedCategory`,
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}summary/user/${user!.user_id}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(newSavedCategory),
+          body: JSON.stringify(changedBudgets),
         }
-      ).then(async (res) => {
-        if (res.ok) {
-          const response = await res.json();
-          return response;
-        }
-      });
-      const expenses: Expense[] = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/category/${category.category_id}/expenses`
-      ).then(async (res) => {
-        if (res.ok) {
-          const response = await res.json();
-          return response;
-        }
-      });
-      expenses.forEach((expense) => {
-        expense.saved_category_id = savedCategory.saved_category_id;
-        expense.category_id = undefined;
+      );
 
-        fetch(
-          `${import.meta.env.VITE_SERVER_URL}/expense/${expense.expense_id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(expense),
-          }
-        );
+      if (!response.ok) {
+        const errorMessage = await response.json();
+        throw Error(errorMessage);
+      }
+
+      return await response.json();
+    },
+    onSuccess: () => {
+      toast({
+        description: "Success updating category budgets.",
       });
-    });
-  };
+    },
+    onError: () => {
+      toast({
+        description: "Error updating budgets",
+      });
+    },
+  });
 
   return (
     <div className="relative z-10 flex h-screen items-center justify-center">
@@ -173,7 +143,7 @@ const WrapupEditCategory = () => {
       </div>
 
       <button
-        onClick={handleSave}
+        onClick={mutate}
         className="bg-green fixed bottom-8 right-8 rounded-full px-6 py-3 text-lg font-bold text-white shadow-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
       >
         Save
