@@ -1,13 +1,9 @@
-"use client";
-
-import { TrendingUp } from "lucide-react";
 import { Pie, PieChart } from "recharts";
 
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -17,46 +13,47 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
-];
+import { SavedCategories } from "@/utils/types";
+import { useEffect, useState } from "react";
+
+interface IPieChartData {
+  category: string;
+  spent: number;
+  bgcolor: string;
+}
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
+  spent: {
+    label: "Spent",
   },
 } satisfies ChartConfig;
 
-export function CategoryGraph() {
+interface CategoryGraphProps {
+  categories: SavedCategories[];
+}
+
+export function CategoryGraph({ categories }: CategoryGraphProps) {
+  const [data, setData] = useState<IPieChartData[]>([]);
+
+  useEffect(() => {
+    const sortedCategories = categories
+      .sort((a, b) => b.amount_spent - a.amount_spent)
+      .slice(0, 5);
+
+    const chartData = sortedCategories.map((category) => ({
+      category: category.category_name,
+      spent: category.amount_spent,
+      bgcolor: category.category_color,
+    }));
+
+    setData(chartData);
+  }, [categories]);
+
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>Most Spent Categories</CardTitle>
+        <CardDescription>Highest Spending Categories</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -69,22 +66,15 @@ export function CategoryGraph() {
               content={<ChartTooltipContent hideLabel />}
             />
             <Pie
-              data={chartData}
-              dataKey="visitors"
-              nameKey="browser"
+              data={data}
+              dataKey="spent"
+              nameKey="category"
               innerRadius={60}
+              fill="#8884d8"
             />
           </PieChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="text-muted-foreground leading-none">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
     </Card>
   );
 }

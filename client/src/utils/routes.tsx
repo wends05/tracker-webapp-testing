@@ -111,15 +111,32 @@ const router = createBrowserRouter([
             element: <Summaries />,
             children: [
               {
-                path: ":weeklysummary_id",
-                element: <Summary />,
-              },
-              {
                 path: "category",
                 children: [
                   {
                     path: ":id",
                     element: <SavedCategoryPage />,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: "weeklysummary/:weeklysummary_id",
+            element: <Summary />,
+            children: [
+              {
+                path: "category",
+                children: [
+                  {
+                    path: ":category_id",
+                    element: <SavedCategoryPage />,
+                    children: [
+                      {
+                        path: "edit",
+                        element: <SavedCategoryPage />, //edit savedcategory here
+                      },
+                    ],
                   },
                 ],
               },
