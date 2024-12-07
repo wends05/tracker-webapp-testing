@@ -55,7 +55,7 @@ export function WeeklyChart({ week }: WeeklyChartProps) {
     queryKey: ["weekchart", week],
     queryFn: async () => {
       const response = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/charts/user/${user.user_id}/week/${week}`
+        `${import.meta.env.VITE_SERVER_URL}/charts/user/${user?.user_id}/week/${week}`
       );
 
       if (!response.ok) {
