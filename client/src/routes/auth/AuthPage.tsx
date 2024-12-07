@@ -28,7 +28,7 @@ const AuthPage = () => {
 
   const [loading, setLoading] = useState(true);
 
-  const handleSubmit = async (ev: FormEvent) => {
+  const handleSubmit = (ev: FormEvent) => {
     ev.preventDefault();
     try {
       if (change === "LOG IN") {

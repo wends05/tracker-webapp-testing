@@ -103,8 +103,6 @@ const CategoryPage = () => {
       spentPercentage: 0,
     });
 
-  const refreshData = () => {};
-
   if (!category || !expenses)
     return (
       <p className="flex h-full items-center justify-center">Please wait...</p>
