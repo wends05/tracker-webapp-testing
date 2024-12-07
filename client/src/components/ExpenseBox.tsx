@@ -18,6 +18,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { useNavigate } from "react-router-dom";
 
 const ExpenseBox = ({
+  date,
   expense_id,
   expense_name,
   price,
@@ -37,6 +38,7 @@ const ExpenseBox = ({
       );
       console.log("Expense ID:", expense_id);
       console.log("Response status:", response.status);
+      console.log(date);
 
       if (!response.ok) {
         const errorResponse = await response.json();
