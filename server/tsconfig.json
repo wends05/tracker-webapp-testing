@@ -10,7 +10,6 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "strictNullChecks": true
   },
-  "extends": "../tsconfig.json",
   "include": [
     "./**/*.ts"
   ] /* Specify the root files and the compiler options in tsconfig.json */,

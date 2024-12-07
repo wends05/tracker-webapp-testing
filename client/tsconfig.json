@@ -9,6 +9,5 @@
     "paths": {
       "@/*": ["./src/*"]
     }
-  },
-  "extends": "../tsconfig.json"
+  }
 }
