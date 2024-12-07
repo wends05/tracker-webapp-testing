@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/carousel";
 import { Category, User } from "@/utils/types";
 import { useLoaderData } from "react-router-dom";
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import getUser from "@/utils/getUser";
 import { toast } from "@/hooks/use-toast";
@@ -38,8 +38,7 @@ const WrapupEditCategory = () => {
   };
 
   const { mutate } = useMutation({
-    mutationFn: async (e: FormEvent) => {
-      e.preventDefault();
+    mutationFn: async () => {
       const changedBudgets = Object.entries(budgets).reduce(
         (acc, [id, budget]) => {
           const originalBudget = categories.find(
@@ -54,13 +53,13 @@ const WrapupEditCategory = () => {
       );
 
       const response = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}summary/user/${user!.user_id}`,
+        `${import.meta.env.VITE_SERVER_URL}/summary/user/${user!.user_id}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(changedBudgets),
+          body: JSON.stringify({ newBudgets: changedBudgets }),
         }
       );
 
@@ -143,7 +142,7 @@ const WrapupEditCategory = () => {
       </div>
 
       <button
-        onClick={mutate}
+        onClick={() => mutate()}
         className="bg-green fixed bottom-8 right-8 rounded-full px-6 py-3 text-lg font-bold text-white shadow-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
       >
         Save

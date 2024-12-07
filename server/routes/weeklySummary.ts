@@ -14,7 +14,7 @@ weeklySummaryRouter.post("/user/:id", async (req: Request, res: Response) => {
   try {
     const { newBudgets } = req.body;
     const { id } = req.params;
-    console.log(id);
+    console.log(newBudgets);
 
     // get recent weekly summary, either from last week or a few weeks ago basta recent
 
@@ -48,7 +48,7 @@ weeklySummaryRouter.post("/user/:id", async (req: Request, res: Response) => {
       };
 
       const { rows: savedCategoryRows } = await pool.query<SavedCategories>(
-        `INSERT INTO "Saved Categories"(category_name, budget, category_color, amount_left, amount_spent, weekly_summary_id, user_id, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+        `INSERT INTO "Saved Categories"(category_name, budget, category_color, amount_left, amount_spent, weekly_summary_id, description) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
         [
           newSavedCategory.category_name,
           newSavedCategory.budget,
@@ -56,7 +56,6 @@ weeklySummaryRouter.post("/user/:id", async (req: Request, res: Response) => {
           newSavedCategory.amount_left,
           newSavedCategory.amount_spent,
           newSavedCategory.weekly_summary_id,
-          id,
           newSavedCategory.description,
         ]
       );
