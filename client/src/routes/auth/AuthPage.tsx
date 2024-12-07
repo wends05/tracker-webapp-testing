@@ -16,7 +16,7 @@ const AuthPage = () => {
       nav("/dashboard");
     }
     setLoading(false);
-  }, [supabaseSession]);
+  }, [nav, supabaseSession]);
   const { toast } = useToast();
 
   const [change, setChange] = useState("LOG IN");

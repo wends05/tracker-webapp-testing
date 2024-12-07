@@ -5,7 +5,7 @@ export type Expense = {
   quantity: number;
   total: number;
   category_id?: number;
-  date: Date;
+  date?: Date;
   saved_category_id?: number;
 };
 
@@ -14,7 +14,6 @@ export type Category = {
   user_id: number;
   category_name: string;
   description: string;
-  date?: Date;
   budget: number;
   category_color: string;
   amount_spent: number;
