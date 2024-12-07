@@ -1,5 +1,11 @@
+import { CategoryGraph } from "@/components/PieChart";
+
 const Summary = () => {
-  return <div>Summary</div>;
+  return (
+    <div>
+      <CategoryGraph />
+    </div>
+  );
 };
 
 export default Summary;
