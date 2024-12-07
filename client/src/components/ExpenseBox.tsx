@@ -38,6 +38,7 @@ const ExpenseBox = ({
       );
       console.log("Expense ID:", expense_id);
       console.log("Response status:", response.status);
+      console.log(date);
 
       if (!response.ok) {
         const errorResponse = await response.json();
@@ -71,11 +72,11 @@ const ExpenseBox = ({
     nav(`expense/${expense_id}/edit`);
   };
 
-  const monthString = new Date(date).toLocaleString("default", {
+  const monthString = new Date(date!).toLocaleString("default", {
     month: "long",
   });
-  const dateString = new Date(date).getDate();
-  const yearString = new Date(date).getFullYear();
+  const dateString = new Date(date!).getDate();
+  const yearString = new Date(date!).getFullYear();
 
   return (
     <div className="flex h-auto flex-row flex-nowrap justify-between border-b-2 border-b-black p-3">

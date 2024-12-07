@@ -25,7 +25,7 @@ const EditCategory = () => {
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
 
-      const final_budget = budget || 0;
+      const final_budget = budget ?? 0;
 
       if (final_budget < category.amount_spent) {
         throw Error(
@@ -194,7 +194,7 @@ const EditCategory = () => {
             type="number"
             id="budget"
             step={0.01}
-            value={budget || ""}
+            value={budget ?? ""}
             onChange={(e) => setBudget(Number(e.target.value) || null)}
             required
             className="block w-full rounded-md border border-gray-300 p-2 focus:ring focus:ring-blue-500"

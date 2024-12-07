@@ -59,7 +59,10 @@ const AddExpense = () => {
         }
       );
       if (!response.ok) {
-        const errorMessage = await response.json();
+        const errorMessage = (await response.json()) as {
+          error: string;
+          message: string;
+        };
         throw Error(errorMessage.error);
       }
     },

@@ -11,13 +11,14 @@ interface IUserContext {
 }
 export const UserContext = createContext<IUserContext>({
   user: null,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   setUser: () => {},
   supabaseSession: null,
 });
 
 export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_KEY!
+  import.meta.env.VITE_SUPABASE_KEY
 );
 
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
@@ -31,7 +32,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setSupabaseSession(session);
       console.log(event);
 
