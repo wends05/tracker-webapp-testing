@@ -1,10 +1,11 @@
 import React, { useState, FormEvent, useEffect } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
+
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Category } from "@/utils/types";
-import getUser from "@/utils/fetchuser";
+import getUser from "@/utils/getUser";
 
 const AddCategory: React.FC = () => {
   const { data: user } = useQuery({
@@ -18,6 +19,7 @@ const AddCategory: React.FC = () => {
 
   const [categoryName, setCategoryName] = useState<string>("");
   const [budget, setBudget] = useState<number>(0);
+  const [description, setDescription] = useState<string>("");
   const [backgroundColor, setBackgroundColor] = useState<string>("");
   const [categoryNameError, setCategoryNameError] = useState<string | null>(
     null
@@ -26,8 +28,8 @@ const AddCategory: React.FC = () => {
   const [budgetError, setBudgetError] = useState<string | null>(null);
 
   const nav = useNavigate();
-  const queryClient = useQueryClient();
 
+  const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
@@ -54,18 +56,22 @@ const AddCategory: React.FC = () => {
         budget: budget || 0,
         category_color: backgroundColor,
         category_name: categoryName,
-        description: "hello world",
+        description: description || "",
         user_id: user!.user_id!,
         amount_left: budget || 0,
         amount_spent: 0,
       };
-      const response = await fetch(`http://localhost:3000/category`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(category),
-      });
+
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/category`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(category),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -76,7 +82,7 @@ const AddCategory: React.FC = () => {
       toast({
         description: "Added category!",
       });
-      returnToDashboard();
+      closeForm();
       queryClient.invalidateQueries({
         queryKey: ["categories"],
       });
@@ -90,12 +96,16 @@ const AddCategory: React.FC = () => {
     },
   });
 
-  const returnToDashboard = () => {
+  const closeForm = () => {
     nav(-1);
   };
 
   return (
     <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center">
+      <div
+        onClick={closeForm}
+        className="absolute h-full w-full bg-black opacity-60"
+      ></div>
       <form
         onSubmit={mutate}
         className="z-10 flex h-max w-full max-w-lg flex-col gap-2 rounded-md bg-white p-5"
@@ -127,15 +137,34 @@ const AddCategory: React.FC = () => {
         </div>
 
         <div>
+          <label
+            htmlFor="description"
+            className="text-sm font-medium text-gray-700"
+          >
+            Description:
+          </label>
+          <input
+            type="text"
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className={`w-full border p-2 ${
+              categoryNameError ? "border-red-600" : "border-gray-300"
+            }`}
+            placeholder="Enter category description"
+          />
+        </div>
+
+        <div>
           <label htmlFor="budget" className="text-sm font-medium text-gray-700">
             Budget:
           </label>
           <input
             type="number"
             id="budget"
-            step={0.01}
-            value={budget}
-            onChange={(e) => setBudget(parseFloat(e.target.value) || budget)}
+            // step={0}
+            // value={budget}
+            onChange={(e) => setBudget(parseFloat(e.target.value) || 0)}
             className={`w-full rounded-lg border p-3 shadow-sm ${
               budgetError ? "border-red-600" : "border-gray-300"
             }`}

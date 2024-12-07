@@ -1,36 +1,74 @@
-import js from "@eslint/js";
 import globals from "globals";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
+import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
+import pluginReact from "eslint-plugin-react";
 
-export default tseslint.config(
-  { ignores: ["dist"] },
-  // shadcn files
+/** @type {import('eslint').Linter.Config[]} */
+export default [
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ["/client/src/hooks/use-toast.ts", "client/src/components/ui/*"],
-    rules: {
-      "@typescript-eslint/no-unused-vars": "off",
+    ignores: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "client/src/components/ui/**",
+      "client/src/hooks/**",
+    ],
+  },
+  { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
+  {
+    languageOptions: {
+      globals: globals.browser,
+      parserOptions: {
+        projectService: {
+          allowDefaultProject: [
+            "client/tsconfig.json",
+            "server/tsconfig.json",
+            "client/*.js",
+            "server/*.js",
+            "eslint.config.js",
+          ],
+        },
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
   },
+  pluginJs.configs.recommended,
+  pluginReact.configs.flat.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
+  ...tseslint.configs.stylisticTypeChecked,
+  ...tseslint.configs.recommended,
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ["**/*.{ts,tsx}"],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
-    },
-    plugins: {
-      "react-hooks": reactHooks,
-      "react-refresh": reactRefresh,
-    },
     rules: {
-      ...reactHooks.configs.recommended.rules,
-      "react-refresh/only-export-components": "off",
+      "react/jsx-uses-react": "off",
+      "react/react-in-jsx-scope": "off",
+      "@typescript-eslint/no-explicit-any": "warn",
+    },
+    files: ["client/**"],
+  },
+  {
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+      "no-undef": "off",
+    },
+    files: ["client/tailwind.config.js", "client/postcss.config.js"],
+  },
+  {
+    rules: {
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-require-imports": "off",
+      "@typescript-eslint/no-unsafe-call": "warn",
     },
-    ignores: ["client/src/hooks/use-toast.ts", "client/src/components/ui/*"],
-  }
-);
+    files: ["**/server/**"],
+  },
+  {
+    rules: {
+      "@typescript-eslint/no-floating-promises": "off",
+      "@typescript-eslint/no-misused-promises": "off",
+      "@typescript-eslint/no-unsafe-assignment": "warn",
+      "@typescript-eslint/no-unsafe-member-access": "warn",
+      "@typescript-eslint/no-unsafe-return": "warn",
+      "@typescript-eslint/no-unsafe-argument": "warn",
+      "@typescript-eslint/prefer-nullish-coalescing": "off",
+      "@typescript-eslint/consistent-type-assertions": "warn",
+    },
+  },
+];

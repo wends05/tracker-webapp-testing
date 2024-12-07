@@ -2,25 +2,42 @@ import { QueryClient } from "@tanstack/react-query";
 import { LoaderFunctionArgs } from "react-router-dom";
 
 export const getCategory = (queryClient: QueryClient) => {
-  return async ({ params: { category } }: LoaderFunctionArgs) => {
+  return async ({ params: { category_id } }: LoaderFunctionArgs) => {
     return await queryClient.ensureQueryData({
-      queryKey: ["category", category],
-      queryFn: () =>
-        fetch(`http://localhost:3000/category/${category}`).then((res) =>
-          res.json()
-        ),
+      queryKey: ["category", category_id],
+      queryFn: async () => {
+        const response = await fetch(
+          `${import.meta.env.VITE_SERVER_URL}/category/${category_id}`
+        );
+
+        console.log(response);
+        if (!response.ok) {
+          const errorMessage = await response.json();
+          throw Error(errorMessage);
+        }
+        const { data } = await response.json();
+        return data;
+      },
     });
   };
 };
 
 export const getExpense = (queryClient: QueryClient) => {
-  return async ({ params: { expense } }: LoaderFunctionArgs) => {
+  return async ({ params: { expense_id } }: LoaderFunctionArgs) => {
     return await queryClient.ensureQueryData({
-      queryKey: ["expense", expense],
-      queryFn: () =>
-        fetch(`http://localhost:3000/expense/${expense}`).then((res) =>
-          res.json()
-        ),
+      queryKey: ["expense", expense_id],
+      queryFn: async () => {
+        const response = await fetch(
+          `${import.meta.env.VITE_SERVER_URL}/expense/${expense_id}`
+        );
+
+        if (!response.ok) {
+          const errorMessage = await response.json();
+          throw Error(errorMessage);
+        }
+        const { data } = await response.json();
+        return data;
+      },
     });
   };
 };

@@ -2,19 +2,20 @@ import { useState, FormEvent } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { Category } from "@/utils/types";
-import { BackendResponse } from "../../../interfaces/BackendResponse";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { Trash } from "lucide-react";
 
 const EditCategory = () => {
-  const { data: category } = useLoaderData() as BackendResponse<Category>;
+  const category = useLoaderData() as Category;
   const nav = useNavigate();
+
+  const queryClient = useQueryClient();
 
   const [categoryName, setCategoryName] = useState<string>(
     category.category_name
   );
-  const [budget, setBudget] = useState<number | 0>(category.budget);
+  const [budget, setBudget] = useState<number | null>(category.budget);
   const [backgroundColor, setBackgroundColor] = useState<string>(
     category.category_color
   );
@@ -24,18 +25,20 @@ const EditCategory = () => {
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
 
-      if (budget < category.amount_spent) {
+      const final_budget = budget ?? 0;
+
+      if (final_budget < category.amount_spent) {
         throw Error(
           `Your budget is lower than your amount spent. Amount spent is ${category.amount_spent}.`
         );
       }
 
-      const newAmountLeft = budget - category.amount_spent;
+      const newAmountLeft = final_budget - category.amount_spent;
 
       const newCategory: Category = {
         category_id: category.category_id,
         category_name: categoryName,
-        budget: budget,
+        budget: final_budget,
         category_color: backgroundColor,
         amount_left: newAmountLeft,
         description: description,
@@ -44,7 +47,7 @@ const EditCategory = () => {
       };
 
       const response = await fetch(
-        `http://localhost:3000/category/${category.category_id}`,
+        `${import.meta.env.VITE_SERVER_URL}/category/${category.category_id}`,
         {
           method: "PUT",
           headers: {
@@ -62,13 +65,21 @@ const EditCategory = () => {
 
     onSuccess: () => {
       toast({
-        description: "WHAHHAHSDHAHSAH",
+        description: "Category edited!",
       });
+      queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["category", category.category_id],
+      });
+      closeForm();
     },
-    onError: () => {
+    onError: (error) => {
       toast({
         variant: "destructive",
-        description: "hindi",
+        title: "Error editing category",
+        description: error.message,
       });
     },
   });
@@ -79,14 +90,14 @@ const EditCategory = () => {
     setBackgroundColor(category.category_color);
   };
 
-  const returnToDashboard = () => {
+  const closeForm = () => {
     nav(-1);
   };
 
   const deleteCategory = useMutation({
     mutationFn: async () => {
       const response = await fetch(
-        `http://localhost:3000/category/${category.category_id}`,
+        `${import.meta.env.VITE_SERVER_URL}/category/${category.category_id}`,
         {
           method: "DELETE",
         }
@@ -98,8 +109,16 @@ const EditCategory = () => {
       }
     },
     onSuccess: () => {
-      toast({ description: "Category successfully deleted" });
-      nav("/dashboard");
+      toast({
+        description: "Category successfully deleted",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["category", category.category_id],
+      });
+      closeForm();
     },
     onError: (error) => {
       toast({
@@ -113,7 +132,7 @@ const EditCategory = () => {
     <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-gray-100">
       <div
         className="absolute h-full w-full bg-black opacity-60"
-        onClick={returnToDashboard}
+        onClick={closeForm}
       ></div>{" "}
       <form
         onSubmit={mutate}
@@ -175,8 +194,8 @@ const EditCategory = () => {
             type="number"
             id="budget"
             step={0.01}
-            value={budget}
-            onChange={(e) => setBudget(Number(e.target.value) || budget)}
+            value={budget ?? ""}
+            onChange={(e) => setBudget(Number(e.target.value) || null)}
             required
             className="block w-full rounded-md border border-gray-300 p-2 focus:ring focus:ring-blue-500"
             placeholder="Enter budget"

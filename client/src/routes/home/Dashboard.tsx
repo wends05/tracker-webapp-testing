@@ -4,7 +4,7 @@ import { BackendResponse } from "@/interfaces/BackendResponse";
 import { Category } from "@/utils/types";
 import CategoryView from "@/components/CategoryView";
 import { useQuery } from "@tanstack/react-query";
-import getUser from "@/utils/fetchuser";
+import getUser from "@/utils/getUser";
 import { WeeklyChart } from "@/components/WeeklyChart";
 
 const Dashboard = () => {
@@ -20,7 +20,7 @@ const Dashboard = () => {
         throw Error("No user provided");
       }
       const response = await fetch(
-        `http://localhost:3000/user/${user.user_id!}/categories`
+        `${import.meta.env.VITE_SERVER_URL}/user/${user.user_id!}/categories`
       );
 
       if (!response.ok) {
@@ -32,22 +32,24 @@ const Dashboard = () => {
       return data;
     },
   });
+
   const [totalBudget, setTotalBudget] = useState(0);
   const [totalSpent, setTotalSpent] = useState(0);
   const [totalNotSpent, settotalNotSpent] = useState(0);
   useEffect(() => {
     if (categories) {
+      console.log(categories);
       setTotalBudget(() => {
-        return categories!.reduce((acc, cat) => acc + cat.budget, 0);
+        return categories.reduce((acc, cat) => acc + cat.budget, 0);
       });
       setTotalSpent(() => {
-        return categories!.reduce(
+        return categories.reduce(
           (acc, category) => acc + category.amount_spent,
           0
         );
       });
       settotalNotSpent(() => {
-        return categories!.reduce(
+        return categories.reduce(
           (acc, category) => acc + category.amount_left,
           0
         );
@@ -56,57 +58,57 @@ const Dashboard = () => {
   }, [categories]);
 
   return !categories ? (
-    <>
-      <h1>Please wait</h1>{" "}
-    </>
+    <div className="min-h-full">
+      <h1 className="">Please wait</h1>{" "}
+    </div>
   ) : (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-full bg-gray-50 p-6">
       {/* Header */}
       <header className="mb-8">
         <h1 className="text-2xl font-bold text-black">
           Welcome, {user?.username} <span className="wave">👋</span>
         </h1>
       </header>
-      {/* Summary Part */}
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-8 px-8 md:grid-cols-3">
         {/* Placeholder for Summary Graph */}
-        <div className="col-span-2 rounded-lg bg-white p-6 shadow md:col-span-2">
+        <div className="shadow-none">
           <WeeklyChart />
         </div>
 
         {/* Money Left */}
-        <div className="flex flex-col justify-center rounded-lg bg-white p-6 shadow">
-          <h2 className="mb-2 text-center text-lg font-medium text-black">
+        <div className="relative col-span-1 flex flex-col justify-center rounded-lg bg-white p-8 shadow-md before:absolute before:inset-5 before:rounded-xl before:border before:border-gray-200 before:shadow-lg">
+          <h2 className="mb-4 text-center text-xl font-medium text-black">
             Money Left
           </h2>
-          <p className="text-center text-4xl font-bold text-black">
+          <p className="text-center text-5xl font-bold text-black">
             {totalNotSpent}
           </p>
         </div>
 
         {/* Budget and Expenses */}
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col justify-center rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-2 text-center text-sm font-medium text-black">
-              {" "}
+        <div className="col-span-1 flex flex-col gap-8">
+          {/* Current Budget */}
+          <div className="relative flex flex-col justify-center rounded-lg bg-white p-6 shadow-xl before:absolute before:inset-5 before:rounded-lg before:border before:border-gray-200 before:shadow-lg">
+            <h2 className="mb-2 text-center text-lg font-medium text-black">
               Current Budget
             </h2>
-            <p className="text-center text-3xl font-bold text-black">
+            <p className="text-center text-4xl font-bold text-black">
               {totalBudget}
             </p>
           </div>
 
           {/* Total Expenses */}
-          <div className="flex flex-col justify-center rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-2 text-center text-sm font-medium text-black">
+          <div className="relative flex flex-col justify-center rounded-lg bg-white p-6 shadow-xl before:absolute before:inset-5 before:rounded-lg before:border before:border-gray-200 before:shadow-lg">
+            <h2 className="mb-2 text-center text-lg font-medium text-black">
               Total Expenses
             </h2>
-            <p className="text-center text-3xl font-bold text-black">
+            <p className="text-center text-4xl font-bold text-black">
               {totalSpent}
             </p>
           </div>
         </div>
       </div>
+
       {/* Categories */}
       <div className="mt-8">
         <h2 className="mb-4 text-lg font-medium text-black">Categories</h2>
@@ -120,10 +122,9 @@ const Dashboard = () => {
           </Link>
 
           {/* Render Existing Categories */}
-          {categories &&
-            categories.map((category) => (
-              <CategoryView category={category} key={category.category_id} />
-            ))}
+          {categories?.map((category) => (
+            <CategoryView category={category} key={category.category_id} />
+          ))}
         </div>
       </div>
       <Outlet />

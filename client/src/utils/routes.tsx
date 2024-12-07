@@ -1,24 +1,26 @@
 import { createBrowserRouter } from "react-router-dom";
 import _Root from "../_Root";
-import Landing from "../routes";
+import Landing from "../routes/Landing";
 import About from "../routes/About";
 import Register from "../routes/auth/AuthPage";
 import NotLoggedIn from "../routes/NotLoggedIn";
 import LayoutPage from "../routes/home/_LayoutPage";
 import Dashboard from "../routes/home/Dashboard";
-import Onboarding from "../routes/home/Onboarding";
 import AddCategory from "../routes/home/categories/AddCategory";
-import Category from "../routes/home/categories/Category";
+import CategoryPage from "../routes/home/categories/CategoryPage";
+// import Expense from "../routes/home/expense/Expense";
 import AddExpense from "../routes/home/expense/AddExpense";
 import Profile from "../routes/home/Profile";
 import Summaries from "../routes/home/summary/Summaries";
 import Summary from "../routes/home/summary/Summary";
-import Saved from "../routes/home/Saved";
+import WrapupEditCategory from "@/routes/home/wrapup/WrapupEditCategory";
 import EditCategory from "../routes/home/categories/EditCategory";
 import EditExpense from "../routes/home/expense/EditExpense";
 import { getCategory, getExpense } from "./loaders";
 import ErrorPage from "../ErrorPage";
 import { queryClient } from "../_Root";
+import WrapupInfoPage from "@/routes/home/wrapup/WrapupInfoPage";
+import SavedCategoryPage from "@/routes/home/summary/SavedCategoryPage";
 
 const router = createBrowserRouter([
   {
@@ -38,10 +40,6 @@ const router = createBrowserRouter([
         element: <NotLoggedIn />,
       },
       {
-        path: "onboarding",
-        element: <Onboarding />,
-      },
-      {
         element: <LayoutPage />,
         errorElement: <ErrorPage />,
         children: [
@@ -57,21 +55,7 @@ const router = createBrowserRouter([
                     element: <AddCategory />,
                   },
                   {
-                    path: ":category/edit",
-                    element: <EditCategory />,
-                    loader: getCategory(queryClient),
-                  },
-                ],
-              },
-              {
-                path: "category",
-                children: [
-                  {
-                    path: "add",
-                    element: <AddCategory />,
-                  },
-                  {
-                    path: ":category/edit",
+                    path: ":category_id/edit",
                     element: <EditCategory />,
                     loader: getCategory(queryClient),
                   },
@@ -83,13 +67,9 @@ const router = createBrowserRouter([
             path: "category",
             children: [
               {
-                path: ":category/edit",
-                element: <EditCategory />,
+                path: ":category_id",
                 loader: getCategory(queryClient),
-              },
-              {
-                path: ":category",
-                element: <Category />,
+                element: <CategoryPage />,
                 children: [
                   {
                     path: "expense",
@@ -99,7 +79,7 @@ const router = createBrowserRouter([
                         element: <AddExpense />,
                       },
                       {
-                        path: ":expense/edit",
+                        path: ":expense_id/edit",
                         element: <EditExpense />,
                         loader: getExpense(queryClient),
                       },
@@ -114,18 +94,36 @@ const router = createBrowserRouter([
             element: <Profile />,
           },
           {
-            path: "weeklysummaries",
-            element: <Summaries />,
+            path: "wrapup",
             children: [
               {
-                path: ":weeklysummary",
-                element: <Summary />,
+                path: "1",
+                element: <WrapupInfoPage />,
+              },
+              {
+                path: "2",
+                element: <WrapupEditCategory />,
               },
             ],
           },
           {
-            path: "saved",
-            element: <Saved />,
+            path: "weeklysummaries",
+            element: <Summaries />,
+            children: [
+              {
+                path: ":weeklysummary_id",
+                element: <Summary />,
+              },
+              {
+                path: "category",
+                children: [
+                  {
+                    path: ":id",
+                    element: <SavedCategoryPage />,
+                  },
+                ],
+              },
+            ],
           },
           {
             path: "/about",
