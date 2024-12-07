@@ -36,6 +36,7 @@ const EditExpense = () => {
         quantity,
         total,
         category_id: expense.category_id,
+        date: expense.date,
       };
 
       const response = await fetch(
