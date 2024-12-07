@@ -17,7 +17,7 @@ const EditExpense = () => {
   const [total, setTotal] = useState(expense.total);
 
   useEffect(() => {
-    const final_price = price || 0;
+    const final_price = price ?? 0;
     setTotal(final_price * quantity);
   }, [price, quantity]);
 
@@ -26,7 +26,7 @@ const EditExpense = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
-      const final_price = price || 0;
+      const final_price = price ?? 0;
 
       // handle form logic
       const newExpense: Expense = {
@@ -108,7 +108,7 @@ const EditExpense = () => {
           type="number"
           id="price"
           name="price"
-          value={price || ""}
+          value={price ?? ""}
           step="0.01"
           onChange={(e) => setPrice(parseFloat(e.target.value) || null)}
         />
