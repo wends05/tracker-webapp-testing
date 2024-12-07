@@ -15,15 +15,23 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-const chartData = [
-  { day: "Sunday", expense: 186 },
-  { day: "Monday", expense: 305 },
-  { day: "Tuesday", expense: 237 },
-  { day: "Wednesday", expense: 73 },
-  { day: "Thursday", expense: 209 },
-  { day: "Friday", expense: 214 },
-  { day: "Saturday", expense: 214 },
-];
+import { useQuery } from "@tanstack/react-query";
+import getUser from "@/utils/getUser";
+import { User } from "@/utils/types";
+
+interface WeekData {
+  day: string;
+  expense: number;
+}
+// const chartData = [
+//   { day: "Sunday", expense: 186 },
+//   { day: "Monday", expense: 305 },
+//   { day: "Tuesday", expense: 237 },
+//   { day: "Wednesday", expense: 73 },
+//   { day: "Thursday", expense: 209 },
+//   { day: "Friday", expense: 214 },
+//   { day: "Saturday", expense: 214 },
+// ];
 
 const chartConfig = {
   expense: {
@@ -32,7 +40,34 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function WeeklyChart() {
+interface WeeklyChartProps {
+  week: number | null;
+}
+
+export function WeeklyChart({ week }: WeeklyChartProps) {
+  const { data: user } = useQuery<User>({
+    queryKey: ["user"],
+    queryFn: getUser,
+  });
+
+  const { data: weeklyData } = useQuery<WeekData[]>({
+    enabled: !!user,
+    queryKey: ["weekchart", week],
+    queryFn: async () => {
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/charts/user/${user.user_id}/week/${week}`
+      );
+
+      if (!response.ok) {
+        const errorMessage = await response.json();
+        throw Error(errorMessage);
+      }
+
+      const { data } = await response.json();
+      return data;
+    },
+  });
+
   return (
     <Card>
       <CardHeader>
@@ -43,7 +78,7 @@ export function WeeklyChart() {
         <ChartContainer config={chartConfig}>
           <BarChart
             accessibilityLayer
-            data={chartData}
+            data={weeklyData}
             width={400} // Set the width
             height={300} // Set the height
           >

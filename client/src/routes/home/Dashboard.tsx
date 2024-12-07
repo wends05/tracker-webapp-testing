@@ -72,7 +72,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 gap-8 px-8 md:grid-cols-3">
         {/* Placeholder for Summary Graph */}
         <div className="shadow-none">
-          <WeeklyChart />
+          <WeeklyChart week={null} />
         </div>
 
         {/* Money Left */}
