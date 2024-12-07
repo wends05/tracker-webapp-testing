@@ -24,7 +24,7 @@ export default [
             "server/tsconfig.json",
             "client/*.js",
             "server/*.js",
-            "*.js",
+            "eslint.config.js",
           ],
         },
         tsconfigRootDir: import.meta.dirname,

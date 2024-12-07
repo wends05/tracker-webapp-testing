@@ -1,4 +1,5 @@
 import ExpenseBox from "@/components/ExpenseBox";
+import { BackendResponse } from "@/interfaces/BackendResponse";
 import { Category, Expense } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -21,11 +22,13 @@ const CategoryPage = () => {
       );
 
       if (!response.ok) {
-        const errorMessage = await response.json();
+        const { message: errorMessage } = (await response.json()) as {
+          message: string;
+        };
         throw Error(errorMessage);
       }
 
-      const { data } = await response.json();
+      const { data } = (await response.json()) as BackendResponse<Category>;
       return data;
     },
   });
@@ -114,7 +117,6 @@ const CategoryPage = () => {
       <h1 className="text-center text-8xl font-bold text-black">
         {category.category_name}
       </h1>
-      <button onClick={refreshData}></button>
       <div className="flex w-full justify-center gap-2">
         <div className="flex w-1/3 flex-col items-center justify-center">
           {" "}

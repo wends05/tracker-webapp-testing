@@ -2,7 +2,7 @@
   "scripts": {
     "prettier": "npx prettier --write .",
     "prepare": "husky",
-    "lint": "eslint ."
+    "lint": "eslint . && tsc --noEmit "
   },
   "devDependencies": {
     "@eslint/js": "^9.16.0",
