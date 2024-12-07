@@ -224,6 +224,7 @@ const CategoryPage = () => {
           sortLowHigh === false &&
           expenses.map((expense: Expense) => (
             <ExpenseBox
+              date={expense.date}
               category_id={expense.category_id}
               price={expense.price}
               expense_name={expense.expense_name}
@@ -238,6 +239,7 @@ const CategoryPage = () => {
           sortHighLow === true &&
           descending.map((expense: Expense) => (
             <ExpenseBox
+              date={expense.date}
               category_id={expense.category_id}
               price={expense.price}
               expense_name={expense.expense_name}
@@ -252,6 +254,7 @@ const CategoryPage = () => {
           sortLowHigh === true &&
           ascending.map((expense: Expense) => (
             <ExpenseBox
+              date={expense.date}
               category_id={expense.category_id}
               price={expense.price}
               expense_name={expense.expense_name}
