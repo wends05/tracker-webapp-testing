@@ -34,7 +34,7 @@ interface CategoryGraphProps {
 
 export function CategoryGraph({ categories }: CategoryGraphProps) {
   const [data, setData] = useState<IPieChartData[]>([]);
-  const [chartConfig, setChartConfig] = useState<ChartConfig>({
+  const [chartConfig] = useState<ChartConfig>({
     spent: {
       label: "Spent",
     },
@@ -51,14 +51,6 @@ export function CategoryGraph({ categories }: CategoryGraphProps) {
       bgcolor: category.category_color,
       fill: category.category_color,
     }));
-
-    setChartConfig((config) => {
-      // do logic for setting chartConfig here
-
-      return {
-        ...config,
-      };
-    });
 
     setData(chartData);
     console.log(chartData);
