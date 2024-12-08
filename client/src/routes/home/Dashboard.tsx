@@ -1,26 +1,27 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { BackendResponse } from "@/interfaces/BackendResponse";
-import { Category } from "@/utils/types";
+import { Category, User } from "@/utils/types";
 import CategoryView from "@/components/CategoryView";
 import { useQuery } from "@tanstack/react-query";
 import getUser from "@/utils/getUser";
 import { WeeklyChart } from "@/components/WeeklyChart";
 
 const Dashboard = () => {
-  const { data: user } = useQuery({
+  const { data: user } = useQuery<User>({
     queryKey: ["user"],
     queryFn: getUser,
   });
 
   const { data: categories } = useQuery({
     queryKey: ["categories"],
+    enabled: !!user,
     queryFn: async () => {
       if (!user) {
         throw Error("No user provided");
       }
       const response = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/user/${user.user_id!}/categories`
+        `${import.meta.env.VITE_SERVER_URL}/user/${user.user_id}/categories`
       );
 
       if (!response.ok) {
@@ -36,6 +37,7 @@ const Dashboard = () => {
   const [totalBudget, setTotalBudget] = useState(0);
   const [totalSpent, setTotalSpent] = useState(0);
   const [totalNotSpent, settotalNotSpent] = useState(0);
+
   useEffect(() => {
     if (categories) {
       console.log(categories);
