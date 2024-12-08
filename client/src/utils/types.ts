@@ -30,8 +30,9 @@ export interface WeeklySummary {
 }
 
 export interface SavedCategories {
-  saved_category_id: number;
+  saved_category_id?: number;
   category_name: string;
+  description: string;
   budget: number;
   category_color: string;
   amount_left: number;

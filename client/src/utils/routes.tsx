@@ -16,7 +16,7 @@ import Summary from "../routes/home/summary/Summary";
 import WrapupEditCategory from "@/routes/home/wrapup/WrapupEditCategory";
 import EditCategory from "../routes/home/categories/EditCategory";
 import EditExpense from "../routes/home/expense/EditExpense";
-import { getCategory, getExpense } from "./loaders";
+import { getCategory, getExpense, getPreviousWeekCategories } from "./loaders";
 import ErrorPage from "../ErrorPage";
 import { queryClient } from "../_Root";
 import WrapupInfoPage from "@/routes/home/wrapup/WrapupInfoPage";
@@ -110,6 +110,7 @@ const router = createBrowserRouter([
               {
                 path: "2",
                 element: <WrapupEditCategory />,
+                loader: getPreviousWeekCategories(queryClient),
               },
             ],
           },
