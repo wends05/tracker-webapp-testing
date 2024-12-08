@@ -21,6 +21,8 @@ import ErrorPage from "../ErrorPage";
 import { queryClient } from "../_Root";
 import WrapupInfoPage from "@/routes/home/wrapup/WrapupInfoPage";
 import SavedCategoryPage from "@/routes/home/summary/SavedCategoryPage";
+import EditSavedCategory from "@/routes/home/summary/EditSavedCategory";
+import EditSavedExpense from "@/routes/home/summary/EditSavedExpense";
 
 const router = createBrowserRouter([
   {
@@ -72,6 +74,11 @@ const router = createBrowserRouter([
                 element: <CategoryPage />,
                 children: [
                   {
+                    path: "edit",
+                    element: <EditCategory />,
+                    loader: getCategory(queryClient),
+                  },
+                  {
                     path: "expense",
                     children: [
                       {
@@ -109,19 +116,24 @@ const router = createBrowserRouter([
           {
             path: "weeklysummaries",
             element: <Summaries />,
+          },
+          {
+            path: "weeklysummary/:weeklysummary_id",
+            element: <Summary />,
             children: [
               {
-                path: ":weeklysummary_id",
-                element: <Summary />,
+                path: "category/:category_id/edit",
+                element: <EditSavedCategory />, // edit saved category
               },
+            ],
+          },
+          {
+            path: "savedcategory/:saved_category_id",
+            element: <SavedCategoryPage />,
+            children: [
               {
-                path: "category",
-                children: [
-                  {
-                    path: ":id",
-                    element: <SavedCategoryPage />,
-                  },
-                ],
+                path: "expense/:expense_id/edit",
+                element: <EditSavedExpense />,
               },
             ],
           },
