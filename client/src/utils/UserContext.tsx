@@ -2,7 +2,7 @@ import { createClient, Session } from "@supabase/supabase-js";
 import React, { createContext, useEffect, useState } from "react";
 import { User } from "./types";
 import { queryClient } from "@/_Root";
-import getUser from "./fetchuser";
+import getUser from "./getUser";
 
 interface IUserContext {
   user: User | null;
@@ -11,13 +11,14 @@ interface IUserContext {
 }
 export const UserContext = createContext<IUserContext>({
   user: null,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   setUser: () => {},
   supabaseSession: null,
 });
 
 export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_KEY!
+  import.meta.env.VITE_SUPABASE_KEY
 );
 
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
@@ -25,24 +26,21 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [supabaseSession, setSupabaseSession] = useState<Session | null>(null);
 
   useEffect(() => {
-    const getDBUser = () =>
-      queryClient.ensureQueryData({
-        queryKey: ["user"],
-        queryFn: getUser,
-      });
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSupabaseSession(session);
-      getDBUser();
     });
+
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setSupabaseSession(session);
+      console.log(event);
 
-      // console.log(ev);
       if (event == "SIGNED_IN") {
-        const user = await getDBUser();
-        setUser(user);
+        queryClient.ensureQueryData({
+          queryKey: ["user"],
+          queryFn: getUser,
+        });
       }
 
       if (event == "SIGNED_OUT") {

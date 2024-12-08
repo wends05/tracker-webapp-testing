@@ -1,12 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
 import _Root from "../_Root";
-import Landing from "../routes";
+import Landing from "../routes/Landing";
 import About from "../routes/About";
 import Register from "../routes/auth/AuthPage";
 import NotLoggedIn from "../routes/NotLoggedIn";
 import LayoutPage from "../routes/home/_LayoutPage";
 import Dashboard from "../routes/home/Dashboard";
-import Onboarding from "../routes/home/Onboarding";
 import AddCategory from "../routes/home/categories/AddCategory";
 import CategoryPage from "../routes/home/categories/CategoryPage";
 // import Expense from "../routes/home/expense/Expense";
@@ -14,13 +13,16 @@ import AddExpense from "../routes/home/expense/AddExpense";
 import Profile from "../routes/home/Profile";
 import Summaries from "../routes/home/summary/Summaries";
 import Summary from "../routes/home/summary/Summary";
-import WrapupEditCategory from "@/routes/home/summary/WrapupEditCategory";
-import Saved from "../routes/home/Saved";
+import WrapupEditCategory from "@/routes/home/wrapup/WrapupEditCategory";
 import EditCategory from "../routes/home/categories/EditCategory";
 import EditExpense from "../routes/home/expense/EditExpense";
-import { getCategory, getExpense } from "./loaders";
+import { getCategory, getExpense, getPreviousWeekCategories } from "./loaders";
 import ErrorPage from "../ErrorPage";
 import { queryClient } from "../_Root";
+import WrapupInfoPage from "@/routes/home/wrapup/WrapupInfoPage";
+import SavedCategoryPage from "@/routes/home/summary/SavedCategoryPage";
+import EditSavedCategory from "@/routes/home/summary/EditSavedCategory";
+import EditSavedExpense from "@/routes/home/summary/EditSavedExpense";
 
 const router = createBrowserRouter([
   {
@@ -38,10 +40,6 @@ const router = createBrowserRouter([
       {
         path: "not-logged-in",
         element: <NotLoggedIn />,
-      },
-      {
-        path: "onboarding",
-        element: <Onboarding />,
       },
       {
         element: <LayoutPage />,
@@ -76,6 +74,11 @@ const router = createBrowserRouter([
                 element: <CategoryPage />,
                 children: [
                   {
+                    path: "edit",
+                    element: <EditCategory />,
+                    loader: getCategory(queryClient),
+                  },
+                  {
                     path: "expense",
                     children: [
                       {
@@ -99,21 +102,41 @@ const router = createBrowserRouter([
           },
           {
             path: "wrapup",
-            element: <WrapupEditCategory />,
-          },
-          {
-            path: "weeklysummaries",
-            element: <Summaries />,
             children: [
               {
-                path: ":weeklysummary_id",
-                element: <Summary />,
+                path: "1",
+                element: <WrapupInfoPage />,
+              },
+              {
+                path: "2",
+                element: <WrapupEditCategory />,
+                loader: getPreviousWeekCategories(queryClient),
               },
             ],
           },
           {
-            path: "saved",
-            element: <Saved />,
+            path: "weeklysummaries",
+            element: <Summaries />,
+          },
+          {
+            path: "weeklysummary/:weeklysummary_id",
+            element: <Summary />,
+            children: [
+              {
+                path: "category/:category_id/edit",
+                element: <EditSavedCategory />, // edit saved category
+              },
+            ],
+          },
+          {
+            path: "savedcategory/:saved_category_id",
+            element: <SavedCategoryPage />,
+            children: [
+              {
+                path: "expense/:expense_id/edit",
+                element: <EditSavedExpense />,
+              },
+            ],
           },
           {
             path: "/about",

@@ -23,10 +23,6 @@ const navLinks = [
     path: "/weeklysummaries",
   },
   {
-    name: "Saved Expenses",
-    path: "/saved",
-  },
-  {
     name: "About Us",
     path: "/about",
   },
@@ -46,7 +42,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="z-50">
+    <div className="z-20">
       <header className="bg-vanilla flex h-16 w-full items-center justify-between px-16 text-black drop-shadow-md">
         <button onClick={toggleMenu} className="text-2xl">
           <FontAwesomeIcon icon={faBarsProgress} />

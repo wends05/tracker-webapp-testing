@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { pool } from "../db";
-import Expense from "../types/Expense";
+import { Expense } from "../utils/types";
 import recalculateCategoryExpenses from "../utils/recalculateCategoryExpenses";
 import recalculatedWeekCategories from "../utils/recalculateWeekSummaryWithExpenses";
 
@@ -8,8 +8,14 @@ const expenseRouter = express.Router();
 
 expenseRouter.post("", async (req: Request, res: Response) => {
   try {
-    const { expense_name, price, quantity, total, category_id }: Expense =
+    const { expense_name, price, quantity, total, category_id, date }: Expense =
       req.body;
+
+    console.log("date: ", date);
+
+    if (!category_id) {
+      throw Error("Category ID is required.");
+    }
     const budget = await pool.query(
       'SELECT amount_left FROM "Category" WHERE category_id= $1',
       [category_id]
@@ -22,10 +28,9 @@ expenseRouter.post("", async (req: Request, res: Response) => {
     }
 
     const result = await pool.query(
-      `INSERT INTO "Expense" (expense_name, price, quantity, total, category_id) VALUES($1, $2, $3, $4, $5) RETURNING *`,
-      [expense_name, price, quantity, total, category_id]
+      `INSERT INTO "Expense" (expense_name, price, quantity, total, category_id, date) VALUES($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [expense_name, price, quantity, total, category_id, date]
     );
-
     await recalculateCategoryExpenses({
       pool,
       category_id,
@@ -69,14 +74,19 @@ expenseRouter.get("/:id", async (req: Request, res: Response) => {
 expenseRouter.put("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { expense_name, price, quantity, total }: Expense = req.body;
+    const { expense_name, price, quantity, total, category_id, date }: Expense =
+      req.body;
+
+    console.log("date: ", date);
 
     const data = await pool.query(
-      'UPDATE "Expense" SET expense_name = $1, price = $2, quantity = $3, total = $4 WHERE expense_id = $5 RETURNING *',
-      [expense_name, price, quantity, total, id]
+      `UPDATE "Expense" SET expense_name = $1, price = $2, quantity = $3, total = $4, date = $5 WHERE expense_id = $6 RETURNING *`,
+      [expense_name, price, quantity, total, date, id]
     );
 
-    const { category_id } = data.rows[0] as Expense;
+    if (!category_id) {
+      throw Error("Category ID is required.");
+    }
 
     await recalculateCategoryExpenses({
       pool,
@@ -108,6 +118,10 @@ expenseRouter.delete("/:id", async (req: Request, res: Response) => {
     );
 
     const { category_id } = deletedExpenseResult.rows[0] as Expense;
+
+    if (!category_id) {
+      throw Error("Category ID is required.");
+    }
 
     await recalculateCategoryExpenses({
       pool,

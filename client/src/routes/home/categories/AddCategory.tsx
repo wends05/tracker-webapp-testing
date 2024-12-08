@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Category } from "@/utils/types";
-import getUser from "@/utils/fetchuser";
+import getUser from "@/utils/getUser";
 
 const AddCategory: React.FC = () => {
   const { data: user } = useQuery({
@@ -61,6 +61,7 @@ const AddCategory: React.FC = () => {
         amount_left: budget || 0,
         amount_spent: 0,
       };
+
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/category`,
         {

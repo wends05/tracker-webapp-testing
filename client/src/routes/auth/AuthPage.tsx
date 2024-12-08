@@ -8,11 +8,19 @@ import { useToast } from "@/hooks/use-toast";
 // import { ToastAction } from "@/components/ui/toast"
 
 const AuthPage = () => {
+  const { supabaseSession } = useContext(UserContext);
+  const nav = useNavigate();
+
+  useEffect(() => {
+    if (supabaseSession) {
+      nav("/dashboard");
+    }
+    setLoading(false);
+  }, [nav, supabaseSession]);
   const { toast } = useToast();
 
   const [change, setChange] = useState("LOG IN");
   const { setUser } = useContext(UserContext);
-  const nav = useNavigate();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -20,17 +28,7 @@ const AuthPage = () => {
 
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    supabase.auth.getSession().then((res) => {
-      if (res.data.session) {
-        nav("/dashboard");
-      } else {
-        setLoading(false);
-      }
-    });
-  }, [nav]);
-
-  const handleSubmit = async (ev: FormEvent) => {
+  const handleSubmit = (ev: FormEvent) => {
     ev.preventDefault();
     try {
       if (change === "LOG IN") {
@@ -74,7 +72,7 @@ const AuthPage = () => {
 
     // get user from database
     const fetchedUser = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/user?email=${email}`
+      `http://localhost:3000/user?email=${email}`
     );
 
     if (fetchedUser.status === 200) {
@@ -99,6 +97,14 @@ const AuthPage = () => {
       throw new Error("Empty username");
     }
 
+    // const fetchedUser = await fetch(
+    //   `http://localhost:3000/user?email=${email}`
+    // );
+
+    // if (fetchedUser.status === 200) {
+    //   throw new Error("User already exists");
+    // }
+
     const { error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
@@ -119,7 +125,7 @@ const AuthPage = () => {
   };
 
   const createUser = async () => {
-    return await fetch(`${import.meta.env.VITE_SERVER_URL}/user`, {
+    return await fetch(`http://localhost:3000/user`, {
       method: "POST",
       body: JSON.stringify({ username, email }),
       headers: {

@@ -4,7 +4,7 @@ import { BackendResponse } from "@/interfaces/BackendResponse";
 import { Category } from "@/utils/types";
 import CategoryView from "@/components/CategoryView";
 import { useQuery } from "@tanstack/react-query";
-import getUser from "@/utils/fetchuser";
+import getUser from "@/utils/getUser";
 
 const Dashboard = () => {
   const { data: user } = useQuery({
@@ -37,17 +37,18 @@ const Dashboard = () => {
   const [totalNotSpent, settotalNotSpent] = useState(0);
   useEffect(() => {
     if (categories) {
+      console.log(categories);
       setTotalBudget(() => {
-        return categories!.reduce((acc, cat) => acc + cat.budget, 0);
+        return categories.reduce((acc, cat) => acc + cat.budget, 0);
       });
       setTotalSpent(() => {
-        return categories!.reduce(
+        return categories.reduce(
           (acc, category) => acc + category.amount_spent,
           0
         );
       });
       settotalNotSpent(() => {
-        return categories!.reduce(
+        return categories.reduce(
           (acc, category) => acc + category.amount_left,
           0
         );
@@ -134,7 +135,7 @@ const Dashboard = () => {
                 <CategoryView category={category} key={category.category_id} />
               ))}
             </div>
-          )}
+          )}{" "}
         </div>
         <Outlet />
       </div>
