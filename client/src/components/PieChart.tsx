@@ -22,11 +22,11 @@ interface IPieChartData {
   bgcolor: string;
 }
 
-const chartConfig = {
-  spent: {
-    label: "Spent",
-  },
-} satisfies ChartConfig;
+// const chartConfig = {
+//   spent: {
+//     label: "Spent",
+//   },
+// } satisfies ChartConfig;
 
 interface CategoryGraphProps {
   categories: SavedCategories[];
@@ -34,6 +34,11 @@ interface CategoryGraphProps {
 
 export function CategoryGraph({ categories }: CategoryGraphProps) {
   const [data, setData] = useState<IPieChartData[]>([]);
+  const [chartConfig, setChartConfig] = useState<ChartConfig>({
+    spent: {
+      label: "Spent",
+    },
+  });
 
   useEffect(() => {
     const sortedCategories = categories
@@ -46,7 +51,16 @@ export function CategoryGraph({ categories }: CategoryGraphProps) {
       bgcolor: category.category_color,
     }));
 
+    setChartConfig((config) => {
+      // do logic for setting chartConfig here
+
+      return {
+        ...config,
+      };
+    });
+
     setData(chartData);
+    console.log(chartData);
   }, [categories]);
 
   return (
@@ -70,7 +84,7 @@ export function CategoryGraph({ categories }: CategoryGraphProps) {
               dataKey="spent"
               nameKey="category"
               innerRadius={60}
-              fill="#8884d8"
+              fill="bgcolor"
             />
           </PieChart>
         </ChartContainer>

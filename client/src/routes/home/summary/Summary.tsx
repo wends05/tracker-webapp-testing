@@ -1,12 +1,12 @@
 import { CategoryGraph } from "@/components/PieChart";
 import { BackendResponse } from "@/interfaces/BackendResponse";
 import getUser from "@/utils/getUser";
-import { SavedCategories } from "@/utils/types";
+import { SavedCategories, User } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
 const Summary = () => {
-  const { data: user } = useQuery({
+  const { data: user } = useQuery<User>({
     queryKey: ["user"],
     queryFn: getUser,
   });
@@ -35,8 +35,10 @@ const Summary = () => {
 
   return (
     <div>
-      {weeklySummaryCategories && (
+      {weeklySummaryCategories ? (
         <CategoryGraph categories={weeklySummaryCategories} />
+      ) : (
+        <div>Loading...</div>
       )}
     </div>
   );
