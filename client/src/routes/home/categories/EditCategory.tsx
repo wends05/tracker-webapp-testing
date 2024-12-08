@@ -165,7 +165,7 @@ const EditCategory = () => {
               value={categoryName}
               onChange={(e) => setCategoryName(e.target.value)}
               required
-              className="border-darkCopper h-auto w-full rounded-2xl border p-2 shadow-sm focus:ring-blue-500"
+              className="border-darkCopper focus:ring-green h-auto w-full rounded-2xl border p-2 shadow-sm"
               placeholder="Enter category name"
             />
           </div>
@@ -180,10 +180,10 @@ const EditCategory = () => {
               type="number"
               id="budget"
               step={0.01}
-              value={budget}
+              value={budget ?? ""}
               onChange={(e) => setBudget(Number(e.target.value) || budget)}
               required
-              className="border-darkCopper block w-full rounded-2xl border p-2 focus:ring focus:ring-blue-500"
+              className="border-darkCopper focus:ring-green block w-full rounded-2xl border p-2 focus:ring"
               placeholder="Enter budget"
             />
           </div>
@@ -204,12 +204,12 @@ const EditCategory = () => {
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="border-darkCopper h-20 w-full resize-none rounded-2xl border p-4 focus:ring focus:ring-blue-500"
+            className="border-darkCopper focus:ring-green h-20 w-full resize-none rounded-2xl border p-4 focus:ring"
             placeholder="Enter category description"
           />
         </div>
 
-        <div>
+        {/* <div>
           <label htmlFor="budget" className="text-sm font-medium text-gray-700">
             Budget
           </label>
@@ -220,10 +220,10 @@ const EditCategory = () => {
             value={budget ?? ""}
             onChange={(e) => setBudget(Number(e.target.value) || null)}
             required
-            className="block w-full rounded-md border border-gray-300 p-2 focus:ring focus:ring-blue-500"
+            className="block w-full rounded-md border border-gray-300 p-2 focus:ring focus:ring-green"
             placeholder="Enter budget"
           />
-        </div>
+        </div> */}
 
         <div>
           <label className="text-sm font-medium text-gray-700">
