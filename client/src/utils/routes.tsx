@@ -22,7 +22,6 @@ import { queryClient } from "../_Root";
 import WrapupInfoPage from "@/routes/home/wrapup/WrapupInfoPage";
 import SavedCategoryPage from "@/routes/home/summary/SavedCategoryPage";
 import EditSavedCategory from "@/routes/home/summary/EditSavedCategory";
-import EditSavedExpense from "@/routes/home/summary/EditSavedExpense";
 
 const router = createBrowserRouter([
   {
@@ -134,7 +133,8 @@ const router = createBrowserRouter([
             children: [
               {
                 path: "expense/:expense_id/edit",
-                element: <EditSavedExpense />,
+                element: <EditExpense />,
+                loader: getExpense(queryClient),
               },
             ],
           },
