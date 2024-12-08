@@ -24,16 +24,21 @@ const WrapupInfoPage = () => {
             </h4>
 
             <div className="mt-7 flex gap-12 font-semibold">
-              <h3 className="">
-                You saved <br></br>
-                *insert saved here* <br></br>
-                *percent* of your budget
-              </h3>
-              <h3>
-                You spent <br></br>
-                *insert spent* <br></br>
-                *percent* of your budget
-              </h3>
+              <div>
+                <h3 className="font-semibold">You saved</h3>
+                <br></br>
+                <h4 className="text-lime-600">*insert saved here*</h4>
+                <br></br>
+                <h4>*percent* of your budget</h4>
+              </div>
+
+              <div>
+                <h3 className="font-semibold">You spent</h3>
+                <br></br>
+                <h4 className="text-red-700">*insert spent*</h4>
+                <br></br>
+                <h4>*percent* of your budget</h4>
+              </div>
             </div>
           </div>
         </div>
