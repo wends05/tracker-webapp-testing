@@ -4,6 +4,7 @@ import { pool } from "./db";
 import userRouter from "./routes/users";
 import cors from "cors";
 import expenseRouter from "./routes/expense";
+import weeklySummaryRouter from "./routes/weeklySummary";
 import chartRouter from "./routes/charts";
 
 const app = express();
@@ -15,6 +16,7 @@ app.use("/expense", expenseRouter);
 app.use("/category", categoryRouter);
 app.use("/user", userRouter);
 app.use("/expense", expenseRouter);
+app.use("/summary", weeklySummaryRouter);
 app.use("/charts", chartRouter);
 
 app.get("/", (req: Request, res: Response) => {

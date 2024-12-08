@@ -15,6 +15,7 @@ const EditExpense = () => {
   const [price, setPrice] = useState<number | null>(expense.price);
   const [quantity, setQuantity] = useState(expense.quantity);
   const [total, setTotal] = useState(expense.total);
+  const [timeDate, setTimeDate] = useState(new Date(expense.date!));
 
   useEffect(() => {
     const final_price = price ?? 0;
@@ -27,6 +28,7 @@ const EditExpense = () => {
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
       const final_price = price ?? 0;
+      console.log("date: ", timeDate);
 
       // handle form logic
       const newExpense: Expense = {
@@ -36,7 +38,10 @@ const EditExpense = () => {
         quantity,
         total,
         category_id: expense.category_id,
+        date: new Date(timeDate),
       };
+
+      console.log(newExpense);
 
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/expense/${expense.expense_id}`,
@@ -92,45 +97,64 @@ const EditExpense = () => {
       ></div>
       <form
         onSubmit={mutate}
-        className="z-10 flex w-full max-w-sm flex-col items-center justify-center gap-2 rounded-lg bg-neutral-600 px-2 py-10 text-white"
+        className="z-10 flex h-max w-full max-w-sm flex-col items-center justify-center gap-2 rounded-lg bg-neutral-600 px-2 py-10 text-white"
       >
-        <label htmlFor="name">Name</label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        <div className="flex flex-col gap-2">
+          <label htmlFor="name">Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
 
-        <label htmlFor="price">Price</label>
-        <input
-          type="number"
-          id="price"
-          name="price"
-          value={price ?? ""}
-          step="0.01"
-          onChange={(e) => setPrice(parseFloat(e.target.value) || null)}
-        />
+        <div className="flex flex-col gap-2">
+          <label htmlFor="price">Price</label>
+          <input
+            type="number"
+            id="price"
+            name="price"
+            value={price ?? ""}
+            step="0.01"
+            onChange={(e) => setPrice(parseFloat(e.target.value) || null)}
+          />
+        </div>
 
-        <label htmlFor="quantity">Quantity</label>
-        <input
-          type="text"
-          id="quantity"
-          name="quantity"
-          value={quantity === 0 ? "" : quantity}
-          onChange={(e) => setQuantity(parseInt(e.target.value) || 0)}
-        />
+        <div className="flex flex-col gap-2">
+          <label htmlFor="quantity">Quantity</label>
+          <input
+            type="text"
+            id="quantity"
+            name="quantity"
+            value={quantity === 0 ? "" : quantity}
+            onChange={(e) => setQuantity(parseInt(e.target.value) || 0)}
+          />
+        </div>
 
-        <label htmlFor="total">Total</label>
-        <input
-          type="text"
-          id="total"
-          name="quantity"
-          value={total ? total.toFixed(2) : 0}
-          disabled
-        />
+        <div className="flex flex-col gap-2">
+          <label htmlFor="datetime">Select Date and Time:</label>
+          <input
+            type="date"
+            id="datetime"
+            name="timeDate"
+            value={timeDate.toISOString().split("T")[0]}
+            onChange={(e) => setTimeDate(new Date(e.target.value))}
+            required
+          />
+        </div>
 
+        <div className="flex flex-col gap-2">
+          <label htmlFor="total">Total</label>
+          <input
+            type="text"
+            id="total"
+            name="quantity"
+            value={total ? total.toFixed(2) : 0}
+            disabled
+          />
+        </div>
         <button type="submit" disabled={isPending}>
           Edit Expense
         </button>
