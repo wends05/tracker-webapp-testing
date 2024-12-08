@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { pool } from "../db";
-import groupExpensesByDay from "../utils/GroupExpensesByDay";
+import groupExpensesByDay from "../utils/groupExpensesByDay";
 
 const chartRouter = express.Router();
 
