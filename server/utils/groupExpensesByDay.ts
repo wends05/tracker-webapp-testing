@@ -22,13 +22,11 @@ export default function groupExpensesByDay(expenses: Expense[]): any[] {
     {} as Record<string, number>
   );
 
-  // convert the for loop into a .map / .foreach / .reduce
-
-  for (const expense of expenses) {
-    const date = new Date(expense.date!); // Parse the ISO date string
-    const dayOfWeek = daysOfWeek[date.getUTCDay()]; // Get the day of the week (0 = Sunday, ..., 6 = Saturday)
-    groupedExpenses[dayOfWeek] += expense.total; // Sum the total expense for that day
-  }
+  expenses.forEach((expense) => {
+    const date = new Date(expense.date!);
+    const dayOfWeek = daysOfWeek[date.getUTCDay()];
+    groupedExpenses[dayOfWeek] += expense.total;
+  });
 
   // Convert the grouped data into the desired format
   return daysOfWeek.map((day) => ({
