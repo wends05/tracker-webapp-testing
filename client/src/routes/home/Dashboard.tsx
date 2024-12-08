@@ -130,13 +130,9 @@ const Dashboard = () => {
               </Link>
 
               {/* Render Existing Categories */}
-              {categories &&
-                categories.map((category) => (
-                  <CategoryView
-                    category={category}
-                    key={category.category_id}
-                  />
-                ))}
+              {categories?.map((category) => (
+                <CategoryView category={category} key={category.category_id} />
+              ))}
             </div>
           )}
         </div>
