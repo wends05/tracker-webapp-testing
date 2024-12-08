@@ -2,8 +2,6 @@ import express, { Request, Response } from "express";
 import { pool } from "../db";
 import { SavedCategories } from "../utils/types";
 
-// import expenseRouter from "./expense";
-
 const savedCategoriesRouter = express.Router();
 
 savedCategoriesRouter.get("/:id", async (req: Request, res: Response) => {
@@ -67,5 +65,27 @@ savedCategoriesRouter.put("/:id", async (req: Request, res: Response) => {
     });
   }
 });
+
+savedCategoriesRouter.get(
+  "/:id/expenses",
+  async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+
+      const { rows } = await pool.query(
+        `SELECT * FROM "Expense" WHERE saved_category_id = $1`,
+        [id]
+      );
+
+      res.status(200).json({
+        data: rows,
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        error,
+      });
+    }
+  }
+);
 
 export default savedCategoriesRouter;
