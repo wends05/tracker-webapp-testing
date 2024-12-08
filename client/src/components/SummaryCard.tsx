@@ -10,7 +10,7 @@ const WeeklySummaryCard = ({ summary }: { summary: WeeklySummary }) => {
 
   return (
     <Link to={`/weeklysummary/${summary.weekly_summary_id}`}>
-      <div className="border-green hover:bg-green group relative ml-14 mr-14 flex items-center rounded-xl border-2 bg-none p-6 transition-transform duration-300 ease-in-out hover:translate-y-[-5px] hover:text-white hover:shadow-xl">
+      <div className="border-green hover:bg-green group relative mb-10 ml-14 mr-14 flex items-center rounded-xl border-2 bg-none p-6 transition-transform duration-300 ease-in-out hover:translate-y-[-5px] hover:text-white hover:shadow-xl">
         {/* Chart Container */}
         <div className="bg-green h-72 w-1/3 transition-colors duration-300 group-hover:bg-white"></div>
         {/* Start and End Date */}
