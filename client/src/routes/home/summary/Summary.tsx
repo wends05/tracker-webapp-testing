@@ -34,12 +34,30 @@ const Summary = () => {
   });
 
   return (
-    <div>
-      {weeklySummaryCategories ? (
-        <CategoryGraph categories={weeklySummaryCategories} />
-      ) : (
-        <div>Loading...</div>
-      )}
+    <div className="pl-5 pr-5 pt-5">
+      <h1 className="pb-2 font-bold">*Insert Date*</h1>
+      <hr className="border-t-2 border-slate-900 pl-2 pr-2 pt-2" />
+      <div>
+        {/*graphs */}
+        <div className="mt-6 flex gap-40">
+          {weeklySummaryCategories ? (
+            <div>
+              <CategoryGraph categories={weeklySummaryCategories} />
+            </div>
+          ) : (
+            <div>Loading...</div>
+          )}
+          <div className="h-[15rem] w-[30rem] bg-slate-700 text-white">
+            insert ang graph here
+          </div>
+        </div>
+
+        {/* Categories section */}
+        <div className="mt-4">
+          <h4 className="text-lg font-medium">Categories</h4>
+          <div>Insert Categories</div>
+        </div>
+      </div>
     </div>
   );
 };
