@@ -141,7 +141,7 @@ weeklySummaryRouter.get("/user/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { rows } = await pool.query(
-      'SELECT * FROM "Weekly Summary" WHERE user_id = $1 ORDER BY weekly_summary_id DESC',
+      `SELECT * FROM "Weekly Summary" WHERE user_id = $1 ORDER BY weekly_summary_id DESC`,
       [id]
     );
     res.status(200).json({
