@@ -1,6 +1,6 @@
 import { Category } from "@/utils/types";
 import { Link } from "react-router-dom";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import { PencilLine } from "lucide-react";
 
 const CategoryView = (category: { category: Category }) => {
   const { category_id, category_color, category_name, budget } =
@@ -24,7 +24,7 @@ const CategoryView = (category: { category: Category }) => {
         className="absolute right-2 top-2 rounded px-2 py-1 text-xs text-white hover:text-rose-600"
         to={`category/${category_id}/edit`}
       >
-        <PencilSquareIcon className="h-6 w-6" />
+        <PencilLine className="h-6 w-6" />
       </Link>
     </div>
   );
