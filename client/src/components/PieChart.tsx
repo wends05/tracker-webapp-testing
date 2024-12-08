@@ -49,6 +49,7 @@ export function CategoryGraph({ categories }: CategoryGraphProps) {
       category: category.category_name,
       spent: category.amount_spent,
       bgcolor: category.category_color,
+      fill: category.category_color,
     }));
 
     setChartConfig((config) => {
@@ -84,7 +85,6 @@ export function CategoryGraph({ categories }: CategoryGraphProps) {
               dataKey="spent"
               nameKey="category"
               innerRadius={60}
-              fill="bgcolor"
             />
           </PieChart>
         </ChartContainer>
