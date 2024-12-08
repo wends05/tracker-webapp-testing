@@ -15,7 +15,7 @@ const LayoutPage = () => {
   }, [nav]);
 
   return (
-    <div className="relative flex h-screen flex-col">
+    <div className="flex h-screen flex-col">
       <Drawer />
       <div className="h-full">
         <Outlet />
