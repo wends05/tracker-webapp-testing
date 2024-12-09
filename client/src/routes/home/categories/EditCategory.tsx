@@ -21,7 +21,7 @@ const EditCategory = () => {
   );
 
   const [description, setDescription] = useState<string>("");
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
 
@@ -68,15 +68,15 @@ const EditCategory = () => {
       queryClient.invalidateQueries({
         queryKey: ["categories"],
       });
-      queryClient.invalidateQueries({
+      queryClient.refetchQueries({
         queryKey: ["category", category.category_id],
       });
-      closeForm();
+      nav(-1);
     },
     onError: () => {
       toast({
         variant: "destructive",
-        description: "hindi",
+        description: "Error editing category ",
       });
     },
   });
@@ -88,7 +88,9 @@ const EditCategory = () => {
   // };
 
   const closeForm = () => {
-    nav(-1);
+    if (!isPending) {
+      nav(-1);
+    }
   };
 
   const deleteCategory = useMutation({
