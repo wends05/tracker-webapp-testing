@@ -9,7 +9,8 @@ interface recalculateExpensesProps {
   pool: Pool;
   category_id: number;
 }
-
+// edits the amount left and amount spent of a category
+// based on the expenses of that category
 export default async function recalculateCategoryExpenses({
   pool,
   category_id,
