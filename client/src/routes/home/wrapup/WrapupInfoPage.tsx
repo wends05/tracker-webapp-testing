@@ -23,12 +23,10 @@ const WrapupInfoPage = () => {
 
   useEffect(() => {
     setSavePercentage(
-      ((wrapUpInfo!.total_budget / wrapUpInfo!.total_not_spent) * 100).toFixed(
-        2
-      )
+      Math.round((wrapUpInfo!.total_budget / wrapUpInfo!.total_not_spent) * 100)
     );
     setSpentPercentage(
-      ((wrapUpInfo!.total_spent / wrapUpInfo!.total_budget) * 100).toFixed(2)
+      Math.round((wrapUpInfo!.total_spent / wrapUpInfo!.total_budget) * 100)
     );
   });
 
