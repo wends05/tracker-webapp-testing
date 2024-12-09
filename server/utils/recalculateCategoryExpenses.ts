@@ -20,7 +20,6 @@ export default async function recalculateCategoryExpenses({
     [category_id]
   );
 
-  console.log(totalExpenseRows);
   const { rows: categoryBudgetRows } = await pool.query(
     `SELECT budget FROM "Category" WHERE category_id = $1`,
     [category_id]

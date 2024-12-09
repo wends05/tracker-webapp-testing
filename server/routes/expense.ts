@@ -4,6 +4,7 @@ import { Expense } from "../utils/types";
 import recalculateCategoryExpenses from "../utils/recalculateCategoryExpenses";
 import recalculateSavedCategoryExpenses from "../utils/recalculateWeekSummaryWithSavedCategory";
 import recalculateWeekSummaryWithCategory from "../utils/recalculateWeekSummaryWithCategory";
+import recalculateWeekSummaryWithSavedCategory from "../utils/recalculateWeekSummaryWithSavedCategory";
 
 const expenseRouter = express.Router();
 
@@ -77,10 +78,10 @@ expenseRouter.post("", async (req: Request, res: Response) => {
         saved_category_id,
       });
 
-      // await recalculateSavedCategoryExpenses({
-      //   pool,
-      //   saved_category_id,
-      // });
+      await recalculateWeekSummaryWithSavedCategory({
+        pool,
+        saved_category_id,
+      });
 
       res.status(200).json({
         data: result.rows[0],
@@ -152,11 +153,10 @@ expenseRouter.put("/:id", async (req: Request, res: Response) => {
         saved_category_id,
       });
 
-      // await recalculateWeekSummaryWithCategory({
-      //   pool,
-      //   category_id,
-      // });
-
+      await recalculateWeekSummaryWithSavedCategory({
+        pool,
+        saved_category_id,
+      });
       res.status(200).json({
         data: data.rows[0],
       });
