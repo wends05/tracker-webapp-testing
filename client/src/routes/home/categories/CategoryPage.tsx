@@ -1,5 +1,5 @@
 import ExpenseBox from "@/components/ExpenseBox";
-import WeeklyFilterDropdown from "@/components/weeklyFilterDropdown";
+import WeeklyFilterDropdown from "@/components/WeeklyFilterDropdown";
 import { BackendResponse } from "@/interfaces/BackendResponse";
 import { Category, Expense } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
