@@ -21,12 +21,13 @@ export interface Category {
 }
 
 export interface WeeklySummary {
-  weekly_summary_id?: number;
+  weekly_summary_id: number;
   date_start: Date;
   date_end: Date;
   total_budget: number;
   total_spent: number;
   total_not_spent: number;
+  user_id?: number;
 }
 
 export interface SavedCategories {
