@@ -6,8 +6,49 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { BackendResponse } from "@/interfaces/BackendResponse";
+import getUser from "@/utils/getUser";
+import { User, WeeklySummary } from "@/utils/types";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 const WrapupInfoPage = () => {
+  const { data: user } = useQuery<User>({
+    queryKey: ["user"],
+    queryFn: getUser,
+  });
+
+  const [spentPercentage, setSpentPercentage] = useState(0);
+  const [savedPercetage, setSavePercentage] = useState(0);
+
+  useEffect(() => {
+    setSavePercentage(
+      ((wrapUpInfo!.total_budget / wrapUpInfo!.total_not_spent) * 100).toFixed(
+        2
+      )
+    );
+    setSpentPercentage(
+      ((wrapUpInfo!.total_spent / wrapUpInfo!.total_budget) * 100).toFixed(2)
+    );
+  });
+
+  const { data: wrapUpInfo } = useQuery({
+    enabled: !!user,
+    queryKey: ["wrapUpInfo"],
+    queryFn: async () => {
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/summary/user/${user!.user_id}/recent`
+      );
+      if (!response.ok) {
+        throw Error("Error Fetched");
+      }
+
+      const { data } =
+        (await response.json()) as BackendResponse<WeeklySummary>;
+      console.log(data);
+      return data;
+    },
+  });
   return (
     <div className="overflow-hidden">
       <div className="ml-5 mt-3 text-4xl font-bold">Week-End Review</div>
@@ -20,24 +61,24 @@ const WrapupInfoPage = () => {
           </div>
           <div className="ml-2 mt-3">
             <h4 className="text-lg font-medium">
-              From a total budget of *insert tot budget* this week
+              From a total budget of {wrapUpInfo?.total_budget} this week
             </h4>
 
             <div className="mt-7 flex gap-12 font-semibold">
               <div>
                 <h3 className="font-semibold">You saved</h3>
                 <br></br>
-                <h4 className="text-lime-600">*insert saved here*</h4>
+                <h4 className="text-lime-600">{wrapUpInfo?.total_not_spent}</h4>
                 <br></br>
-                <h4>*percent* of your budget</h4>
+                <h4>{savedPercetage}% of your budget</h4>
               </div>
 
               <div>
                 <h3 className="font-semibold">You spent</h3>
                 <br></br>
-                <h4 className="text-red-700">*insert spent*</h4>
+                <h4 className="text-red-700">{wrapUpInfo?.total_spent}</h4>
                 <br></br>
-                <h4>*percent* of your budget</h4>
+                <h4>{spentPercentage}% of your budget</h4>
               </div>
             </div>
           </div>
