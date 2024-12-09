@@ -122,7 +122,7 @@ const EditCategory = () => {
     onError: (error) => {
       toast({
         variant: "destructive",
-        description: error.message || "An error has occured huhuhu",
+        description: error.message || "An error has occured :<",
       });
     },
   });
