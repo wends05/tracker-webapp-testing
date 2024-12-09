@@ -8,12 +8,12 @@ import getUser from "@/utils/getUser";
 import { WeeklyChart } from "@/components/WeeklyChart";
 
 const Dashboard = () => {
-  const { data: user } = useQuery<User>({
+  const { data: user, isLoading: isUserLoading } = useQuery<User>({
     queryKey: ["user"],
     queryFn: getUser,
   });
 
-  const { data: categories, isLoading } = useQuery({
+  const { data: categories, isLoading: isCategoriesLoading } = useQuery({
     queryKey: ["categories"],
     enabled: !!user,
     queryFn: async () => {
@@ -59,9 +59,13 @@ const Dashboard = () => {
     }
   }, [categories]);
 
-  return isLoading ? (
-    <div className="min-h-full">
-      <h1 className="">Please wait</h1>{" "}
+  return isUserLoading ? (
+    <div className="flex min-h-full w-full items-center justify-center">
+      <h1 className="">Loading user details</h1>{" "}
+    </div>
+  ) : isCategoriesLoading ? (
+    <div className="flex min-h-full w-full items-center justify-center">
+      <h1 className="">Loading category details</h1>{" "}
     </div>
   ) : (
     <div className="min-h-full bg-gray-50 p-6">
