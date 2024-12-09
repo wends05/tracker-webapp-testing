@@ -25,6 +25,25 @@ const SavedCategoryPage = () => {
     },
   });
 
+  const [sortHighLow, setsortHighLow] = useState(false);
+  const [sortLowHigh, setsortLowHigh] = useState(false);
+  const [ascending, setAscending] = useState<Expense[] | null>(null);
+  const [descending, setDescending] = useState<Expense[] | null>(null);
+
+  const ascendingSorted = () => {
+    const sorted = [...(savedCategoryExpenses || [])].sort(
+      (a, b) => a.price - b.price
+    );
+    setAscending(sorted);
+  };
+
+  const descendingSorted = () => {
+    const sorted = [...(savedCategoryExpenses || [])].sort(
+      (a, b) => b.price - a.price
+    );
+    setDescending(sorted);
+  };
+
   const [{ savedPercentage, spentPercentage }, setCategoryPercentages] =
     useState<{
       savedPercentage: number;
@@ -100,6 +119,80 @@ const SavedCategoryPage = () => {
         </div>
       </div>
 
+      <div className="my-4 flex flex-row justify-start gap-4 px-16">
+        <div
+          className="mx-2 items-center justify-center align-middle"
+          onClick={() => {
+            setsortHighLow(!sortHighLow);
+            setsortLowHigh(false);
+            descendingSorted();
+          }}
+        >
+          <button
+            className={
+              sortHighLow
+                ? "rounded-full border-2 px-4 py-2 text-sm text-white"
+                : "rounded-full border-2 px-4 py-2 text-sm"
+            }
+            style={{
+              borderColor: category.category_color,
+              backgroundColor: sortHighLow ? category.category_color : "white",
+              color: sortHighLow ? "white" : category.category_color,
+            }}
+            onMouseEnter={(e) => {
+              if (!sortHighLow) {
+                e.currentTarget.style.backgroundColor = category.category_color;
+                e.currentTarget.style.color = "white";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!sortHighLow) {
+                e.currentTarget.style.backgroundColor = "white";
+                e.currentTarget.style.color = category.category_color;
+              }
+            }}
+          >
+            Sort By: Descending Expense
+          </button>
+        </div>
+
+        <div
+          className="mx-2 items-center justify-center align-middle"
+          onClick={() => {
+            setsortLowHigh(!sortLowHigh);
+            setsortHighLow(false);
+            ascendingSorted();
+          }}
+        >
+          <button
+            className={
+              sortLowHigh
+                ? "rounded-full border-2 px-4 py-2 text-sm text-white"
+                : "rounded-full border-2 px-4 py-2 text-sm"
+            }
+            style={{
+              borderColor: category.category_color,
+              backgroundColor: sortLowHigh ? category.category_color : "white",
+              color: sortLowHigh ? "white" : category.category_color,
+            }}
+            onMouseEnter={(e) => {
+              if (!sortLowHigh) {
+                e.currentTarget.style.backgroundColor = category.category_color;
+                e.currentTarget.style.color = "white";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!sortLowHigh) {
+                e.currentTarget.style.backgroundColor = "white";
+                e.currentTarget.style.color = category.category_color;
+              }
+            }}
+          >
+            Sort By: Ascending Expense
+          </button>
+        </div>
+      </div>
+
       <div className="flex w-full flex-col gap-4 px-10">
         <Link to={"expense/add"}>
           <div
@@ -112,18 +205,48 @@ const SavedCategoryPage = () => {
           </div>
         </Link>
 
-        {savedCategoryExpenses?.map((expense: Expense) => (
-          <ExpenseBox
-            date={expense.date}
-            category_id={expense.category_id}
-            price={expense.price}
-            expense_name={expense.expense_name}
-            quantity={expense.quantity}
-            total={expense.total}
-            expense_id={Number(expense.expense_id)}
-            key={expense.expense_id}
-          />
-        ))}
+        {sortHighLow &&
+          descending?.map((expense) => (
+            <ExpenseBox
+              date={expense.date}
+              category_id={expense.category_id}
+              price={expense.price}
+              expense_name={expense.expense_name}
+              quantity={expense.quantity}
+              total={expense.total}
+              expense_id={Number(expense.expense_id)}
+              key={expense.expense_id}
+            />
+          ))}
+
+        {sortLowHigh &&
+          ascending?.map((expense) => (
+            <ExpenseBox
+              date={expense.date}
+              category_id={expense.category_id}
+              price={expense.price}
+              expense_name={expense.expense_name}
+              quantity={expense.quantity}
+              total={expense.total}
+              expense_id={Number(expense.expense_id)}
+              key={expense.expense_id}
+            />
+          ))}
+
+        {!sortHighLow &&
+          !sortLowHigh &&
+          savedCategoryExpenses?.map((expense) => (
+            <ExpenseBox
+              date={expense.date}
+              category_id={expense.category_id}
+              price={expense.price}
+              expense_name={expense.expense_name}
+              quantity={expense.quantity}
+              total={expense.total}
+              expense_id={Number(expense.expense_id)}
+              key={expense.expense_id}
+            />
+          ))}
       </div>
 
       <div>
