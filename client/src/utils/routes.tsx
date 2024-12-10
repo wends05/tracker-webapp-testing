@@ -16,11 +16,13 @@ import Summary from "../routes/home/summary/Summary";
 import WrapupEditCategory from "@/routes/home/wrapup/WrapupEditCategory";
 import EditCategory from "../routes/home/categories/EditCategory";
 import EditExpense from "../routes/home/expense/EditExpense";
-import { getCategory, getExpense } from "./loaders";
+import { getCategory, getExpense, getPreviousWeekCategories } from "./loaders";
 import ErrorPage from "../ErrorPage";
 import { queryClient } from "../_Root";
 import WrapupInfoPage from "@/routes/home/wrapup/WrapupInfoPage";
 import SavedCategoryPage from "@/routes/home/summary/SavedCategoryPage";
+import EditSavedCategory from "@/routes/home/summary/EditSavedCategory";
+import EditSavedExpense from "@/routes/home/summary/EditSavedExpense";
 
 const router = createBrowserRouter([
   {
@@ -72,6 +74,11 @@ const router = createBrowserRouter([
                 element: <CategoryPage />,
                 children: [
                   {
+                    path: "edit",
+                    element: <EditCategory />,
+                    loader: getCategory(queryClient),
+                  },
+                  {
                     path: "expense",
                     children: [
                       {
@@ -103,25 +110,31 @@ const router = createBrowserRouter([
               {
                 path: "2",
                 element: <WrapupEditCategory />,
+                loader: getPreviousWeekCategories(queryClient),
               },
             ],
           },
           {
             path: "weeklysummaries",
             element: <Summaries />,
+          },
+          {
+            path: "weeklysummary/:weeklysummary_id",
+            element: <Summary />,
             children: [
               {
-                path: ":weeklysummary_id",
-                element: <Summary />,
+                path: "savedcategory/:saved_category_id/edit",
+                element: <EditSavedCategory />, // edit saved category
               },
+            ],
+          },
+          {
+            path: "savedcategory/:saved_category_id",
+            element: <SavedCategoryPage />,
+            children: [
               {
-                path: "category",
-                children: [
-                  {
-                    path: ":id",
-                    element: <SavedCategoryPage />,
-                  },
-                ],
+                path: "expense/:expense_id/edit",
+                element: <EditSavedExpense />,
               },
             ],
           },

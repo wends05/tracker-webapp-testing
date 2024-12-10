@@ -1,15 +1,15 @@
-import { Category } from "@/utils/types";
+import { SavedCategories } from "@/utils/types";
 import { Link } from "react-router-dom";
 import { PencilLine } from "lucide-react";
 
-const CategoryView = (category: { category: Category }) => {
-  const { category_id, category_color, category_name, budget } =
+const SavedCategoryCard = (category: { category: SavedCategories }) => {
+  const { saved_category_id, category_color, category_name, budget } =
     category.category;
 
   return (
     <div className="relative mx-5 my-5 flex h-48 items-center justify-center rounded-lg shadow-lg">
       <Link
-        to={`/category/${category_id}`}
+        to={`/savedcategory/${saved_category_id}`}
         className="relative flex h-full w-full flex-col justify-between rounded-lg p-4"
         style={{
           backgroundColor: category_color || "#f3f3f3",
@@ -22,7 +22,7 @@ const CategoryView = (category: { category: Category }) => {
       </Link>
       <Link
         className="absolute right-2 top-2 rounded px-2 py-1 text-xs text-white hover:text-rose-600"
-        to={`category/${category_id}/edit`}
+        to={`savedcategory/${saved_category_id}/edit`}
       >
         <PencilLine className="h-6 w-6" />
       </Link>
@@ -30,4 +30,4 @@ const CategoryView = (category: { category: Category }) => {
   );
 };
 
-export default CategoryView;
+export default SavedCategoryCard;

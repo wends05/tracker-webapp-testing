@@ -14,6 +14,7 @@ const AddExpense = () => {
   const [price, setPrice] = useState(1.0);
   const [quantity, setQuantity] = useState(1);
   const [total, setTotal] = useState(0);
+  const [timeDate, setTimeDate] = useState("");
 
   useEffect(() => {
     setTotal(price * quantity);
@@ -35,12 +36,17 @@ const AddExpense = () => {
         throw Error("Quantity must be greater than zero.");
       }
 
+      if (!timeDate) {
+        throw Error("Please Select date and time");
+      }
+
       const expense: Expense = {
         expense_name: name,
         price: price,
         quantity: quantity,
         total: total,
         category_id: Number(category_id),
+        date: new Date(timeDate),
       };
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/expense`,
@@ -62,6 +68,8 @@ const AddExpense = () => {
     },
 
     onSuccess: () => {
+      console.log(timeDate);
+      console.log(new Date(timeDate));
       toast({
         description: "Expense Added!",
       });
@@ -141,6 +149,15 @@ const AddExpense = () => {
             name="quantity"
             value={total ? total : 0}
             disabled
+          />
+          <label htmlFor="datetime">Select Date and Time:</label>
+          <input
+            type="date"
+            id="datetime"
+            name="timeDate"
+            value={timeDate}
+            onChange={(e) => setTimeDate(e.target.value)}
+            required
           />
           <button type="button" className="cancel" onClick={closeForm}>
             Cancel
