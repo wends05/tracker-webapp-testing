@@ -73,7 +73,10 @@ const WrapupInfoPage = () => {
     }
   }, [wrapUpInfo]);
 
-  // Handling loading state and empty categories data
+  const topSpentCategories = categories
+    ?.sort((a, b) => b.amount_spent - a.amount_spent)
+    .slice(0, 5);
+
   if (isLoading) return <div>Loading page...</div>;
 
   return (
@@ -118,7 +121,7 @@ const WrapupInfoPage = () => {
 
           <Carousel className="relative w-full max-w-md">
             <CarouselContent>
-              {categories?.map((category) => (
+              {topSpentCategories?.map((category) => (
                 <CarouselItem
                   key={category.category_id}
                   className="flex items-center justify-center"
