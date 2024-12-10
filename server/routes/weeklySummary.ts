@@ -97,14 +97,14 @@ weeklySummaryRouter.post("/user/:id", async (req: Request, res: Response) => {
       }
     });
 
-    const lastSunday = new Date(getLastSunday());
+    const lastSunday = new Date(getLastSunday()).toLocaleDateString();
 
     const nextSaturday = new Date(lastSunday);
     nextSaturday.setDate(nextSaturday.getDate() + 6);
 
     const { rows: weeklySummaryRows } = await pool.query(
-      `INSERT INTO "Weekly Summary"(date_start, date_end, user_id) VALUES($1, $2, $3) RETURNING *`,
-      [lastSunday.toUTCString(), nextSaturday.toUTCString(), id]
+      `INSERT INTO "Weekly Summary"(date_start, date_end, user_id, total_budget, total_spent, total_not_spent) VALUES($1, $2, $3) RETURNING *`,
+      [lastSunday, nextSaturday.toLocaleDateString(), id, 0, 0, 0]
     );
 
     res.json({
