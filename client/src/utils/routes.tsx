@@ -130,6 +130,7 @@ const router = createBrowserRouter([
               {
                 path: "savedcategory/:saved_category_id/edit",
                 element: <EditSavedCategory />, // edit saved category
+                loader: getSavedCategory(queryClient),
               },
             ],
           },

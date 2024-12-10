@@ -35,11 +35,11 @@ const EditSavedCategory = () => {
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/savedCategories/${savedCategories.saved_category_id}`,
         {
-          method: "Put",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(newSavedAmountLeft),
+          body: JSON.stringify(savedCategoriesData),
         }
       );
 
@@ -53,17 +53,22 @@ const EditSavedCategory = () => {
         description: "Saved category edited",
       });
       queryClient.invalidateQueries({
-        queryKey: ["savedCategories"],
+        queryKey: ["weeklySummary", savedCategoriesData.weekly_summary_id],
       });
-      queryClient.refetchQueries({
-        queryKey: ["savedCategories", savedCategoriesData.saved_category_id],
+      queryClient.invalidateQueries({
+        queryKey: [
+          "weeklySummary",
+          savedCategoriesData.weekly_summary_id,
+          "categories",
+        ],
       });
       nav(-1);
     },
-    onError: () => {
+    onError: (error) => {
       toast({
+        title: "Error",
         variant: "destructive",
-        description: "Error editing saved category ",
+        description: error.message,
       });
     },
   });
@@ -77,7 +82,7 @@ const EditSavedCategory = () => {
   const deleteCategory = useMutation({
     mutationFn: async () => {
       const response = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/savedCategory/${savedCategoriesData.saved_category_id}`,
+        `${import.meta.env.VITE_SERVER_URL}/savedCategories/${savedCategoriesData.saved_category_id}`,
         {
           method: "DELETE",
         }
@@ -93,10 +98,14 @@ const EditSavedCategory = () => {
         description: "Saved category successfully deleted",
       });
       queryClient.invalidateQueries({
-        queryKey: ["savedCategories"],
+        queryKey: ["weeklySummary", savedCategoriesData.weekly_summary_id],
       });
       queryClient.invalidateQueries({
-        queryKey: ["savedCategories", savedCategoriesData.saved_category_id],
+        queryKey: [
+          "weeklySummary",
+          savedCategoriesData.weekly_summary_id,
+          "categories",
+        ],
       });
       closeForm();
     },
@@ -111,12 +120,12 @@ const EditSavedCategory = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { id, value, type } = e.target;
+    const { id, value } = e.target;
 
     // Update state dynamically based on the input's id
     setsavedCategoriesData((prevData) => ({
       ...prevData,
-      [id]: type === "number" ? Number(value) : value, // Convert numbers if needed
+      [id]: value, // Convert numbers if needed
     }));
   };
 
@@ -146,14 +155,14 @@ const EditSavedCategory = () => {
         <div className="mb-5 flex flex-row space-x-10">
           <div>
             <label
-              htmlFor="categoryName"
+              htmlFor="category_name"
               className="mb-3 text-sm font-medium text-gray-700"
             >
               Category Name
             </label>
             <input
               type="text"
-              id="categoryName"
+              id="category_name"
               value={savedCategoriesData.category_name}
               onChange={handleChange}
               required
@@ -225,7 +234,12 @@ const EditSavedCategory = () => {
             {CATEGORY_COLORS.map((color) => (
               <div
                 key={color}
-                onClick={() => (savedCategoriesData.category_color = color)}
+                onClick={() =>
+                  setsavedCategoriesData((prevData) => ({
+                    ...prevData,
+                    category_color: color,
+                  }))
+                }
                 className={`h-10 w-10 cursor-pointer rounded-full border-2 transition duration-1000 ${
                   savedCategoriesData.category_color === color
                     ? "border-black"
