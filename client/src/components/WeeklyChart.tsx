@@ -23,15 +23,6 @@ interface WeekData {
   day: string;
   expense: number;
 }
-// const chartData = [
-//   { day: "Sunday", expense: 186 },
-//   { day: "Monday", expense: 305 },
-//   { day: "Tuesday", expense: 237 },
-//   { day: "Wednesday", expense: 73 },
-//   { day: "Thursday", expense: 209 },
-//   { day: "Friday", expense: 214 },
-//   { day: "Saturday", expense: 214 },
-// ];
 
 const chartConfig = {
   expense: {
