@@ -21,22 +21,15 @@ const WrapupInfoPage = () => {
   const [spentPercentage, setSpentPercentage] = useState(0);
   const [savedPercetage, setSavePercentage] = useState(0);
 
-  useEffect(() => {
-    setSavePercentage(
-      Math.round((wrapUpInfo!.total_budget / wrapUpInfo!.total_not_spent) * 100)
-    );
-    setSpentPercentage(
-      Math.round((wrapUpInfo!.total_spent / wrapUpInfo!.total_budget) * 100)
-    );
-  });
-
-  const { data: wrapUpInfo } = useQuery({
+  const { data: wrapUpInfo, isLoading } = useQuery({
     enabled: !!user,
     queryKey: ["wrapUpInfo"],
     queryFn: async () => {
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/summary/user/${user!.user_id}/recent`
       );
+
+      console.log(response);
       if (!response.ok) {
         throw Error("Error Fetched");
       }
@@ -47,7 +40,21 @@ const WrapupInfoPage = () => {
       return data;
     },
   });
-  return (
+
+  useEffect(() => {
+    if (wrapUpInfo) {
+      setSavePercentage(
+        Math.round((wrapUpInfo.total_budget / wrapUpInfo.total_not_spent) * 100)
+      );
+      setSpentPercentage(
+        Math.round((wrapUpInfo.total_spent / wrapUpInfo.total_budget) * 100)
+      );
+    }
+  }, [wrapUpInfo]);
+
+  return isLoading ? (
+    <>loading page</>
+  ) : (
     <div className="overflow-hidden">
       <div className="ml-5 mt-3 text-4xl font-bold">Week-End Review</div>
       <hr className="ml-6 mr-6 mt-3 border-t-2 border-slate-950" />
