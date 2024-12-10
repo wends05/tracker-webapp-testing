@@ -128,7 +128,7 @@ const router = createBrowserRouter([
             element: <Summary />,
             children: [
               {
-                path: "category/:category_id/edit",
+                path: "savedcategory/:saved_category_id/edit",
                 element: <EditSavedCategory />, // edit saved category
               },
             ],
