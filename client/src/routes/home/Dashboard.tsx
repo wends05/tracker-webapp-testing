@@ -6,6 +6,7 @@ import CategoryView from "@/components/CategoryView";
 import { useQuery } from "@tanstack/react-query";
 import getUser from "@/utils/getUser";
 import { WeeklyChart } from "@/components/WeeklyChart";
+import CategorySorter from "@/components/Sorter";
 
 const Dashboard = () => {
   const { data: user } = useQuery<User>({
@@ -13,7 +14,7 @@ const Dashboard = () => {
     queryFn: getUser,
   });
 
-  const { data: categories } = useQuery({
+  const { data: categories, isLoading } = useQuery({
     queryKey: ["categories"],
     enabled: !!user,
     queryFn: async () => {
@@ -29,41 +30,45 @@ const Dashboard = () => {
       }
 
       const { data } = (await response.json()) as BackendResponse<Category[]>;
-      console.log(data);
       return data;
     },
   });
 
   const [totalBudget, setTotalBudget] = useState(0);
   const [totalSpent, setTotalSpent] = useState(0);
-  const [totalNotSpent, settotalNotSpent] = useState(0);
+  const [totalNotSpent, setTotalNotSpent] = useState(0);
+  const [sortedCategories, setSortedCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     if (categories) {
-      console.log(categories);
-      setTotalBudget(() => {
-        return categories.reduce((acc, cat) => acc + cat.budget, 0);
-      });
-      setTotalSpent(() => {
-        return categories.reduce(
-          (acc, category) => acc + category.amount_spent,
-          0
-        );
-      });
-      settotalNotSpent(() => {
-        return categories.reduce(
-          (acc, category) => acc + category.amount_left,
-          0
-        );
-      });
+      calculateTotals(categories);
+      setSortedCategories(categories); // Set initial sorted categories
     }
   }, [categories]);
 
-  return !categories ? (
-    <div className="min-h-full">
-      <h1 className="">Please wait</h1>{" "}
-    </div>
-  ) : (
+  const calculateTotals = (categories: Category[]) => {
+    setTotalBudget(() => {
+      return categories.reduce((acc, cat) => acc + cat.budget, 0);
+    });
+    setTotalSpent(() => {
+      return categories.reduce(
+        (acc, category) => acc + category.amount_spent,
+        0
+      );
+    });
+    setTotalNotSpent(() => {
+      return categories.reduce(
+        (acc, category) => acc + category.amount_left,
+        0
+      );
+    });
+  };
+
+  const handleSort = (sortedCategories: Category[]) => {
+    setSortedCategories(sortedCategories);
+  };
+
+  return (
     <div className="min-h-full bg-gray-50 p-6">
       {/* Header */}
       <header className="mb-8">
@@ -114,6 +119,11 @@ const Dashboard = () => {
       {/* Categories */}
       <div className="mt-8">
         <h2 className="mb-4 text-lg font-medium text-black">Categories</h2>
+        {isLoading ? (
+          <p>Loading categories...</p>
+        ) : (
+          <CategorySorter onSort={handleSort} categories={categories} />
+        )}
         <div className="grid grid-cols-1 gap-1 md:grid-cols-3">
           {/* Add New Category */}
           <Link
@@ -123,8 +133,7 @@ const Dashboard = () => {
             <span className="text-4xl">+</span>
           </Link>
 
-          {/* Render Existing Categories */}
-          {categories?.map((category) => (
+          {sortedCategories?.map((category) => (
             <CategoryView category={category} key={category.category_id} />
           ))}
         </div>
