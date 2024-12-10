@@ -19,14 +19,14 @@ import { useEffect, useState } from "react";
 interface IPieChartData {
   category: string;
   spent: number;
-  bgcolor: string;
+  fill: string;
 }
 
-// const chartConfig = {
-//   spent: {
-//     label: "Spent",
-//   },
-// } satisfies ChartConfig;
+const chartConfig = {
+  spent: {
+    label: "Spent",
+  },
+} satisfies ChartConfig;
 
 interface CategoryGraphProps {
   categories: SavedCategories[];
@@ -34,11 +34,6 @@ interface CategoryGraphProps {
 
 export function CategoryGraph({ categories }: CategoryGraphProps) {
   const [data, setData] = useState<IPieChartData[]>([]);
-  const [chartConfig] = useState<ChartConfig>({
-    spent: {
-      label: "Spent",
-    },
-  });
 
   useEffect(() => {
     const sortedCategories = categories
@@ -48,7 +43,6 @@ export function CategoryGraph({ categories }: CategoryGraphProps) {
     const chartData = sortedCategories.map((category) => ({
       category: category.category_name,
       spent: category.amount_spent,
-      bgcolor: category.category_color,
       fill: category.category_color,
     }));
 
@@ -76,7 +70,7 @@ export function CategoryGraph({ categories }: CategoryGraphProps) {
               data={data}
               dataKey="spent"
               nameKey="category"
-              innerRadius={60}
+              innerRadius={50}
             />
           </PieChart>
         </ChartContainer>
