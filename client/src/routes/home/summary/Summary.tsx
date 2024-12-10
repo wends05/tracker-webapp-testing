@@ -1,4 +1,5 @@
 import { CategoryGraph } from "@/components/PieChart";
+import SavedCategoryCard from "@/components/SaveCategoryCard";
 import { BackendResponse } from "@/interfaces/BackendResponse";
 import getUser from "@/utils/getUser";
 import { SavedCategories, User } from "@/utils/types";
@@ -56,6 +57,14 @@ const Summary = () => {
         <div className="mt-4">
           <h4 className="text-lg font-medium">Categories</h4>
           <div>Insert Categories</div>
+          <div className="grid md:grid-cols-3">
+            {weeklySummaryCategories?.map((weeklyCategory) => (
+              <SavedCategoryCard
+                category={weeklyCategory}
+                key={weeklyCategory.weekly_summary_id}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
