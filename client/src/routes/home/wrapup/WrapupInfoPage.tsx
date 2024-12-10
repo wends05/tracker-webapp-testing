@@ -24,7 +24,7 @@ const WrapupInfoPage = () => {
 
   const { data: wrapUpInfo, isLoading } = useQuery({
     enabled: !!user, // Only fetch wrapUpInfo if the user is available
-    queryKey: ["wrapUpInfo"],
+    queryKey: ["weeklySummary"],
     queryFn: async () => {
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/summary/user/${user!.user_id}/recent`
