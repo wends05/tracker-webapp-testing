@@ -79,7 +79,6 @@ weeklySummaryRouter.post("/user/:id", async (req: Request, res: Response) => {
           );
         } catch (error: any) {
           throw Error(error);
-          return;
         }
       });
 
