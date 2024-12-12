@@ -4,8 +4,8 @@ import { BackendResponse } from "@/interfaces/BackendResponse";
 import getUser from "@/utils/getUser";
 import { SavedCategories, User } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
 import { WeeklyChart } from "@/components/WeeklyChart";
+import { Outlet, useParams } from "react-router-dom";
 
 const Summary = () => {
   const { data: user } = useQuery<User>({
@@ -13,8 +13,9 @@ const Summary = () => {
     queryFn: getUser,
   });
   const { weeklysummary_id } = useParams();
+
   const { data: weeklySummaryCategories } = useQuery({
-    queryKey: ["weeklySummary", weeklysummary_id],
+    queryKey: ["weeklySummary", weeklysummary_id, "categories"],
     queryFn: async () => {
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/summary/${weeklysummary_id}/savedcategories`
@@ -68,6 +69,9 @@ const Summary = () => {
             />
           ))}
         </div>
+      </div>
+      <div>
+        <Outlet />
       </div>
     </div>
   );

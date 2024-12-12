@@ -1,5 +1,7 @@
 import ExpenseBox from "@/components/ExpenseBox";
+import WeeklyFilterDropdown from "@/components/WeeklyFilterDropdown";
 import { BackendResponse } from "@/interfaces/BackendResponse";
+import calculatePercentages from "@/utils/calculateCategoryPercentages";
 import { Category, Expense } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -13,6 +15,9 @@ const CategoryPage = () => {
 
   const [descending, setdescending] = useState<Expense[]>([]);
   const [ascending, setascending] = useState<Expense[]>([]);
+
+  const [selectedDay, setSelectedDay] = useState("None");
+  const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([]);
 
   const { data: category } = useQuery<Category>({
     queryKey: ["category", category_id],
@@ -50,26 +55,11 @@ const CategoryPage = () => {
     },
   });
 
-  const calculatePercentages = (
-    budget: number,
-    amountSaved: number,
-    amountSpent: number
-  ) => {
-    if (budget === 0) {
-      return { savedPercentage: 0, spentPercentage: 0 };
-    }
-    const savedPercentage = (amountSaved / budget) * 100;
-    const spentPercentage = (amountSpent / budget) * 100;
-    return { savedPercentage, spentPercentage };
-  };
-
   const descendingSorted = () => {
     if (expenses) {
-      console.log(expenses);
       const sortedExpenses = [...expenses].sort((a, b) =>
         a.total > b.total ? -1 : 1
       );
-      console.log(sortedExpenses);
       setdescending(sortedExpenses);
     }
   };
@@ -80,6 +70,20 @@ const CategoryPage = () => {
         a.total < b.total ? -1 : 1
       );
       setascending(sortedExpenses);
+    }
+  };
+
+  const filterExpensesByDay = (day: string) => {
+    if (expenses && day !== "None") {
+      const filtered = expenses.filter((expense) => {
+        const expenseDate = new Date(expense.date!);
+        return (
+          expenseDate.toLocaleDateString("en-US", { weekday: "long" }) === day
+        );
+      });
+      setFilteredExpenses(filtered);
+    } else {
+      setFilteredExpenses(expenses || []);
     }
   };
 
@@ -97,6 +101,10 @@ const CategoryPage = () => {
     }
   }, [category]);
 
+  useEffect(() => {
+    filterExpensesByDay(selectedDay);
+  }, [selectedDay, expenses]);
+
   const [{ savedPercentage, spentPercentage }, setCategoryPercentages] =
     useState<{
       savedPercentage: number;
@@ -110,6 +118,7 @@ const CategoryPage = () => {
     return (
       <p className="flex h-full items-center justify-center">Please wait...</p>
     );
+
   return (
     <div
       className={`relative mt-12 flex min-h-full flex-col justify-center px-16`}
@@ -119,7 +128,6 @@ const CategoryPage = () => {
       </h1>
       <div className="flex w-full justify-center gap-2">
         <div className="flex w-1/3 flex-col items-center justify-center">
-          {" "}
           <div className="mb-8 min-h-56 w-96 rounded-3xl bg-white drop-shadow-lg">
             <div
               className="mb-4 flex h-12 w-full items-center rounded-t-2xl px-6 font-bold text-white"
@@ -132,6 +140,7 @@ const CategoryPage = () => {
             <text className="ml-6">{category.description}</text>
           </div>
         </div>
+
         <div className="flex h-96 w-1/3 flex-col items-center">
           <div
             className="mb-8 mt-20 h-16 w-96 rounded-3xl bg-white p-4 text-center text-white drop-shadow-lg"
@@ -161,7 +170,7 @@ const CategoryPage = () => {
         </div>
       </div>
 
-      <div className="flex w-full flex-col gap-4 px-10">
+      <div className="flex w-full flex-col items-start gap-4 px-10">
         <Link to={"expense/add"}>
           <div
             className="h-16 w-96 rounded-3xl bg-white p-4 text-center text-white drop-shadow-lg"
@@ -173,15 +182,12 @@ const CategoryPage = () => {
           </div>
         </Link>
 
-        {/* toggle buttons */}
         <div className="flex flex-row">
           <div
             className="mx-2 items-center justify-center align-middle"
             onClick={() => {
-              // if (sortLowHigh === false)
               setsortHighLow(!sortHighLow);
               setsortLowHigh(false);
-
               descendingSorted();
             }}
           >
@@ -192,7 +198,6 @@ const CategoryPage = () => {
                   : "border-green rounded-full border-2 bg-none"
               }
             >
-              {" "}
               Sort By: Descending Expense
             </button>
           </div>
@@ -200,7 +205,6 @@ const CategoryPage = () => {
           <div
             className="mx-2 items-center justify-center align-middle"
             onClick={() => {
-              // if (sortHighLow == false)
               setsortLowHigh(!sortLowHigh);
               setsortHighLow(false);
               ascendingSorted();
@@ -213,31 +217,26 @@ const CategoryPage = () => {
                   : "border-green rounded-full border-2 bg-none"
               }
             >
-              {" "}
               Sort By: Ascending Expense
             </button>
           </div>
         </div>
 
-        {expenses &&
-          sortHighLow === false &&
-          sortLowHigh === false &&
-          expenses.map((expense: Expense) => (
-            <ExpenseBox
-              date={expense.date}
-              category_id={expense.category_id}
-              price={expense.price}
-              expense_name={expense.expense_name}
-              quantity={expense.quantity}
-              total={expense.total}
-              expense_id={Number(expense.expense_id)}
-              key={expense.expense_id}
-            />
-          ))}
+        <div className="flex items-center gap-2">
+          <WeeklyFilterDropdown
+            selectedDay={selectedDay}
+            setSelectedDay={setSelectedDay}
+          />
+          {selectedDay}
+        </div>
 
-        {descending &&
-          sortHighLow === true &&
-          descending.map((expense: Expense) => (
+        <div className="flex w-full flex-col">
+          {(sortHighLow || sortLowHigh
+            ? sortHighLow
+              ? descending
+              : ascending
+            : filteredExpenses
+          )?.map((expense: Expense) => (
             <ExpenseBox
               date={expense.date}
               category_id={expense.category_id}
@@ -249,23 +248,8 @@ const CategoryPage = () => {
               key={expense.expense_id}
             />
           ))}
-
-        {ascending &&
-          sortLowHigh === true &&
-          ascending.map((expense: Expense) => (
-            <ExpenseBox
-              date={expense.date}
-              category_id={expense.category_id}
-              price={expense.price}
-              expense_name={expense.expense_name}
-              quantity={expense.quantity}
-              total={expense.total}
-              expense_id={Number(expense.expense_id)}
-              key={expense.expense_id}
-            />
-          ))}
+        </div>
       </div>
-
       <div>
         <Outlet />
       </div>
