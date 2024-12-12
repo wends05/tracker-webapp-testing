@@ -40,18 +40,6 @@ const WrapupInfoPage = () => {
       return data;
     },
   });
-  const startDate = new Date(wrapUpInfo!.date_start);
-  const startShortDate = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-  }).format(startDate);
-
-  const endDate = new Date(wrapUpInfo!.date_end);
-  const endShortDate = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(endDate);
 
   useEffect(() => {
     if (wrapUpInfo) {
@@ -68,13 +56,7 @@ const WrapupInfoPage = () => {
     <>loading page</>
   ) : (
     <div className="overflow-hidden">
-      <div className="mt-3 flex items-center justify-between px-5 text-4xl font-bold">
-        Week-End Review
-        <div className="flex text-2xl font-normal">
-          {startShortDate} - {endShortDate}
-        </div>
-      </div>
-
+      <div className="ml-5 mt-3 text-4xl font-bold">Week-End Review</div>
       <hr className="ml-6 mr-6 mt-3 border-t-2 border-slate-950" />
       <div className="ml-8 mt-3 flex gap-80">
         <div>
