@@ -8,7 +8,7 @@ import savedCategoriesRouter from "./routes/savedCategories";
 import weeklySummaryRouter from "./routes/weeklySummary";
 import chartRouter from "./routes/charts";
 
-const app = express();
+export const app = express();
 const port = 3000;
 app.use(express.json());
 app.use(cors());

@@ -34,13 +34,13 @@ userRouter.post("", async (req: Request, res: Response) => {
   try {
     const { username, email } = req.body;
 
-    const user = await pool.query(
+    const { rows: userRows } = await pool.query(
       'INSERT INTO "User"(username, email) VALUES ($1, $2) RETURNING *',
       [username, email]
     );
 
     res.json({
-      user,
+      data: userRows[0],
     });
   } catch (error: any) {
     console.error(error);

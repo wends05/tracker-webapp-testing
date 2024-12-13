@@ -7,7 +7,7 @@ export default defineConfig({
     coverage: {
       provider: "v8", // or 'istanbul'
       reporter: ["text", "json", "html"], // Choose your reporters
-      include: ["src/**/*.ts"], // Files to include in coverage
+      include: ["**/*.ts"], // Files to include in coverage
       exclude: ["src/types/*", "src/config/*"], // Files to exclude in coverage
     },
   },
