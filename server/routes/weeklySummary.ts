@@ -5,6 +5,7 @@ import {
   Expense,
   SavedCategories,
   WeeklySummary,
+  WeeklySummaryBodyRequest,
 } from "../utils/types";
 import getLastSunday from "../utils/getLastSunday";
 
@@ -12,25 +13,24 @@ const weeklySummaryRouter = express.Router();
 
 weeklySummaryRouter.post("/user/:id", async (req: Request, res: Response) => {
   try {
-    const { newBudgets } = req.body;
+    const { newBudgets } = req.body as WeeklySummaryBodyRequest;
     const { id } = req.params;
     console.log(newBudgets);
 
     // get recent weekly summary, either from last week or a few weeks ago basta recent
 
-    const { rows: recentWeeklySummaryRows } = await pool.query(
+    const { rows: recentWeeklySummaryRows } = await pool.query<WeeklySummary>(
       `
       SELECT * FROM "Weekly Summary" WHERE user_id = $1 ORDER BY date_start DESC`,
       [id]
     ); // here
 
-    const weeklySummary: WeeklySummary = recentWeeklySummaryRows[0];
+    const weeklySummary = recentWeeklySummaryRows[0];
 
     // get all user categories
 
     const { rows: categories } = await pool.query<Category>(
-      `
-      SELECT * FROM "Category" WHERE user_id = $1`,
+      `SELECT * FROM "Category" WHERE user_id = $1`,
       [id]
     );
 
@@ -48,7 +48,15 @@ weeklySummaryRouter.post("/user/:id", async (req: Request, res: Response) => {
       };
 
       const { rows: savedCategoryRows } = await pool.query<SavedCategories>(
-        `INSERT INTO "Saved Categories"(category_name, budget, category_color, amount_left, amount_spent, weekly_summary_id, description) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+        `INSERT INTO "Saved Categories"(
+          category_name,
+          budget,
+          category_color,
+          amount_left,
+          amount_spent,
+          weekly_summary_id,
+          description
+        ) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
         [
           newSavedCategory.category_name,
           newSavedCategory.budget,
@@ -77,8 +85,8 @@ weeklySummaryRouter.post("/user/:id", async (req: Request, res: Response) => {
             `UPDATE "Expense" SET category_id = $1, saved_category_id = $2 WHERE expense_id = $3`,
             [null, savedCategory.saved_category_id!, expense.expense_id]
           );
-        } catch (error: any) {
-          throw Error(error);
+        } catch (error: unknown) {
+          throw new Error(error as string);
         }
       });
 
@@ -102,7 +110,7 @@ weeklySummaryRouter.post("/user/:id", async (req: Request, res: Response) => {
     const nextSaturday = new Date(lastSunday);
     nextSaturday.setDate(nextSaturday.getDate() + 6);
 
-    const { rows: weeklySummaryRows } = await pool.query(
+    const { rows: weeklySummaryRows } = await pool.query<WeeklySummary>(
       `INSERT INTO "Weekly Summary"(date_start, date_end, user_id) VALUES($1, $2, $3) RETURNING *`,
       [lastSunday, nextSaturday.toLocaleDateString(), id]
     );
@@ -110,9 +118,10 @@ weeklySummaryRouter.post("/user/:id", async (req: Request, res: Response) => {
     res.json({
       data: weeklySummaryRows[0],
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     res.status(500).json({
-      error: error.message,
+      error: error,
+      message: (error as Error).message,
     });
   }
 });
@@ -124,7 +133,7 @@ weeklySummaryRouter.get(
       const { id } = req.params;
       console.log(id);
 
-      const result = await pool.query(
+      const result = await pool.query<Category>(
         `SELECT * FROM "Category" WHERE user_id = $1`,
         [id]
       );
@@ -146,9 +155,9 @@ weeklySummaryRouter.get("/user/:id", async (req: Request, res: Response) => {
     res.status(200).json({
       data: rows,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     res.status(500).json({
-      message: error.message,
+      message: (error as Error).message,
     });
   }
 });
@@ -160,7 +169,7 @@ weeklySummaryRouter.get(
       const { id } = req.params;
       console.log(id);
 
-      const result = await pool.query(
+      const result = await pool.query<SavedCategories>(
         `SELECT * FROM "Saved Categories" WHERE weekly_summary_id = $1`,
         [id]
       );
@@ -177,16 +186,16 @@ weeklySummaryRouter.get(
   async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const { rows } = await pool.query(
+      const { rows } = await pool.query<WeeklySummary>(
         `SELECT * FROM "Weekly Summary" WHERE user_id = $1 ORDER BY weekly_summary_id DESC LIMIT 1`,
         [id]
       );
       res.status(200).json({
         data: rows[0],
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       res.status(500).json({
-        message: error.message,
+        message: (error as Error).message,
       });
     }
   }

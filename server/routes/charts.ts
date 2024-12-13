@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { pool } from "../db";
 import groupExpensesByDay from "../utils/groupExpensesByDay";
+import { Expense } from "../utils/types";
 
 const chartRouter = express.Router();
 
@@ -26,14 +27,14 @@ chartRouter.get(
       `;
 
         // Pass user_id as a parameter to the query
-        const { rows } = await pool.query(query, [user_id]);
+        const { rows } = await pool.query<Expense>(query, [user_id]);
         const arranged = groupExpensesByDay(rows);
 
         res.status(200).json({
           data: arranged,
         });
       } else {
-        const { rows } = await pool.query(
+        const { rows } = await pool.query<Expense>(
           `SELECT e.total, e.date FROM "Expense" e
               LEFT JOIN
                 "Saved Categories" sc
