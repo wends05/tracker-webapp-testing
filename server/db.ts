@@ -1,5 +1,7 @@
 import { Pool } from "pg";
 
-require("dotenv").config();
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const pool = new Pool();
