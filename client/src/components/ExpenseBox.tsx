@@ -58,6 +58,9 @@ const ExpenseBox = ({
       queryClient.invalidateQueries({
         queryKey: ["category", category_id],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["weeklySummary"],
+      });
     },
     onError: (error) => {
       toast({

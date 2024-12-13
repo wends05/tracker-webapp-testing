@@ -181,6 +181,21 @@ weeklySummaryRouter.get(
         `SELECT * FROM "Weekly Summary" WHERE user_id = $1 ORDER BY weekly_summary_id DESC LIMIT 1`,
         [id]
       );
+
+      if (rows.length === 0) {
+        const lastSunday = new Date(getLastSunday()).toLocaleDateString();
+        const saturday = new Date(getLastSunday());
+        saturday.setDate(saturday.getDate() + 6);
+        const { rows: newWeeklySummary } = await pool.query(
+          `INSERT INTO "Weekly Summary"(user_id, date_start, date_end, total_budget, total_spent, total_not_spent) VALUES($1, $2, $3, $4, $5, $6) RETURNING *`,
+          [id, lastSunday, saturday.toLocaleDateString(), 0, 0, 0]
+        );
+
+        res.status(200).json({
+          data: newWeeklySummary[0],
+        });
+        return;
+      }
       res.status(200).json({
         data: rows[0],
       });
