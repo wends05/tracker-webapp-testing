@@ -79,9 +79,27 @@ const WrapupInfoPage = () => {
 
   if (isLoading) return <div>Loading page...</div>;
 
+  const startDate = new Date(wrapUpInfo!.date_start);
+  const startShortDate = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+  }).format(startDate);
+
+  const endDate = new Date(wrapUpInfo!.date_end);
+  const endShortDate = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(endDate);
+
   return (
     <div className="relative h-screen overflow-hidden">
-      <div className="pl-5 pt-3 text-4xl font-bold">Week-End Review</div>
+      <div className="mt-3 flex items-center justify-between px-5 text-4xl font-bold">
+        Week-End Review
+        <div className="flex text-2xl font-normal">
+          {startShortDate} - {endShortDate}
+        </div>
+      </div>
       <hr className="border-t-2 border-slate-950 pl-6 pr-6 pt-3" />
       <div className="flex gap-80 pl-8 pt-3">
         <div>
