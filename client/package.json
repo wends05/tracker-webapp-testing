@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "npx http-server ./dist"
+    "start": "npx http-server ./dist",
+    "test": "vitest"
   },
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
