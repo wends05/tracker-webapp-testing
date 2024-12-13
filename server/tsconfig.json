@@ -12,7 +12,7 @@
   },
   "include": [
     "./**/*.ts",
-    "vitest.config.ts"
+    "vitest.config.mts"
   ] /* Specify the root files and the compiler options in tsconfig.json */,
   "exclude": ["node_modules/"] /* Exclude files from the compilation. */
 }
