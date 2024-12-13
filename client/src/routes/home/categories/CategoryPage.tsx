@@ -6,6 +6,7 @@ import { Category, Expense } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link, Outlet, useParams } from "react-router-dom";
+import { CiCirclePlus } from "react-icons/ci";
 
 const CategoryPage = () => {
   const { category_id } = useParams();
@@ -171,17 +172,6 @@ const CategoryPage = () => {
       </div>
 
       <div className="flex w-full flex-col items-start gap-4 px-10">
-        <Link to={"expense/add"}>
-          <div
-            className="h-16 w-96 rounded-3xl bg-white p-4 text-center text-white drop-shadow-lg"
-            style={{
-              backgroundColor: category.category_color,
-            }}
-          >
-            Add Expense
-          </div>
-        </Link>
-
         <div className="flex flex-row">
           <div
             className="mx-2 items-center justify-center align-middle"
@@ -220,6 +210,15 @@ const CategoryPage = () => {
               Sort By: Ascending Expense
             </button>
           </div>
+          <Link to={"expense/add"}>
+            <CiCirclePlus
+              style={{
+                fontSize: "3rem",
+                color: category.category_color,
+                // paddingRight: "1rem",
+              }}
+            />
+          </Link>
         </div>
 
         <div className="flex items-center gap-2">
