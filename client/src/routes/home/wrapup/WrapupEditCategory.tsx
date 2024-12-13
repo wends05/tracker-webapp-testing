@@ -7,9 +7,9 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Category, User } from "@/utils/types";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import getUser from "@/utils/getUser";
 import { toast } from "@/hooks/use-toast";
 
@@ -19,6 +19,8 @@ const WrapupEditCategory = () => {
     queryKey: ["user"],
     queryFn: getUser,
   });
+  const nav = useNavigate();
+  const queryClient = useQueryClient();
 
   const [budgets, setBudgets] = useState(
     categories.reduce(
@@ -70,10 +72,14 @@ const WrapupEditCategory = () => {
 
       return await response.json();
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({
         description: "Success updating category budgets.",
       });
+      await queryClient.invalidateQueries({
+        queryKey: ["weeklySummary"],
+      });
+      nav("/dashboard");
     },
     onError: () => {
       toast({

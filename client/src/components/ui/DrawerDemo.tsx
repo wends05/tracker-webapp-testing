@@ -6,7 +6,7 @@ import {
   DrawerDescription,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import getUser from "@/utils/getUser";
 import { User } from "@/utils/types";
@@ -22,6 +22,11 @@ export function DrawerDemo({ open, setOpen }: DrawerDemoProps) {
     queryKey: ["user"],
     queryFn: getUser,
   });
+
+  const nav = useNavigate();
+
+  const queryClient = useQueryClient();
+
   const { mutate: yesMutate, isPending } = useMutation({
     mutationFn: async () => {
       const response = await fetch(
@@ -43,9 +48,12 @@ export function DrawerDemo({ open, setOpen }: DrawerDemoProps) {
       return await response.json();
     },
 
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({
         description: "Used the same categories from the previous week.",
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["weeklySummary"],
       });
       nav("/dashboard");
     },
@@ -58,7 +66,6 @@ export function DrawerDemo({ open, setOpen }: DrawerDemoProps) {
     },
   });
 
-  const nav = useNavigate();
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent className="fixed mx-auto flex h-auto max-h-[30rem] w-auto max-w-[40rem] items-center justify-center">

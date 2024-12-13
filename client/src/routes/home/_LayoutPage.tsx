@@ -18,7 +18,7 @@ const LayoutPage = () => {
   const path = useLocation();
   const { data: wrapUpInfo, isLoading } = useQuery({
     enabled: !!user,
-    queryKey: ["wrapUpInfo"],
+    queryKey: ["weeklySummary"],
     queryFn: async () => {
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/summary/user/${user!.user_id}/recent`
@@ -62,7 +62,13 @@ const LayoutPage = () => {
     <div className="flex h-screen flex-col">
       <Drawer />
       <div className="h-full">
-        {isLoading ? <h1>Loading weekly summary</h1> : <Outlet />}
+        {isLoading || !wrapUpInfo ? (
+          <p className="flex h-full w-full items-center justify-center">
+            Loading weekly summary
+          </p>
+        ) : (
+          <Outlet />
+        )}
       </div>
     </div>
   );

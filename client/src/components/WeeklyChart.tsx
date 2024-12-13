@@ -26,8 +26,8 @@ interface WeekData {
 
 const chartConfig = {
   expense: {
-    label: "",
-    color: "hsl(var(--chart-1))",
+    label: "Expense",
+    color: "#7A958F",
   },
 } satisfies ChartConfig;
 

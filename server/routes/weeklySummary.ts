@@ -103,8 +103,8 @@ weeklySummaryRouter.post("/user/:id", async (req: Request, res: Response) => {
     nextSaturday.setDate(nextSaturday.getDate() + 6);
 
     const { rows: weeklySummaryRows } = await pool.query(
-      `INSERT INTO "Weekly Summary"(date_start, date_end, user_id, total_budget, total_spent, total_not_spent) VALUES($1, $2, $3) RETURNING *`,
-      [lastSunday, nextSaturday.toLocaleDateString(), id, 0, 0, 0]
+      `INSERT INTO "Weekly Summary"(date_start, date_end, user_id) VALUES($1, $2, $3) RETURNING *`,
+      [lastSunday, nextSaturday.toLocaleDateString(), id]
     );
 
     res.json({
