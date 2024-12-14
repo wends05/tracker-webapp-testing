@@ -25,13 +25,9 @@ export default async function recalculateCategoryExpenses({
     [category_id]
   );
 
-  console.log(categoryBudgetRows);
-
   const totalExpended = totalExpenseRows[0].total_expenses || 0;
   const budget = categoryBudgetRows[0].budget || 0;
   const amount_left = budget - totalExpended;
-
-  console.log(totalExpended, budget, amount_left);
 
   if (amount_left < 0) {
     throw Error("Expenses exceeded the budget");

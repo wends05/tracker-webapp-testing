@@ -21,7 +21,7 @@ export default async function recalculateSavedCategoryExpenses({
   );
 
   const { rows: savedCategoryBudgetRows } = await pool.query(
-    `SELECT budget FROM "Saved Category" WHERE saved_category_id = $1`,
+    `SELECT budget FROM "Saved Categories" WHERE saved_category_id = $1`,
     [saved_category_id]
   );
 
@@ -29,14 +29,12 @@ export default async function recalculateSavedCategoryExpenses({
   const budget = savedCategoryBudgetRows[0].budget || 0;
   const amount_left = budget - totalExpended;
 
-  console.log(totalExpended, budget, amount_left);
-
   if (amount_left < 0) {
     throw Error("Expenses exceeded the budget");
   }
 
   await pool.query(
-    `UPDATE "Saved Category" SET amount_left = $1, amount_spent = $2 WHERE saved_category_id = $3`,
+    `UPDATE "Saved Categories" SET amount_left = $1, amount_spent = $2 WHERE saved_category_id = $3`,
     [amount_left, totalExpended, saved_category_id]
   );
 
