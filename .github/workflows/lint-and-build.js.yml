@@ -27,12 +27,12 @@ jobs:
       
       - name: Install Packages (Client)
         working-directory: client/  
-        run: npm ci
+        run: npm install
       - name: Install Packages (Server)
         working-directory: server/
-        run: npm ci
+        run: npm install
       - name: Installing packages
-        run: npm ci   
+        run: npm install
       
 
       - name: Run tests on client
@@ -60,12 +60,12 @@ jobs:
 
       - name: Install Packages (Client)
         working-directory: client/
-        run: npm ci
+        run: npm install
       - name: Install Packages (Server)
         working-directory: server/
-        run: npm ci
+        run: npm install
       - name: Installing packages
-        run: npm ci
+        run: npm install
 
       - run: npm run lint
 
