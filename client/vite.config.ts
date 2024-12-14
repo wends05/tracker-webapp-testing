@@ -11,5 +11,8 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  test: {},
+  test: {
+    environment: "jsdom",
+    globals: true, // Optional: Makes test functions globally available (describe, it, expect)
+  },
 });

@@ -13,7 +13,7 @@ export default [
       "client/src/hooks/**",
     ],
   },
-  { files: ["**/*.{mjs,cjs,ts,jsx,tsx}"] },
+  { files: ["**/*.{mjs,cjs,ts,tsx}"] },
   {
     languageOptions: {
       globals: globals.browser,

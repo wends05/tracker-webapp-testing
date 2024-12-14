@@ -32,7 +32,10 @@ const Landing = () => {
               }
               transition={{ duration: 1 }}
             >
-              <p className="bg-gradient-to-r from-[#4c9182] to-[#efd293] bg-clip-text text-8xl font-semibold text-transparent">
+              <p
+                className="bg-gradient-to-r from-[#4c9182] to-[#efd293] bg-clip-text text-8xl font-semibold text-transparent"
+                data-testid="landing-title"
+              >
                 Wise tracking <br /> and saving <br /> with ease
               </p>
               <div className="mt-3 w-72 text-[#7a958f]">
