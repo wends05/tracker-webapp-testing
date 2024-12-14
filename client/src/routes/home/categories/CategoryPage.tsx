@@ -122,51 +122,66 @@ const CategoryPage = () => {
 
   return (
     <div
-      className={`relative mt-12 flex min-h-full flex-col justify-center px-16`}
+      className="relative flex min-h-full flex-col"
+      style={{
+        color: category.category_color,
+      }}
     >
-      <h1 className="text-center text-8xl font-bold text-black">
-        {category.category_name}
-      </h1>
-      <div className="flex w-full justify-center gap-2">
-        <div className="flex w-1/3 flex-col items-center justify-center">
-          <div className="mb-8 min-h-56 w-96 rounded-3xl bg-white drop-shadow-lg">
-            <div
-              className="mb-4 flex h-12 w-full items-center rounded-t-2xl px-6 font-bold text-white"
-              style={{
-                backgroundColor: category.category_color,
-              }}
-            >
-              <text>Description</text>
-            </div>
-            <text className="ml-6">{category.description}</text>
+      <div className="flex flex-col px-16 py-16 md:flex-row md:justify-between md:px-32">
+        <div className="mb-8 flex flex-grow-0 flex-col md:px-24">
+          <h1
+            className="mb-8 text-5xl font-bold md:text-8xl"
+            style={{ wordBreak: "break-all" }}
+          >
+            {/* {category.category_name} */}
+            Lorem i
+          </h1>
+          <div
+            className="flex-start flex w-full self-start"
+            style={{ wordBreak: "break-all" }}
+          >
+            <p>
+              {category.description ? category.description : "No description."}
+            </p>
           </div>
         </div>
 
-        <div className="flex h-96 w-1/3 flex-col items-center">
+        <div className="max-w-1/3 flex flex-col items-center md:mr-32">
           <div
-            className="mb-8 mt-20 h-16 w-96 rounded-3xl bg-white p-4 text-center text-white drop-shadow-lg"
+            className="mb-3 flex h-24 w-[21rem] flex-col rounded-lg p-4 text-center text-white drop-shadow-lg"
             style={{
               backgroundColor: category.category_color,
             }}
           >
-            <text>Total Budget: </text>
-            <text className="text-2xl font-bold">₱{category.budget}</text>
+            <text>Your balance is</text>
+            <text className="text-5xl font-bold">₱{category.budget}</text>
           </div>
+
           <div className="flex flex-row gap-4">
-            <div className="flex size-52 flex-col items-center py-8 text-center">
+            <div className="flex size-40 flex-col items-center rounded-lg bg-white py-8 text-center drop-shadow-lg">
               <text>Total Saved</text>
-              <text className="text-6xl font-bold">
-                {savedPercentage.toFixed(0)}%
+              <text className="text-4xl font-bold">
+                ₱{category.amount_left}
               </text>
-              <text className="font-bold">₱{category.amount_left}</text>
+              <text className="font-bold">{savedPercentage.toFixed(0)}%</text>
             </div>
-            <div className="flex size-52 flex-col items-center py-8 text-center">
+            <div className="mb-12 flex size-40 flex-col items-center rounded-lg bg-white py-8 text-center drop-shadow-lg">
               <text>Total Spent</text>
-              <text className="text-6xl font-bold">
-                {spentPercentage.toFixed(0)}%
+              <text className="text-4xl font-bold">
+                ₱{category.amount_spent}
               </text>
-              <text className="font-bold">₱{category.amount_spent}</text>
+              <text className="font-bold">{spentPercentage.toFixed(0)}%</text>
             </div>
+          </div>
+          {/* progress bar */}
+          <div className="mb-4 h-8 w-full rounded-full bg-gray-200">
+            <div
+              className="h-full rounded-full"
+              style={{
+                width: `${savedPercentage}%`,
+                backgroundColor: category.category_color,
+              }}
+            ></div>
           </div>
         </div>
       </div>
