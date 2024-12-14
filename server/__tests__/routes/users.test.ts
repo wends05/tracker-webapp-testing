@@ -3,6 +3,7 @@ import { app } from "../../index";
 
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { Pool } from "pg";
+import { Category } from "../../utils/types";
 
 vi.mock("pg", () => {
   const mPool = {
@@ -63,19 +64,69 @@ describe("GET /user", () => {
 
 describe("POST /user", () => {
   it("should create a user given a username and email", async () => {
-    const mockPool = new Pool();
-    const mockQuery = mockPool.query as Mock;
+    const mockQuery = testPool.query as Mock;
     const username = "johndoe";
     const email = "johndoe@gmail.com";
     mockQuery.mockResolvedValueOnce({ rows: [{ username, email }] });
 
     const res = await request(app).post("/user").send({ username, email });
 
+    // expect pool.query to be called with the correct query
+    expect(mockQuery).toHaveBeenCalledWith(
+      `INSERT INTO "User"(username, email) VALUES ($1, $2) RETURNING *`,
+      [username, email]
+    );
     console.log(res.body);
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("data");
     expect(res.body.data).toHaveProperty("email", email);
     expect(res.body.data).toHaveProperty("username", username);
+  });
+
+  it("should return an error if no username or email is provided", async () => {
+    const response = await request(app).post("/user").send({});
+
+    expect(response.status).toBe(500);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("message");
+  });
+});
+
+describe("GET /user/:id/categories", () => {
+  it("should get all the categories given a user id", async () => {
+    const resolvedCategories: Category[] = [
+      {
+        category_id: 1,
+        user_id: 1,
+        category_name: "Category 1",
+        category_color: "#000000",
+        description: "",
+        amount_left: 100,
+        amount_spent: 100,
+        budget: 200,
+      },
+    ];
+    const mockQuery = testPool.query as Mock;
+    const id = 1;
+    mockQuery.mockResolvedValueOnce({ rows: resolvedCategories });
+
+    const res = await request(app).get(`/user/${id}/categories`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("data");
+    expect(res.body.data).toEqual(resolvedCategories);
+  });
+
+  it("should return an empty list if no categories are found", async () => {
+    const mockQuery = testPool.query as Mock;
+    const id = 1;
+    mockQuery.mockResolvedValueOnce({ rows: [] });
+
+    const res = await request(app).get(`/user/${id}/categories`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("data");
+    expect(res.body.data).toEqual([]);
   });
 });
