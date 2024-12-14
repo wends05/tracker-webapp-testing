@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../utils/UserContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 const navLinks = [
   {
@@ -32,12 +33,15 @@ const Sidebar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const nav = useNavigate();
 
+  const queryClient = useQueryClient();
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   const logOut = async () => {
     await supabase.auth.signOut();
+    queryClient.clear();
     nav("/auth");
   };
 
