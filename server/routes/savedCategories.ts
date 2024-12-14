@@ -2,12 +2,23 @@ import express, { Request, Response } from "express";
 import { pool } from "../db";
 import { SavedCategories } from "../utils/types";
 import recalculateWeekSummaryWithSavedCategory from "../utils/recalculateWeekSummaryWithSavedCategory";
+import recalculateSavedCategoryExpenses from "../utils/recalculateSavedCategoryExpenses";
 
 const savedCategoriesRouter = express.Router();
 
 savedCategoriesRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    console.log(id);
+
+    await recalculateSavedCategoryExpenses({
+      pool,
+      saved_category_id: Number(id),
+    });
+    await recalculateWeekSummaryWithSavedCategory({
+      pool,
+      saved_category_id: Number(id),
+    });
 
     const { rows } = await pool.query(
       `SELECT * FROM "Saved Categories" WHERE saved_category_id = $1`,
@@ -18,6 +29,7 @@ savedCategoriesRouter.get("/:id", async (req: Request, res: Response) => {
       data: rows[0],
     });
   } catch (error: any) {
+    console.error(error);
     res.status(500).json({
       error,
     });
@@ -41,16 +53,16 @@ savedCategoriesRouter.put("/:id", async (req: Request, res: Response) => {
       throw Error("No saved category id given");
     }
     const data = await pool.query(
-      `
-      UPDATE "Saved Categories" SET
-      saved_category_id = $1,
-      category_name = $2,
-      budget = $3,
-      category_color = $4,
-      amount_left = $5,
-      amount_spent = $6,
-      weekly_summary_id = $7
-      WHERE saved_category_id = $8 RETURNING *`,
+      `UPDATE "Saved Categories" SET
+        saved_category_id = $1,
+        category_name = $2,
+        budget = $3,
+        category_color = $4,
+        amount_left = $5,
+        amount_spent = $6,
+        weekly_summary_id = $7
+      WHERE
+        saved_category_id = $8 RETURNING *`,
       [
         saved_category_id,
         category_name,
@@ -63,10 +75,15 @@ savedCategoriesRouter.put("/:id", async (req: Request, res: Response) => {
       ]
     );
 
+    await recalculateSavedCategoryExpenses({
+      pool,
+      saved_category_id: Number(id),
+    });
     await recalculateWeekSummaryWithSavedCategory({
       pool,
-      saved_category_id,
+      saved_category_id: Number(id),
     });
+
     res.status(200).json({ data: data.rows[0] });
   } catch (error: any) {
     res.status(500).json({
@@ -105,6 +122,11 @@ savedCategoriesRouter.delete("/:id", async (req: Request, res: Response) => {
       `DELETE FROM "Saved Categories" WHERE saved_category_id = $1 RETURNING *`,
       [id]
     );
+
+    await recalculateWeekSummaryWithSavedCategory({
+      pool,
+      saved_category_id: Number(id),
+    });
     res.status(200).json({
       message: "Saved category successfully deleted",
       data: data.rows[0],

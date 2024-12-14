@@ -72,6 +72,9 @@ const EditExpense = () => {
       queryClient.invalidateQueries({
         queryKey: ["expense", expense.expense_id],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["weeklySummary"],
+      });
       closeForm();
       toast({
         description: "Expense Edited!",

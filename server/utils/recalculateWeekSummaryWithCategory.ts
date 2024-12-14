@@ -31,12 +31,13 @@ export default async function recalculateWeekSummaryWithCategory({
 
   const { total_budget, total_spent } =
     calculatedWeekBudgetAndExpendedRows[0] as RecalculatedWeek;
+  console.log(total_budget, total_spent);
 
-  const total_not_spent = total_budget || 0 - total_spent || 0;
-  const lastSunday = getLastSunday();
-  const res = await pool.query(
+  const total_not_spent = total_budget - total_spent;
+  const lastSunday = new Date(getLastSunday()).toLocaleDateString();
+
+  await pool.query(
     `UPDATE "Weekly Summary" SET total_budget = $1, total_spent = $2, total_not_spent = $3 WHERE date_start = $4`,
     [total_budget, total_spent, total_not_spent, lastSunday]
   );
-  console.log(res);
 }
