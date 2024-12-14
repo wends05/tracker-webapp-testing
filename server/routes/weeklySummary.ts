@@ -19,8 +19,7 @@ weeklySummaryRouter.post("/user/:id", async (req: Request, res: Response) => {
     // get recent weekly summary, either from last week or a few weeks ago basta recent
 
     const { rows: recentWeeklySummaryRows } = await pool.query(
-      `
-      SELECT * FROM "Weekly Summary" WHERE user_id = $1 ORDER BY date_start DESC`,
+      `SELECT * FROM "Weekly Summary" WHERE user_id = $1 ORDER BY weekly_summary_id DESC`,
       [id]
     ); // here
 
@@ -103,8 +102,8 @@ weeklySummaryRouter.post("/user/:id", async (req: Request, res: Response) => {
     nextSaturday.setDate(nextSaturday.getDate() + 6);
 
     const { rows: weeklySummaryRows } = await pool.query(
-      `INSERT INTO "Weekly Summary"(date_start, date_end, user_id) VALUES($1, $2, $3) RETURNING *`,
-      [lastSunday, nextSaturday.toLocaleDateString(), id]
+      `INSERT INTO "Weekly Summary"(date_start, date_end, user_id, total_budget, total_spent, total_not_spent) VALUES($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [lastSunday, nextSaturday.toLocaleDateString(), id, 0, 0, 0]
     );
 
     res.json({
