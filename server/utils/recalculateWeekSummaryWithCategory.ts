@@ -39,7 +39,7 @@ export default async function recalculateWeekSummaryWithCategory({
   const lastSunday = new Date(getLastSunday()).toLocaleDateString();
 
   await pool.query<WeeklySummary>(
-    `UPDATE "Weekly Summary" SET total_budget = $1, total_spent = $2, total_not_spent = $3 WHERE date_start = $4`,
-    [total_budget, total_spent, total_not_spent, lastSunday]
+    `UPDATE "Weekly Summary" SET total_budget = $1, total_spent = $2, total_not_spent = $3 WHERE date_start = $4 AND user_id = $5`,
+    [total_budget, total_spent, total_not_spent, lastSunday, userId]
   );
 }
