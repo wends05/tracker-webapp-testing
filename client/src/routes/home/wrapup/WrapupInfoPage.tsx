@@ -65,7 +65,7 @@ const WrapupInfoPage = () => {
   useEffect(() => {
     if (wrapUpInfo) {
       setSavePercentage(
-        Math.round((wrapUpInfo.total_budget / wrapUpInfo.total_not_spent) * 100)
+        Math.round((wrapUpInfo.total_not_spent / wrapUpInfo.total_budget) * 100)
       );
       setSpentPercentage(
         Math.round((wrapUpInfo.total_spent / wrapUpInfo.total_budget) * 100)

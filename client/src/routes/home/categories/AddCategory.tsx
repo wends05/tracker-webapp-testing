@@ -85,6 +85,9 @@ const AddCategory: React.FC = () => {
       queryClient.invalidateQueries({
         queryKey: ["categories"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["weeklySummary"],
+      });
     },
     onError: (error) => {
       toast({

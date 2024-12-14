@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { BackendResponse } from "@/interfaces/BackendResponse";
-import { Category, User } from "@/utils/types";
+import { Category, User, WeeklySummary } from "@/utils/types";
 import CategoryView from "@/components/CategoryView";
 import { useQuery } from "@tanstack/react-query";
 import getUser from "@/utils/getUser";
@@ -12,6 +12,24 @@ const Dashboard = () => {
   const { data: user } = useQuery<User>({
     queryKey: ["user"],
     queryFn: getUser,
+  });
+
+  const { data: weeklySummary } = useQuery({
+    enabled: !!user,
+    queryKey: ["weeklySummary"],
+    queryFn: async () => {
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/summary/user/${user!.user_id}/recent`
+      );
+
+      if (!response.ok) {
+        throw Error("Error Fetched");
+      }
+
+      const { data } =
+        (await response.json()) as BackendResponse<WeeklySummary>;
+      return data;
+    },
   });
 
   const { data: categories, isLoading } = useQuery({
@@ -34,35 +52,13 @@ const Dashboard = () => {
     },
   });
 
-  const [totalBudget, setTotalBudget] = useState(0);
-  const [totalSpent, setTotalSpent] = useState(0);
-  const [totalNotSpent, setTotalNotSpent] = useState(0);
   const [sortedCategories, setSortedCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     if (categories) {
-      calculateTotals(categories);
       setSortedCategories(categories); // Set initial sorted categories
     }
   }, [categories]);
-
-  const calculateTotals = (categories: Category[]) => {
-    setTotalBudget(() => {
-      return categories.reduce((acc, cat) => acc + cat.budget, 0);
-    });
-    setTotalSpent(() => {
-      return categories.reduce(
-        (acc, category) => acc + category.amount_spent,
-        0
-      );
-    });
-    setTotalNotSpent(() => {
-      return categories.reduce(
-        (acc, category) => acc + category.amount_left,
-        0
-      );
-    });
-  };
 
   const handleSort = (sortedCategories: Category[]) => {
     setSortedCategories(sortedCategories);
@@ -79,7 +75,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 gap-8 px-8 md:grid-cols-3">
         {/* Placeholder for Summary Graph */}
         <div className="shadow-none">
-          <WeeklyChart week={null} />
+          <WeeklyChart weekly_summary_id={null} />
         </div>
 
         {/* Money Left */}
@@ -88,7 +84,7 @@ const Dashboard = () => {
             Money Left
           </h2>
           <p className="text-center text-5xl font-bold text-black">
-            {totalNotSpent}
+            {weeklySummary?.total_not_spent}
           </p>
         </div>
 
@@ -100,7 +96,7 @@ const Dashboard = () => {
               Current Budget
             </h2>
             <p className="text-center text-4xl font-bold text-black">
-              {totalBudget}
+              {weeklySummary?.total_budget}
             </p>
           </div>
 
@@ -110,7 +106,7 @@ const Dashboard = () => {
               Total Expenses
             </h2>
             <p className="text-center text-4xl font-bold text-black">
-              {totalSpent}
+              {weeklySummary?.total_spent}
             </p>
           </div>
         </div>

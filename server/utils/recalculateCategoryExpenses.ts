@@ -5,7 +5,7 @@ interface RecalculatedCategory {
   amount_left: number;
 }
 
-interface recalculateExpensesProps {
+interface RecalculateExpensesProps {
   pool: Pool;
   category_id: number;
 }
@@ -14,7 +14,7 @@ interface recalculateExpensesProps {
 export default async function recalculateCategoryExpenses({
   pool,
   category_id,
-}: recalculateExpensesProps) {
+}: RecalculateExpensesProps) {
   const { rows: totalExpenseRows } = await pool.query(
     `SELECT SUM(total) as total_expenses FROM "Expense" WHERE category_id = $1`,
     [category_id]
@@ -25,13 +25,9 @@ export default async function recalculateCategoryExpenses({
     [category_id]
   );
 
-  console.log(categoryBudgetRows);
-
   const totalExpended = totalExpenseRows[0].total_expenses || 0;
   const budget = categoryBudgetRows[0].budget || 0;
   const amount_left = budget - totalExpended;
-
-  console.log(totalExpended, budget, amount_left);
 
   if (amount_left < 0) {
     throw Error("Expenses exceeded the budget");
