@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { pool } from "../db";
 import groupExpensesByDay from "../utils/groupExpensesByDay";
+import { Expense } from "../utils/types";
 import getLastSunday from "../utils/getLastSunday";
 
 const chartRouter = express.Router();
@@ -24,7 +25,7 @@ chartRouter.get(
       `;
 
         // Pass user_id as a parameter to the query
-        const { rows } = await pool.query(query, [user_id]);
+        const { rows } = await pool.query<Expense>(query, [user_id]);
         const arranged = groupExpensesByDay(rows);
 
         const date_start = new Date(getLastSunday()).toDateString();
