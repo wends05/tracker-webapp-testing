@@ -52,7 +52,7 @@ const Summary = () => {
           )}
 
           <div className="w-80">
-            <WeeklyChart week={null} />
+            <WeeklyChart weekly_summary_id={Number(weeklysummary_id)} />
           </div>
         </div>
       </div>
