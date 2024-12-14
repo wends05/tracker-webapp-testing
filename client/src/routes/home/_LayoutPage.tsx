@@ -49,8 +49,6 @@ const LayoutPage = () => {
     if (wrapUpInfo && !path.pathname.startsWith("/wrapup")) {
       const lastSunday = new Date(getLastSunday()).getDate();
       const recentSummaryStart = new Date(wrapUpInfo.date_start).getDate();
-      console.log(lastSunday);
-      console.log(recentSummaryStart);
 
       if (lastSunday != recentSummaryStart) {
         nav("/wrapup/1");

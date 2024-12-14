@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import { pool } from "../db";
 import { Category, Expense } from "../utils/types";
 import recalculateCategoryExpenses from "../utils/recalculateCategoryExpenses";
-import recalculateSavedCategoryExpenses from "../utils/recalculateWeekSummaryWithSavedCategory";
+import recalculateSavedCategoryExpenses from "../utils/recalculateSavedCategoryExpenses";
 import recalculateWeekSummaryWithCategory from "../utils/recalculateWeekSummaryWithCategory";
 import recalculateWeekSummaryWithSavedCategory from "../utils/recalculateWeekSummaryWithSavedCategory";
 
@@ -21,10 +21,8 @@ expenseRouter.post("", async (req: Request, res: Response) => {
     } = req.body as Expense;
 
     console.log("date: ", date);
-
-    if (!category_id && !saved_category_id) {
-      throw Error("Category is required.");
-    }
+    console.log("category_id: ", category_id);
+    console.log("saved_category_id: ", saved_category_id);
     if (category_id) {
       const budget = await pool.query<Category>(
         `SELECT amount_left FROM "Category" WHERE category_id= $1`,
@@ -58,7 +56,7 @@ expenseRouter.post("", async (req: Request, res: Response) => {
 
     if (saved_category_id) {
       const budget = await pool.query<Category>(
-        'SELECT amount_left FROM "Saved Categories" WHERE saved_category_id= $1',
+        `SELECT amount_left FROM "Saved Categories" WHERE saved_category_id= $1`,
         [saved_category_id]
       );
 
@@ -131,6 +129,7 @@ expenseRouter.put("/:id", async (req: Request, res: Response) => {
       `UPDATE "Expense" SET expense_name = $1, price = $2, quantity = $3, total = $4, date = $5 WHERE expense_id = $6 RETURNING *`,
       [expense_name, price, quantity, total, date, id]
     );
+
     if (category_id) {
       await recalculateCategoryExpenses({
         pool,
@@ -145,6 +144,7 @@ expenseRouter.put("/:id", async (req: Request, res: Response) => {
       res.status(200).json({
         data: data.rows[0],
       });
+      return;
     }
 
     if (saved_category_id) {
@@ -160,6 +160,7 @@ expenseRouter.put("/:id", async (req: Request, res: Response) => {
       res.status(200).json({
         data: data.rows[0],
       });
+      return;
     }
     throw Error("No category or saved category id provided.");
   } catch (error: unknown) {
@@ -178,11 +179,8 @@ expenseRouter.delete("/:id", async (req: Request, res: Response) => {
       [id]
     );
 
-    const { category_id, saved_category_id } = deletedExpenseResult.rows[0];
-
-    if (!category_id) {
-      throw Error("Category ID is required.");
-    }
+    const { category_id, saved_category_id } = deletedExpenseResult
+      .rows[0] as Expense;
 
     if (category_id) {
       await recalculateCategoryExpenses({
@@ -202,9 +200,9 @@ expenseRouter.delete("/:id", async (req: Request, res: Response) => {
         saved_category_id,
       });
 
-      await recalculateWeekSummaryWithCategory({
+      await recalculateWeekSummaryWithSavedCategory({
         pool,
-        category_id,
+        saved_category_id,
       });
     }
 

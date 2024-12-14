@@ -71,6 +71,9 @@ const EditCategory = () => {
       queryClient.refetchQueries({
         queryKey: ["category", category.category_id],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["weeklySummary"],
+      });
       nav(-1);
     },
     onError: () => {

@@ -2,12 +2,23 @@ import express, { Request, Response } from "express";
 import { pool } from "../db";
 import { DataResponse, SavedCategories } from "../utils/types";
 import recalculateWeekSummaryWithSavedCategory from "../utils/recalculateWeekSummaryWithSavedCategory";
+import recalculateSavedCategoryExpenses from "../utils/recalculateSavedCategoryExpenses";
 
 const savedCategoriesRouter = express.Router();
 
 savedCategoriesRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    console.log(id);
+
+    await recalculateSavedCategoryExpenses({
+      pool,
+      saved_category_id: Number(id),
+    });
+    await recalculateWeekSummaryWithSavedCategory({
+      pool,
+      saved_category_id: Number(id),
+    });
 
     const { rows } = await pool.query<SavedCategories>(
       `SELECT * FROM "Saved Categories" WHERE saved_category_id = $1`,
@@ -66,10 +77,15 @@ savedCategoriesRouter.put("/:id", async (req: Request, res: Response) => {
       ]
     );
 
+    await recalculateSavedCategoryExpenses({
+      pool,
+      saved_category_id: Number(id),
+    });
     await recalculateWeekSummaryWithSavedCategory({
       pool,
-      saved_category_id,
+      saved_category_id: Number(id),
     });
+
     res.status(200).json({ data: data.rows[0] });
   } catch (error: unknown) {
     res.status(500).json({
@@ -109,6 +125,11 @@ savedCategoriesRouter.delete("/:id", async (req: Request, res: Response) => {
       `DELETE FROM "Saved Categories" WHERE saved_category_id = $1 RETURNING *`,
       [id]
     );
+
+    await recalculateWeekSummaryWithSavedCategory({
+      pool,
+      saved_category_id: Number(id),
+    });
     res.status(200).json({
       message: "Saved category successfully deleted",
       data: data.rows[0],

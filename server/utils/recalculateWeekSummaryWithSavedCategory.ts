@@ -33,7 +33,7 @@ export default async function recalculateWeekSummaryWithSavedCategory({
 
   const { total_budget, total_spent } = calculatedWeekBudgetAndExpendedRows[0];
 
-  const total_not_spent = total_budget || 0 - total_spent || 0;
+  const total_not_spent = total_budget - total_spent;
 
   await pool.query(
     `UPDATE "Weekly Summary" SET total_budget = $1, total_spent = $2, total_not_spent = $3 WHERE weekly_summary_id = $4`,
