@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import getUser from "@/utils/getUser";
 import { WeeklyChart } from "@/components/WeeklyChart";
 import CategorySorter from "@/components/Sorter";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Dashboard = () => {
   const { data: user } = useQuery<User>({
@@ -35,10 +36,12 @@ const Dashboard = () => {
   const { data: categories, isLoading } = useQuery({
     queryKey: ["categories"],
     enabled: !!user,
+    staleTime: 10,
     queryFn: async () => {
       if (!user) {
         throw Error("No user provided");
       }
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/user/${user.user_id}/categories`
       );
@@ -116,7 +119,14 @@ const Dashboard = () => {
       <div className="mt-8">
         <h2 className="mb-4 text-lg font-medium text-black">Categories</h2>
         {isLoading ? (
-          <p>Loading categories...</p>
+          <div className="relative flex h-full w-full flex-row justify-between gap-14 rounded-lg p-4">
+            {/* Replace this with proper SkeletonCard components */}
+            <Skeleton className="h-[230px] w-[450px] rounded-xl" />
+
+            <Skeleton className="h-[230px] w-[500px] rounded-xl" />
+
+            <Skeleton className="h-[230px] w-[500px] rounded-xl" />
+          </div>
         ) : (
           <CategorySorter onSort={handleSort} categories={categories} />
         )}
