@@ -9,6 +9,7 @@ const savedCategoriesRouter = express.Router();
 savedCategoriesRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    console.log(id);
 
     await recalculateSavedCategoryExpenses({
       pool,
@@ -28,6 +29,7 @@ savedCategoriesRouter.get("/:id", async (req: Request, res: Response) => {
       data: rows[0],
     });
   } catch (error: any) {
+    console.error(error);
     res.status(500).json({
       error,
     });

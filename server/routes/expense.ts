@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import { pool } from "../db";
 import { Expense } from "../utils/types";
 import recalculateCategoryExpenses from "../utils/recalculateCategoryExpenses";
-import recalculateSavedCategoryExpenses from "../utils/recalculateWeekSummaryWithSavedCategory";
+import recalculateSavedCategoryExpenses from "../utils/recalculateSavedCategoryExpenses";
 import recalculateWeekSummaryWithCategory from "../utils/recalculateWeekSummaryWithCategory";
 import recalculateWeekSummaryWithSavedCategory from "../utils/recalculateWeekSummaryWithSavedCategory";
 
@@ -175,16 +175,12 @@ expenseRouter.delete("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const deletedExpenseResult = await pool.query(
-      'DELETE from "Expense" WHERE expense_id = $1 RETURNING *',
+      `DELETE from "Expense" WHERE expense_id = $1 RETURNING *`,
       [id]
     );
 
     const { category_id, saved_category_id } = deletedExpenseResult
       .rows[0] as Expense;
-
-    if (!category_id) {
-      throw Error("Category ID is required.");
-    }
 
     if (category_id) {
       await recalculateCategoryExpenses({
@@ -204,9 +200,9 @@ expenseRouter.delete("/:id", async (req: Request, res: Response) => {
         saved_category_id,
       });
 
-      await recalculateWeekSummaryWithCategory({
+      await recalculateWeekSummaryWithSavedCategory({
         pool,
-        category_id,
+        saved_category_id,
       });
     }
 
@@ -214,9 +210,10 @@ expenseRouter.delete("/:id", async (req: Request, res: Response) => {
       data: deletedExpenseResult.rows[0],
     });
   } catch (error: any) {
+    console.error(error);
     res.status(500).json({
-      message: "An error has occured",
-      error: error.message,
+      message: error.message,
+      error: error,
     });
   }
 });
