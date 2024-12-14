@@ -20,6 +20,8 @@ describe("LandingPage", () => {
     const landingTitle = await screen.findByTestId("landing-title");
 
     expect(landingTitle).toBeDefined();
-    expect(landingTitle.innerHTML).string("Wise tracking and saving with ease");
+    expect(landingTitle.innerHTML).toContain(
+      "Wise tracking and saving with ease"
+    );
   });
 });
