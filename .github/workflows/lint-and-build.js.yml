@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: ["main", "pre-deploy"]
+    branches: ["main"]
   pull_request:
-    branches: ["main", "pre-deploy"]
+    branches: ["main"]
 
 jobs:
   lint-and-build:
@@ -27,12 +27,12 @@ jobs:
 
       - name: Install Packages (Client)
         working-directory: client/
-        run: npm install
+        run: npm ci
       - name: Install Packages (Server)
         working-directory: server/
-        run: npm install
+        run: npm ci
       - name: Installing packages
-        run: npm i
+        run: npm ci
 
       - run: npm run lint
 
