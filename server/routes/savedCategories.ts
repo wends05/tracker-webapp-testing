@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { pool } from "../db";
-import { SavedCategories } from "../utils/types";
+import { DataResponse, SavedCategories } from "../utils/types";
 import recalculateWeekSummaryWithSavedCategory from "../utils/recalculateWeekSummaryWithSavedCategory";
 import recalculateSavedCategoryExpenses from "../utils/recalculateSavedCategoryExpenses";
 
@@ -20,18 +20,18 @@ savedCategoriesRouter.get("/:id", async (req: Request, res: Response) => {
       saved_category_id: Number(id),
     });
 
-    const { rows } = await pool.query(
+    const { rows } = await pool.query<SavedCategories>(
       `SELECT * FROM "Saved Categories" WHERE saved_category_id = $1`,
       [id]
     );
 
     res.status(200).json({
       data: rows[0],
-    });
-  } catch (error: any) {
-    console.error(error);
+    } satisfies DataResponse<SavedCategories>);
+  } catch (error: unknown) {
     res.status(500).json({
-      error,
+      message: (error as Error).message,
+      error: error,
     });
   }
 });
@@ -47,13 +47,14 @@ savedCategoriesRouter.put("/:id", async (req: Request, res: Response) => {
       amount_left,
       amount_spent,
       weekly_summary_id,
-    }: SavedCategories = req.body;
+    } = req.body as SavedCategories;
 
     if (!saved_category_id) {
       throw Error("No saved category id given");
     }
-    const data = await pool.query(
-      `UPDATE "Saved Categories" SET
+    const data = await pool.query<SavedCategories>(
+      `UPDATE "Saved Categories"
+       SET
         saved_category_id = $1,
         category_name = $2,
         budget = $3,
@@ -62,7 +63,8 @@ savedCategoriesRouter.put("/:id", async (req: Request, res: Response) => {
         amount_spent = $6,
         weekly_summary_id = $7
       WHERE
-        saved_category_id = $8 RETURNING *`,
+        saved_category_id = $8 RETURNING *
+      `,
       [
         saved_category_id,
         category_name,
@@ -85,10 +87,10 @@ savedCategoriesRouter.put("/:id", async (req: Request, res: Response) => {
     });
 
     res.status(200).json({ data: data.rows[0] });
-  } catch (error: any) {
+  } catch (error: unknown) {
     res.status(500).json({
       message: "An error has occured",
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 });
@@ -107,9 +109,10 @@ savedCategoriesRouter.get(
       res.status(200).json({
         data: rows,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       res.status(500).json({
-        error,
+        message: "An error has occured",
+        error: (error as Error).message,
       });
     }
   }
@@ -118,7 +121,7 @@ savedCategoriesRouter.get(
 savedCategoriesRouter.delete("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const data = await pool.query(
+    const data = await pool.query<SavedCategories>(
       `DELETE FROM "Saved Categories" WHERE saved_category_id = $1 RETURNING *`,
       [id]
     );
@@ -131,10 +134,10 @@ savedCategoriesRouter.delete("/:id", async (req: Request, res: Response) => {
       message: "Saved category successfully deleted",
       data: data.rows[0],
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     res.status(500).json({
       message: "An error has occured",
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 });
