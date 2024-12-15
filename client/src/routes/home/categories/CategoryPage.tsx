@@ -7,6 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link, Outlet, useParams } from "react-router-dom";
 import { CiCirclePlus } from "react-icons/ci";
+import { ArrowDown } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 
 const CategoryPage = () => {
   const { category_id } = useParams();
@@ -127,14 +129,13 @@ const CategoryPage = () => {
         color: category.category_color,
       }}
     >
-      <div className="flex flex-col px-16 py-16 md:flex-row md:justify-between md:px-32">
+      <div className="flex flex-col bg-orange-50 px-16 py-16 md:flex-row md:justify-between md:px-32">
         <div className="mb-8 flex flex-grow-0 flex-col md:px-24">
           <h1
             className="mb-8 text-5xl font-bold md:text-8xl"
             style={{ wordBreak: "break-all" }}
           >
-            {/* {category.category_name} */}
-            Lorem i
+            {category.category_name}
           </h1>
           <div
             className="flex-start flex w-full self-start"
@@ -147,41 +148,73 @@ const CategoryPage = () => {
         </div>
 
         <div className="max-w-1/3 flex flex-col items-center md:mr-32">
+          {/* budget */}
           <div
-            className="mb-3 flex h-24 w-[21rem] flex-col rounded-lg p-4 text-center text-white drop-shadow-lg"
+            className="mb-3 flex h-24 w-[27rem] flex-col rounded-lg p-4 text-center text-white drop-shadow-lg md:w-full"
             style={{
               backgroundColor: category.category_color,
             }}
           >
-            <text>Your balance is</text>
-            <text className="text-5xl font-bold">₱{category.budget}</text>
+            <text>Budget</text>
+            <text className="text-3xl font-bold md:text-5xl">
+              ₱{category.budget}
+            </text>
           </div>
 
-          <div className="flex flex-row gap-4">
-            <div className="flex size-40 flex-col items-center rounded-lg bg-white py-8 text-center drop-shadow-lg">
+          <div className="mb-4 flex flex-row gap-3 md:gap-4">
+            {/* saved */}
+            <div
+              className="flex h-[12rem] w-[13rem] flex-col items-center rounded-lg bg-white px-4 py-8 text-center drop-shadow-lg md:h-[15rem] md:w-[15rem]"
+              style={{ wordBreak: "break-all" }}
+            >
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-white bg-emerald-100 md:h-20 md:w-20">
+                <ArrowUp className="size-8" style={{ color: "#00994d" }} />
+              </div>
               <text>Total Saved</text>
-              <text className="text-4xl font-bold">
+              <text
+                className="overflow-hidden text-ellipsis text-2xl font-bold md:text-4xl"
+                style={{ wordBreak: "break-all" }}
+              >
                 ₱{category.amount_left}
               </text>
-              <text className="font-bold">{savedPercentage.toFixed(0)}%</text>
             </div>
-            <div className="mb-12 flex size-40 flex-col items-center rounded-lg bg-white py-8 text-center drop-shadow-lg">
+
+            {/* spent */}
+            <div className="flex size-40 h-[12rem] w-[13rem] flex-col items-center rounded-lg bg-white px-4 py-8 text-center drop-shadow-lg md:h-[15rem] md:w-[15rem]">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-white bg-red-100 md:h-20 md:w-20">
+                <ArrowDown className="size-8" style={{ color: "#ff4d4d" }} />
+              </div>
               <text>Total Spent</text>
-              <text className="text-4xl font-bold">
+              <text
+                className="overflow-hidden text-ellipsis text-2xl font-bold md:text-4xl"
+                style={{ wordBreak: "break-all" }}
+              >
                 ₱{category.amount_spent}
               </text>
-              <text className="font-bold">{spentPercentage.toFixed(0)}%</text>
             </div>
           </div>
+
           {/* progress bar */}
-          <div className="mb-4 h-8 w-full rounded-full bg-gray-200">
+          <div className="mb-4 flex h-12 w-[27rem] items-center rounded-full bg-gray-200 md:w-full">
             <div
-              className="h-full rounded-full"
+              className="flex h-full items-center justify-center rounded-full"
               style={{
                 width: `${savedPercentage}%`,
-                backgroundColor: category.category_color,
+                backgroundColor:
+                  savedPercentage < 30 ? "#990000" : category.category_color,
               }}
-            ></div>
+            >
+              {savedPercentage >= 30 && (
+                <p className="font-bold text-white">
+                  {savedPercentage.toFixed(0)}% left
+                </p>
+              )}
+            </div>
+            {spentPercentage >= 70 && (
+              <p className="ml-8 font-bold text-gray-700">
+                {spentPercentage.toFixed(0)}% spent
+              </p>
+            )}
           </div>
         </div>
       </div>
