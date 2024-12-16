@@ -219,7 +219,7 @@ const CategoryPage = () => {
         </div>
       </div>
 
-      <div className="flex w-full flex-col items-start gap-4 px-10">
+      <div className="flex w-full flex-col items-start gap-4 px-10 py-10">
         <div className="flex flex-row">
           <div
             className="mx-2 items-center justify-center align-middle"
