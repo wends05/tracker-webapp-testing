@@ -24,6 +24,10 @@ const EditSavedCategory = () => {
         );
       }
 
+      toast({
+        description: "Editing Saved Category...",
+      });
+
       const newSavedAmountLeft =
         savedCategoriesData.budget - savedCategoriesData.amount_spent;
 
@@ -47,21 +51,23 @@ const EditSavedCategory = () => {
         const error = await response.json();
         throw Error(error);
       }
-    },
-    onSuccess: () => {
-      toast({
-        description: "Saved category edited",
-      });
-      queryClient.invalidateQueries({
+
+      await queryClient.invalidateQueries({
         queryKey: ["weeklySummary", savedCategoriesData.weekly_summary_id],
       });
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: [
           "weeklySummary",
           savedCategoriesData.weekly_summary_id,
           "categories",
         ],
       });
+    },
+    onSuccess: () => {
+      toast({
+        description: "Saved category edited",
+      });
+
       nav(-1);
     },
     onError: (error) => {
@@ -74,13 +80,16 @@ const EditSavedCategory = () => {
   });
 
   const closeForm = () => {
-    if (!isPending) {
+    if (!isPending || deleteCategory.isPending) {
       nav(-1);
     }
   };
 
   const deleteCategory = useMutation({
     mutationFn: async () => {
+      toast({
+        description: "Deleting Saved Category...",
+      });
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/savedCategories/${savedCategoriesData.saved_category_id}`,
         {
@@ -92,22 +101,24 @@ const EditSavedCategory = () => {
         const { error } = await response.json();
         throw new Error(error || "Failed to delete saved category");
       }
-    },
-    onSuccess: () => {
-      toast({
-        description: "Saved category successfully deleted",
-      });
-      queryClient.invalidateQueries({
+
+      await queryClient.invalidateQueries({
         queryKey: ["weeklySummary", savedCategoriesData.weekly_summary_id],
       });
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: [
           "weeklySummary",
           savedCategoriesData.weekly_summary_id,
           "categories",
         ],
       });
-      closeForm();
+    },
+    onSuccess: () => {
+      toast({
+        description: "Saved category successfully deleted",
+      });
+
+      nav(-1);
     },
     onError: (error) => {
       toast({
