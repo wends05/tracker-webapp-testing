@@ -10,20 +10,28 @@ interface RecalculatedWeek {
 interface recalculateWeekProps {
   pool: Pool;
   category_id: number;
+  user_id?: number;
 }
 // recalculate the weekly summary based on the expenses of a category
 export default async function recalculateWeekSummaryWithCategory({
   pool,
   category_id,
+  user_id,
 }: recalculateWeekProps) {
   // get category
-  const { rows: userIdRows } = await pool.query<Category>(
-    `SELECT user_id FROM "Category" WHERE category_id = $1`,
-    [category_id]
-  );
 
-  // get user_id by category
-  const userId = userIdRows[0].user_id;
+  let userId = user_id;
+
+  if (!user_id) {
+    const { rows: userIdRows } = await pool.query<Category>(
+      `SELECT user_id FROM "Category" WHERE category_id = $1`,
+      [category_id]
+    );
+
+    console.log(userIdRows);
+    // get user_id by category
+    userId = userIdRows[0].user_id;
+  }
 
   const { rows: calculatedWeekBudgetAndExpendedRows } =
     await pool.query<RecalculatedWeek>(

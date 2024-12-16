@@ -55,14 +55,14 @@ categoryRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    await recalculateCategoryExpenses({
-      pool,
-      category_id: Number(id),
-    });
-    await recalculateWeekSummaryWithCategory({
-      pool,
-      category_id: Number(id),
-    });
+    // await recalculateCategoryExpenses({
+    //   pool,
+    //   category_id: Number(id),
+    // });
+    // await recalculateWeekSummaryWithCategory({
+    //   pool,
+    //   category_id: Number(id),
+    // });
 
     const data = await pool.query<Category>(
       'SELECT * FROM "Category" WHERE category_id = $1',
@@ -179,6 +179,7 @@ categoryRouter.delete("/:id", async (req: Request, res: Response) => {
     await recalculateWeekSummaryWithCategory({
       pool,
       category_id: Number(data.rows[0].category_id),
+      user_id: data.rows[0].user_id,
     });
 
     res.status(200).json({
