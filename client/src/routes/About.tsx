@@ -1,7 +1,7 @@
 const About = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-10 px-10 md:px-20">
-      <div className="flex flex-col items-center justify-center gap-5">
+      <div className="flex max-w-screen-md flex-col items-center justify-center gap-5">
         <h1>About this project</h1>
         <p>
           This project aims to provide a well organized and easy to use
@@ -15,7 +15,17 @@ const About = () => {
           make informed decisions on how to manage their finances.
         </p>
       </div>
-      <div></div>
+      <div className="flex max-w-screen-md flex-col items-center justify-center gap-5">
+        <h2 className="font-bold">Developers</h2>
+        <ul>
+          <li>Gedalanga, Alhena Julienne</li>
+          <li>Dador, Wendell Terence F.</li>
+          <li>Gallo, Cassandra Ysabel</li>
+          <li>Barte, Regine Therese</li>
+          <li>Asesor, Vhea</li>
+          <li>Samenian, Joshua</li>
+        </ul>
+      </div>
     </div>
   );
 };
