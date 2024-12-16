@@ -7,6 +7,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link, Outlet, useParams } from "react-router-dom";
 import { CiCirclePlus } from "react-icons/ci";
+// import {
+//   Popover,
+//   PopoverContent,
+//   PopoverTrigger,
+// } from "@/components/ui/popover"
 
 const CategoryPage = () => {
   const { category_id } = useParams();
@@ -172,7 +177,7 @@ const CategoryPage = () => {
       </div>
 
       <div className="flex w-full flex-col items-start gap-4 px-10">
-        <div className="flex flex-row">
+        <div className="flex w-full flex-row items-center justify-between">
           <div
             className="mx-2 items-center justify-center align-middle"
             onClick={() => {
@@ -184,8 +189,8 @@ const CategoryPage = () => {
             <button
               className={
                 sortHighLow === true
-                  ? "bg-green border-green rounded-full border-2 text-white"
-                  : "border-green rounded-full border-2 bg-none"
+                  ? "bg-green border-green rounded-full border-2 text-white duration-500 hover:scale-105 hover:border-[#2f4f4f] hover:bg-[#2f4f4f] hover:ease-in-out"
+                  : "border-green hover:border-green rounded-full border-2 bg-none duration-500 hover:scale-105 hover:bg-slate-200 hover:ease-in-out"
               }
             >
               Sort By: Descending Expense
@@ -203,25 +208,29 @@ const CategoryPage = () => {
             <button
               className={
                 sortLowHigh === true
-                  ? "bg-green border-green rounded-full border-2 text-white"
-                  : "border-green rounded-full border-2 bg-none"
+                  ? "bg-green border-green rounded-full border-2 text-white duration-500 hover:scale-105 hover:border-[#2f4f4f] hover:bg-[#2f4f4f] hover:ease-in-out"
+                  : "border-green rounded-full border-2 bg-none duration-500 hover:scale-105 hover:bg-slate-200 hover:ease-in-out"
               }
             >
               Sort By: Ascending Expense
             </button>
           </div>
-          <Link to={"expense/add"}>
+
+          {/* Place the button to the right */}
+          <Link
+            to={"expense/add"}
+            className="ml-auto duration-300 hover:scale-110 hover:text-green-500 hover:transition-transform"
+          >
             <CiCirclePlus
               style={{
-                fontSize: "3rem",
+                fontSize: "4rem",
                 color: category.category_color,
-                // paddingRight: "1rem",
               }}
             />
           </Link>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="border-green ml-2 flex items-center gap-2 border-b-2 bg-none pr-3 duration-500 hover:bg-slate-200">
           <WeeklyFilterDropdown
             selectedDay={selectedDay}
             setSelectedDay={setSelectedDay}

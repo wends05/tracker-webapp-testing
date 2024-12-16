@@ -81,7 +81,7 @@ const ExpenseBox = ({
   const yearString = new Date(date!).getFullYear();
 
   return (
-    <div className="flex h-auto flex-row flex-nowrap justify-between border-b-2 border-b-black p-3">
+    <div className="flex h-auto flex-row flex-nowrap justify-between border-b-2 border-b-black p-3 transition duration-300 ease-in-out hover:rounded-t-lg hover:bg-slate-100">
       <div className="flex flex-col">
         <h2 className="flex truncate text-wrap font-bold"> {expense_name} </h2>
         <h6 className="flex">
