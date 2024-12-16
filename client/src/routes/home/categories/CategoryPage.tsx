@@ -273,7 +273,7 @@ const CategoryPage = () => {
           </Link>
         </div>
 
-        <div className="border-green ml-2 flex items-center gap-2 border-b-2 bg-none pr-3 duration-500 hover:bg-slate-200">
+        <div className="border-green ml-2 flex items-center gap-2 rounded-lg border-b-2 bg-none pr-3 duration-500 hover:bg-slate-200">
           <WeeklyFilterDropdown
             selectedDay={selectedDay}
             setSelectedDay={setSelectedDay}

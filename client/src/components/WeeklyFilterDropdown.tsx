@@ -23,7 +23,9 @@ const WeeklyFilterDropdown = ({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>Select Day:</DropdownMenuTrigger>
+      <DropdownMenuTrigger className="bg-green text-white hover:bg-[#2f4f4f]">
+        Select Day:
+      </DropdownMenuTrigger>
       <DropdownMenuContent className="w-50 rounded-lg bg-slate-50">
         <DropdownMenuLabel className="border-green bg-green rounded-md border-2 text-white">
           Select a Day
