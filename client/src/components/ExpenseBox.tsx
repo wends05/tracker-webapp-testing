@@ -25,6 +25,7 @@ const ExpenseBox = ({
   total,
   category_id,
   date,
+  saved_category_id,
 }: Expense) => {
   const nav = useNavigate();
   const queryClient = useQueryClient();
@@ -52,11 +53,26 @@ const ExpenseBox = ({
       toast({
         description: "Expense successfully deleted",
       });
-      queryClient.refetchQueries({
-        queryKey: ["category", category_id, "expenses"],
-      });
+
+      if (category_id) {
+        queryClient.refetchQueries({
+          queryKey: ["category", category_id, "expenses"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["category", category_id],
+        });
+      }
+
+      if (saved_category_id) {
+        queryClient.refetchQueries({
+          queryKey: ["savedCategory", saved_category_id, "expenses"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["savedCategory", saved_category_id],
+        });
+      }
       queryClient.invalidateQueries({
-        queryKey: ["category", category_id],
+        queryKey: ["weeklySummary"],
       });
     },
     onError: (error) => {

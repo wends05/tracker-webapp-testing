@@ -16,7 +16,7 @@ const AuthPage = () => {
       nav("/dashboard");
     }
     setLoading(false);
-  }, [nav, supabaseSession]);
+  }, []);
   const { toast } = useToast();
 
   const [change, setChange] = useState("LOG IN");
@@ -28,7 +28,7 @@ const AuthPage = () => {
 
   const [loading, setLoading] = useState(true);
 
-  const handleSubmit = (ev: FormEvent) => {
+  const handleSubmit = async (ev: FormEvent) => {
     ev.preventDefault();
     try {
       if (change === "LOG IN") {
@@ -42,9 +42,9 @@ const AuthPage = () => {
       }
 
       if (change === "SIGN UP") {
-        register();
+        await register();
       } else {
-        logIn();
+        await logIn();
       }
     } catch (error: any) {
       toast({
@@ -56,6 +56,7 @@ const AuthPage = () => {
   };
 
   const logIn = async () => {
+    console.log("HSHDASDHAGSCHAJSHGDAJHGSDA");
     console.log("EMAIL: " + email);
     const { error } = await supabase.auth.signInWithPassword({
       email: email,
@@ -97,6 +98,10 @@ const AuthPage = () => {
       throw new Error("Empty username");
     }
 
+    if (/[A-Z]/.test(email)) {
+      throw new Error("Email should not contain capital letters");
+    }
+
     // const fetchedUser = await fetch(
     //   `http://localhost:3000/user?email=${email}`
     // );
@@ -121,7 +126,6 @@ const AuthPage = () => {
       description: "Your account has been registered",
     });
     console.log("registered!");
-    setChange("LOG IN");
   };
 
   const createUser = async () => {
@@ -170,6 +174,7 @@ const AuthPage = () => {
                 onClick={() => {
                   setChange("SIGN UP");
                 }}
+                data-testid="SIGN UP"
               >
                 SIGN UP
               </button>
@@ -227,6 +232,7 @@ const AuthPage = () => {
                 type="submit"
                 className="bg-green w-max rounded-lg px-4 py-2 text-white hover:bg-[#6f4717]"
                 id="submit"
+                data-testid="submit"
               >
                 {change}
               </button>
