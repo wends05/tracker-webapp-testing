@@ -5,6 +5,19 @@ import { toast } from "@/hooks/use-toast";
 import { Expense } from "@/utils/types";
 import { Category } from "@/utils/types";
 import { BackendResponse } from "@/interfaces/BackendResponse";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+const getCurrentWeekRange = () => {
+  const today = new Date();
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - today.getDay());
+
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+  return { startOfWeek, endOfWeek };
+};
 
 const AddExpense = () => {
   const queryClient = useQueryClient();
@@ -15,7 +28,13 @@ const AddExpense = () => {
   const [price, setPrice] = useState(1.0);
   const [quantity, setQuantity] = useState(1);
   const [total, setTotal] = useState(0);
-  const [timeDate, setTimeDate] = useState("");
+  const [timeDate, setTimeDate] = useState<Date | null>(new Date());
+
+  const { startOfWeek, endOfWeek } = getCurrentWeekRange();
+
+  useEffect(() => {
+    setTotal(price * quantity);
+  }, [price, quantity]);
 
   useEffect(() => {
     setTotal(price * quantity);
@@ -161,13 +180,14 @@ const AddExpense = () => {
           </div>
           <div className="flex flex-1 flex-col">
             <label htmlFor="date">Day Spent:</label>
-            <input
+            <DatePicker
               className="focus:ring-green rounded-3xl border-2 border-black focus:ring"
-              type="date"
               id="datetime"
               name="timeDate"
-              value={timeDate}
-              onChange={(e) => setTimeDate(e.target.value)}
+              selected={timeDate}
+              minDate={startOfWeek}
+              maxDate={endOfWeek}
+              onChange={(date: Date | null) => setTimeDate(date)}
               required
             />
           </div>

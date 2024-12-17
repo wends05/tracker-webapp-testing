@@ -5,6 +5,19 @@ import { BackendResponse } from "@/interfaces/BackendResponse";
 import { FormEvent, useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Category } from "@/utils/types";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+const getCurrentWeekRange = () => {
+  const today = new Date();
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - today.getDay());
+
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+  return { startOfWeek, endOfWeek };
+};
 
 const EditExpense = () => {
   const expense = useLoaderData() as Expense;
@@ -17,7 +30,11 @@ const EditExpense = () => {
   const [price, setPrice] = useState<number | null>(expense.price);
   const [quantity, setQuantity] = useState(expense.quantity);
   const [total, setTotal] = useState(expense.total);
-  const [timeDate, setTimeDate] = useState(new Date(expense.date!));
+  const [timeDate, setTimeDate] = useState<Date | null>(
+    new Date(expense.date!)
+  );
+
+  const { startOfWeek, endOfWeek } = getCurrentWeekRange();
 
   useEffect(() => {
     const final_price = price ?? 0;
@@ -58,7 +75,7 @@ const EditExpense = () => {
         quantity,
         total,
         category_id: expense.category_id,
-        date: new Date(timeDate),
+        date: timeDate ? timeDate : new Date(),
       };
 
       console.log(newExpense);
@@ -146,13 +163,14 @@ const EditExpense = () => {
           </div>
           <div className="flex flex-1 flex-col">
             <label htmlFor="datetime">Day Spent:</label>
-            <input
+            <DatePicker
               className="focus:ring-green rounded-3xl border-2 border-black focus:ring"
-              type="date"
               id="datetime"
               name="timeDate"
-              value={timeDate.toISOString().split("T")[0]}
-              onChange={(e) => setTimeDate(new Date(e.target.value))}
+              selected={timeDate}
+              minDate={startOfWeek}
+              maxDate={endOfWeek}
+              onChange={(date: Date | null) => setTimeDate(date)}
               required
             />
           </div>
