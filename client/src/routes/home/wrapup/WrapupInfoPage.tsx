@@ -23,7 +23,7 @@ const WrapupInfoPage = () => {
   const [savedPercentage, setSavePercentage] = useState(0);
 
   const { data: wrapUpInfo, isLoading } = useQuery({
-    enabled: !!user, // Only fetch wrapUpInfo if the user is available
+    enabled: !!user,
     queryKey: ["weeklySummary"],
     queryFn: async () => {
       const response = await fetch(
@@ -44,11 +44,8 @@ const WrapupInfoPage = () => {
     queryKey: ["categories"],
     enabled: !!user,
     queryFn: async () => {
-      if (!user) {
-        throw Error("No user provided");
-      }
       const response = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/user/${user.user_id}/categories`
+        `${import.meta.env.VITE_SERVER_URL}/user/${user!.user_id}/categories`
       );
 
       if (!response.ok) {
@@ -93,63 +90,65 @@ const WrapupInfoPage = () => {
   }).format(endDate);
 
   return (
-    <div className="relative h-screen overflow-hidden">
-      <div className="mt-3 flex items-center justify-between px-5 text-4xl font-bold">
-        Week-End Review
-        <div className="flex text-2xl font-normal">
+    <div className="relative h-screen overflow-auto p-4">
+      <div className="mt-3 flex flex-col items-center justify-between gap-4 px-5 font-bold md:flex-row md:text-4xl">
+        <div className="text-2xl md:text-4xl">Week-End Review</div>
+        <div className="text-lg font-normal md:text-2xl">
           {startShortDate} - {endShortDate}
         </div>
       </div>
-      <hr className="border-t-2 border-slate-950 pl-6 pr-6 pt-3" />
-      <div className="flex gap-80 pl-8 pt-3">
-        <div>
+      <hr className="my-4 border-t-2 border-slate-950" />
+
+      <div className="flex flex-col gap-8 md:flex-row md:gap-16">
+        {/* Summary of Expenses */}
+        <div className="w-full md:w-1/2">
           <h4 className="text-lg font-medium">Summary of Expenses</h4>
-          <div className="h-[15rem] w-[30rem] bg-slate-700 text-white">
+          <div className="flex h-[15rem] w-full items-center justify-center bg-slate-700 text-white">
             insert ang graph here
           </div>
-          <div className="pl-2 pt-3">
+
+          <div className="pt-4">
             <h4 className="text-lg font-medium">
               From a total budget of {wrapUpInfo?.total_budget} this week
             </h4>
 
-            <div className="flex gap-12 pt-7 font-semibold">
+            <div className="flex flex-col gap-6 pt-4 font-semibold md:flex-row md:gap-12">
               <div>
                 <h3 className="font-semibold">You saved</h3>
-                <br />
-                <h4 className="text-lime-600">{wrapUpInfo?.total_not_spent}</h4>
-                <br />
+                <h4 className="pt-2 text-lime-600">
+                  {wrapUpInfo?.total_not_spent}
+                </h4>
                 <h4>{savedPercentage}% of your budget</h4>
               </div>
 
               <div>
                 <h3 className="font-semibold">You spent</h3>
-                <br />
-                <h4 className="text-red-700">{wrapUpInfo?.total_spent}</h4>
-                <br />
+                <h4 className="pt-2 text-red-700">{wrapUpInfo?.total_spent}</h4>
                 <h4>{spentPercentage}% of your budget</h4>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="pt-6">
+        {/* Top Spent Categories */}
+        <div className="w-full md:w-1/2">
           <h4 className="pb-4 text-lg font-medium">
             Your most spent categories
           </h4>
 
-          <Carousel className="relative w-full max-w-md">
+          <Carousel className="relative w-full">
             <CarouselContent>
               {topSpentCategories?.map((category) => (
                 <CarouselItem
                   key={category.category_id}
                   className="flex items-center justify-center"
                 >
-                  <Card className="w-full max-w-[400px] rounded-xl shadow-lg">
+                  <Card className="w-full max-w-[300px] rounded-xl shadow-lg">
                     <CardContent
-                      className="flex flex-col items-center justify-center p-8"
+                      className="flex flex-col items-center justify-center p-6"
                       style={{ backgroundColor: category.category_color }}
                     >
-                      <h3 className="text-4xl font-bold text-white">
+                      <h3 className="text-2xl font-bold text-white">
                         {category.category_name}
                       </h3>
                       <h6 className="font-bold text-white">
@@ -161,13 +160,13 @@ const WrapupInfoPage = () => {
               ))}
             </CarouselContent>
 
-            <CarouselPrevious className="absolute left-[-2rem] top-1/2 z-10 -translate-y-1/2" />
-            <CarouselNext className="absolute right-[-2rem] top-1/2 z-10 -translate-y-1/2" />
+            <CarouselPrevious className="absolute left-[-1rem] top-1/2 z-10 -translate-y-1/2" />
+            <CarouselNext className="absolute right-[-1rem] top-1/2 z-10 -translate-y-1/2" />
           </Carousel>
 
           <div className="pt-6">
             <h4 className="pb-4 text-lg font-medium">Your highest expenses</h4>
-            <div className="h-[10rem] w-[30rem] bg-slate-700 text-white">
+            <div className="flex h-[10rem] w-full items-center justify-center bg-slate-700 text-white">
               insert ang expenses here
             </div>
           </div>
@@ -175,13 +174,13 @@ const WrapupInfoPage = () => {
       </div>
 
       <button
-        className="bg-green absolute bottom-10 right-44 rounded px-4 py-2 text-white hover:bg-teal-700"
+        className="bg-green fixed bottom-20 right-8 rounded px-4 py-2 text-white hover:bg-teal-700"
         onClick={() => setIsDrawerOpen(true)}
       >
         Next
       </button>
 
-      <div className="absolute bottom-6 left-6">
+      <div className="fixed bottom-6 left-6">
         <DrawerDemo open={isDrawerOpen} setOpen={setIsDrawerOpen} />
       </div>
     </div>
