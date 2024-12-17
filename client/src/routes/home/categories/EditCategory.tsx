@@ -146,11 +146,23 @@ const EditCategory = () => {
           <h1 className="text-left text-xl font-bold text-black">
             Edit Category
           </h1>
+
+          {isPending && (
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-white bg-opacity-70">
+              <l-bouncy size="45" speed="1.75" color="black"></l-bouncy>
+            </div>
+          )}
+
           <button
             className="text-darkCopper p-1 hover:text-red-600"
             type="button"
             onClick={() => deleteCategory.mutate()}
           >
+            {isPending && (
+              <div className="absolute inset-0 z-20 flex items-center justify-center bg-white bg-opacity-70">
+                <l-bouncy size="45" speed="1.75" color="black"></l-bouncy>
+              </div>
+            )}
             <Trash className="h-6 w-6"></Trash>
           </button>
         </div>
@@ -199,7 +211,7 @@ const EditCategory = () => {
               htmlFor="description"
               className="mb-3 flex text-sm font-medium text-gray-700"
             >
-              Category Description
+              Description
               <p className="text-gray-400">(Optional)</p>
             </label>
           </div>
@@ -215,14 +227,14 @@ const EditCategory = () => {
 
         <div>
           <label className="text-sm font-medium text-gray-700">
-            Category Color:
+            Category Color
           </label>
           <div className="mt-1 flex space-x-2">
             {CATEGORY_COLORS.map((color) => (
               <div
                 key={color}
                 onClick={() => setBackgroundColor(color)}
-                className={`h-10 w-10 cursor-pointer rounded-full border-2 transition duration-1000 ${
+                className={`h-10 w-10 cursor-pointer rounded-full border-2 transition duration-700 ${
                   backgroundColor === color
                     ? "border-black"
                     : "border-transparent"

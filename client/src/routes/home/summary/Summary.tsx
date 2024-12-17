@@ -39,8 +39,9 @@ const Summary = () => {
 
   const [sortHighLow, setSortHighLow] = useState(false);
   const [sortLowHigh, setSortLowHigh] = useState(false);
-  const [sortedCategories, setSortedCategories] = useState<SavedCategories[] | null>(null);
-
+  const [sortedCategories, setSortedCategories] = useState<
+    SavedCategories[] | null
+  >(null);
 
   const ascendingSorted = () => {
     if (!weeklySummaryCategories) return;
@@ -87,7 +88,7 @@ const Summary = () => {
         <div className="my-4 flex gap-4">
           <button
             className={`rounded-full border-2 px-4 py-2 text-sm ${
-              sortHighLow ? "bg-green text-white" : "bg-white text-green"
+              sortHighLow ? "bg-green text-white" : "text-green bg-white"
             }`}
             onClick={() => {
               setSortHighLow(!sortHighLow);
@@ -100,7 +101,7 @@ const Summary = () => {
 
           <button
             className={`rounded-full border-2 px-4 py-2 text-sm ${
-              sortLowHigh ? "bg-green text-white" : "bg-white text-green"
+              sortLowHigh ? "bg-green text-white" : "text-green bg-white"
             }`}
             onClick={() => {
               setSortLowHigh(!sortLowHigh);
