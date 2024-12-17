@@ -89,34 +89,32 @@ const WrapupEditCategory = () => {
   });
 
   return (
-    <div className="relative z-10 flex h-screen items-center justify-center">
-      <div className="bg-blush absolute -left-[20rem] top-0 h-[55rem] w-[55rem] rounded-full"></div>
+    <div className="relative z-10 flex h-screen items-center justify-center overflow-hidden p-4">
+      {/* Background Circle */}
+      <div className="bg-blush absolute left-[-30%] top-[-10%] h-[150%] w-[80%] rounded-full md:left-[-35%] md:h-[150%] md:w-[70%]"></div>
 
-      <div className="relative z-20 flex w-full max-w-6xl items-center justify-between px-16">
-        <h1 className="-ml-32 text-6xl font-bold text-gray-700">
+      <div className="relative z-20 flex w-full max-w-6xl items-center justify-between">
+        {/* Text Inside the Circle */}
+        <h1 className="ml-[-5rem] text-4xl font-bold text-gray-700 sm:text-5xl md:text-6xl">
           Edit your <br />
           Categories:
         </h1>
 
-        <div className="relative flex items-center">
-          <Carousel className="relative w-full max-w-md">
+        <div className="relative flex w-full max-w-md items-center">
+          <Carousel className="relative w-full">
             <CarouselContent>
               {categories.map((category) => (
                 <CarouselItem
                   key={category.category_id}
                   className="flex items-center justify-center"
                 >
-                  <Card className="w-full max-w-[400px] rounded-xl shadow-lg">
+                  <Card className="w-full max-w-[300px] rounded-xl shadow-lg md:max-w-[400px]">
                     <CardContent
-                      className="flex flex-col items-center justify-center p-8"
+                      className="flex flex-col items-center justify-center p-6 md:p-8"
                       style={{ backgroundColor: category.category_color }}
                     >
-                      <h3 className="text-4xl font-bold text-white">
-                        {category.category_name}
-                      </h3>
-
-                      <div className="mt-6 flex items-center">
-                        <p className="mr-2 text-2xl text-white">₱</p>
+                      <div className="mb-4 flex items-center">
+                        <p className="mr-2 text-xl text-white md:text-2xl">₱</p>
                         <input
                           type="number"
                           value={budgets[category.category_id!] || ""}
@@ -132,9 +130,13 @@ const WrapupEditCategory = () => {
                               handleBudgetChange(category.category_id!, 0);
                             }
                           }}
-                          className="w-[150px] rounded-md border border-gray-300 p-2 text-center text-2xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                          className="w-[100px] rounded-md border border-gray-300 p-2 text-center text-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300 md:w-[150px] md:text-2xl"
                         />
                       </div>
+
+                      <h3 className="text-2xl font-bold text-white md:text-4xl">
+                        {category.category_name}
+                      </h3>
                     </CardContent>
                   </Card>
                 </CarouselItem>
@@ -147,11 +149,12 @@ const WrapupEditCategory = () => {
         </div>
       </div>
 
+      {/* Save Button */}
       <button
         onClick={() => mutate()}
         className="bg-green fixed bottom-8 right-8 rounded-full px-6 py-3 text-lg font-bold text-white shadow-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
       >
-        Save
+        SAVE
       </button>
     </div>
   );
