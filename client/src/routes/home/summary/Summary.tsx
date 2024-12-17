@@ -6,6 +6,7 @@ import { SavedCategories, User } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
 import { WeeklyChart } from "@/components/WeeklyChart";
 import { Outlet, useParams } from "react-router-dom";
+import { useState } from "react";
 
 const Summary = () => {
   const { data: user } = useQuery<User>({
@@ -36,12 +37,33 @@ const Summary = () => {
     enabled: !!user,
   });
 
+  const [sortHighLow, setSortHighLow] = useState(false);
+  const [sortLowHigh, setSortLowHigh] = useState(false);
+  const [sortedCategories, setSortedCategories] = useState<SavedCategories[] | null>(null);
+
+
+  const ascendingSorted = () => {
+    if (!weeklySummaryCategories) return;
+    const sorted = [...weeklySummaryCategories].sort(
+      (a, b) => a.amount_spent - b.amount_spent
+    );
+    setSortedCategories(sorted);
+  };
+
+  const descendingSorted = () => {
+    if (!weeklySummaryCategories) return;
+    const sorted = [...weeklySummaryCategories].sort(
+      (a, b) => b.amount_spent - a.amount_spent
+    );
+    setSortedCategories(sorted);
+  };
+
   return (
     <div className="pl-5 pr-5 pt-5">
       <h1 className="pb-2 font-bold">*Insert Date*</h1>
       <hr className="border-t-2 border-slate-900 pl-2 pr-2 pt-2" />
       <div>
-        {/*graphs */}
+        {/* Graphs */}
         <div className="mt-6 flex gap-20">
           {weeklySummaryCategories ? (
             <div>
@@ -52,17 +74,50 @@ const Summary = () => {
           )}
 
           <div className="w-80">
-            <WeeklyChart week={null} />
+            <WeeklyChart weekly_summary_id={Number(weeklysummary_id)} />
           </div>
         </div>
       </div>
 
-      {/* Categories section */}
+      {/* Categories Section */}
       <div className="mt-4">
         <h4 className="text-lg font-medium">Categories</h4>
+
+        {/* Sorting Buttons */}
+        <div className="my-4 flex gap-4">
+          <button
+            className={`rounded-full border-2 px-4 py-2 text-sm ${
+              sortHighLow ? "bg-green text-white" : "bg-white text-green"
+            }`}
+            onClick={() => {
+              setSortHighLow(!sortHighLow);
+              setSortLowHigh(false);
+              descendingSorted();
+            }}
+          >
+            Sort by: Descending Expense
+          </button>
+
+          <button
+            className={`rounded-full border-2 px-4 py-2 text-sm ${
+              sortLowHigh ? "bg-green text-white" : "bg-white text-green"
+            }`}
+            onClick={() => {
+              setSortLowHigh(!sortLowHigh);
+              setSortHighLow(false);
+              ascendingSorted();
+            }}
+          >
+            Sort by: Ascending Expense
+          </button>
+        </div>
+
         <div>Insert Categories</div>
         <div className="grid md:grid-cols-3">
-          {weeklySummaryCategories?.map((weeklyCategory) => (
+          {(sortHighLow || sortLowHigh
+            ? sortedCategories
+            : weeklySummaryCategories
+          )?.map((weeklyCategory) => (
             <SavedCategoryCard
               category={weeklyCategory}
               key={weeklyCategory.weekly_summary_id}

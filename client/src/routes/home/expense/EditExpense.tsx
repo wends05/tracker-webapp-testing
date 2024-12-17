@@ -27,8 +27,11 @@ const EditExpense = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
+
+      toast({
+        description: "Editing Expense...",
+      });
       const final_price = price ?? 0;
-      console.log("date: ", timeDate);
 
       // handle form logic
       const newExpense: Expense = {
@@ -42,8 +45,6 @@ const EditExpense = () => {
         saved_category_id: expense.saved_category_id,
       };
 
-      console.log(newExpense);
-
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/expense/${expense.expense_id}`,
         {
@@ -56,23 +57,25 @@ const EditExpense = () => {
       );
 
       if (!response.ok) {
-        const { error } = await response.json();
-        throw Error(error);
+        const { message } = await response.json();
+        throw Error(message);
       }
 
-      return response.json();
+      await queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["category", category_id],
+      });
+      await queryClient.refetchQueries({
+        queryKey: ["expense", expense.expense_id],
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["categories"],
+        queryKey: ["weeklySummary"],
       });
-      queryClient.invalidateQueries({
-        queryKey: ["category", category_id],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["expense", expense.expense_id],
-      });
-      closeForm();
+      nav(-1);
       toast({
         description: "Expense Edited!",
       });
@@ -87,7 +90,9 @@ const EditExpense = () => {
   });
 
   const closeForm = () => {
-    nav(-1);
+    if (!isPending) {
+      nav(-1);
+    }
   };
 
   return (

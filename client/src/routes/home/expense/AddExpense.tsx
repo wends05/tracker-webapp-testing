@@ -23,6 +23,10 @@ const AddExpense = () => {
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
 
+      toast({
+        description: "Adding Expense...",
+      });
+
       if (!name.trim()) {
         throw Error("Name is required.");
       }
@@ -57,6 +61,7 @@ const AddExpense = () => {
           body: JSON.stringify(expense),
         }
       );
+
       if (!response.ok) {
         const errorMessage = (await response.json()) as {
           error: string;
@@ -64,21 +69,24 @@ const AddExpense = () => {
         };
         throw Error(errorMessage.error);
       }
+
+      await queryClient.invalidateQueries({
+        queryKey: ["category", category_id, "expenses"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["category", category_id],
+      });
     },
 
     onSuccess: () => {
-      console.log(timeDate);
-      console.log(new Date(timeDate));
       toast({
         description: "Expense Added!",
       });
-      closeForm();
+
       queryClient.invalidateQueries({
-        queryKey: ["category", category_id, "expenses"],
+        queryKey: ["weeklySummary"],
       });
-      queryClient.invalidateQueries({
-        queryKey: ["category", category_id],
-      });
+      nav(-1);
     },
     onError: (error) => {
       toast({
@@ -90,7 +98,9 @@ const AddExpense = () => {
   });
 
   const closeForm = () => {
-    nav(-1);
+    if (!isPending) {
+      nav(-1);
+    }
   };
 
   return (

@@ -1,4 +1,5 @@
 import { Pool } from "pg";
+import { SavedCategories } from "./types";
 
 interface RecalculatedWeek {
   total_spent: number;
@@ -17,26 +18,25 @@ export default async function recalculateWeekSummaryWithSavedCategory({
 }: recalculateSavedExpensesProps) {
   // get weekly summary saved expenses
 
-  const { rows: weeklySummaryIdRows } = await pool.query(
+  const { rows: weeklySummaryIdRows } = await pool.query<SavedCategories>(
     `SELECT weekly_summary_id FROM "Saved Categories" WHERE saved_category_id = $1`,
     [saved_category_id]
   );
 
   const weeklySummaryId = weeklySummaryIdRows[0].weekly_summary_id;
 
-  const { rows: calculatedWeekBudgetAndExpendedRows } = await pool.query(
-    `SELECT SUM(budget) as total_budget, SUM(amount_spent) as total_spent FROM "Saved Categories" WHERE saved_category_id = $1`,
-    [weeklySummaryId]
-  );
+  const { rows: calculatedWeekBudgetAndExpendedRows } =
+    await pool.query<RecalculatedWeek>(
+      `SELECT SUM(budget) as total_budget, SUM(amount_spent) as total_spent FROM "Saved Categories" WHERE saved_category_id = $1`,
+      [weeklySummaryId]
+    );
 
-  const { total_budget, total_spent } =
-    calculatedWeekBudgetAndExpendedRows[0] as RecalculatedWeek;
+  const { total_budget, total_spent } = calculatedWeekBudgetAndExpendedRows[0];
 
-  const total_not_spent = total_budget || 0 - total_spent || 0;
+  const total_not_spent = total_budget - total_spent;
 
-  const res = await pool.query(
+  await pool.query(
     `UPDATE "Weekly Summary" SET total_budget = $1, total_spent = $2, total_not_spent = $3 WHERE weekly_summary_id = $4`,
     [total_budget, total_spent, total_not_spent, weeklySummaryId]
   );
-  console.log(res);
 }

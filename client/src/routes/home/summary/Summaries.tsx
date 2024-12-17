@@ -29,9 +29,11 @@ const WeeklySummaryPage = () => {
       <header className="mb-10 ml-16">
         <h1 className="text-3xl font-bold">Weekly Summaries</h1>
       </header>
-      {summaries?.map((summary, index) => (
-        <WeeklySummaryCard key={index} summary={summary} />
-      ))}
+      {summaries
+        ?.slice(1)
+        .map((summary, index) => (
+          <WeeklySummaryCard key={index} summary={summary} />
+        ))}
     </div>
   );
 };

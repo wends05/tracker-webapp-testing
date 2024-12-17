@@ -31,6 +31,10 @@ const EditCategory = () => {
         );
       }
 
+      toast({
+        description: "Editing category...",
+      });
+
       const newAmountLeft = budget - category.amount_spent;
 
       const newCategory: Category = {
@@ -59,17 +63,21 @@ const EditCategory = () => {
         const { error } = await response.json();
         throw Error(error);
       }
+
+      await queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+      await queryClient.refetchQueries({
+        queryKey: ["category", category.category_id],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["weeklySummary"],
+      });
     },
 
     onSuccess: () => {
       toast({
         description: "Category edited!",
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["categories"],
-      });
-      queryClient.refetchQueries({
-        queryKey: ["category", category.category_id],
       });
       nav(-1);
     },
@@ -80,12 +88,6 @@ const EditCategory = () => {
       });
     },
   });
-
-  // const handleReset = () => {
-  //   setCategoryName(category.category_name);
-  //   setBudget(category.budget);
-  //   setBackgroundColor(category.category_color);
-  // };
 
   const closeForm = () => {
     if (!isPending) {
@@ -106,18 +108,21 @@ const EditCategory = () => {
         const { error } = await response.json();
         throw new Error(error || "Failed to delete category");
       }
+      toast({
+        description: "Deleting Category",
+      });
+      await queryClient.refetchQueries({
+        queryKey: ["categories"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["category", category.category_id],
+      });
     },
     onSuccess: () => {
       toast({
-        description: "Category successfully deleted",
+        description: "Category deleted!",
       });
-      queryClient.invalidateQueries({
-        queryKey: ["categories"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["category", category.category_id],
-      });
-      closeForm();
+      nav(-1);
     },
     onError: (error) => {
       toast({

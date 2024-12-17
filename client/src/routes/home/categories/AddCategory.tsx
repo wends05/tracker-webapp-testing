@@ -29,7 +29,7 @@ const AddCategory: React.FC = () => {
   const nav = useNavigate();
 
   const queryClient = useQueryClient();
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
 
@@ -50,6 +50,10 @@ const AddCategory: React.FC = () => {
       }
 
       if (hasEmptyField) throw Error("Some fields are empty.");
+
+      toast({
+        description: "Adding Category...",
+      });
 
       const category: Category = {
         budget: parseFloat(budget) || 0,
@@ -76,15 +80,19 @@ const AddCategory: React.FC = () => {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to add category");
       }
+
+      await queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["weeklySummary"],
+      });
     },
     onSuccess: () => {
       toast({
-        description: "Added category!",
+        description: "Category added!",
       });
-      closeForm();
-      queryClient.invalidateQueries({
-        queryKey: ["categories"],
-      });
+      nav(-1);
     },
     onError: (error) => {
       toast({
@@ -96,7 +104,9 @@ const AddCategory: React.FC = () => {
   });
 
   const closeForm = () => {
-    nav(-1);
+    if (!isPending) {
+      nav(-1);
+    }
   };
 
   return (
