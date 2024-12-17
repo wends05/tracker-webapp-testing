@@ -36,12 +36,12 @@ const Dashboard = () => {
   const { data: categories, isLoading } = useQuery({
     queryKey: ["categories"],
     enabled: !!user,
-    staleTime: 10,
+    // staleTime: 10,
     queryFn: async () => {
       if (!user) {
         throw Error("No user provided");
       }
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      // await new Promise((resolve) => setTimeout(resolve, 5000));
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/user/${user.user_id}/categories`
       );
@@ -75,6 +75,9 @@ const Dashboard = () => {
           Welcome, {user?.username} <span className="wave">👋</span>
         </h1>
       </header>
+      <div className="pb-5">
+        <h2>Dashboard</h2>
+      </div>
       <div className="grid grid-cols-1 gap-8 px-8 md:grid-cols-3">
         {/* Placeholder for Summary Graph */}
         <div className="shadow-none">

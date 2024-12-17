@@ -1,8 +1,10 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { Expense } from "@/utils/types";
+import { BackendResponse } from "@/interfaces/BackendResponse";
 import { FormEvent, useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Category } from "@/utils/types";
 
 const EditExpense = () => {
   const expense = useLoaderData() as Expense;
@@ -24,16 +26,31 @@ const EditExpense = () => {
 
   const queryClient = useQueryClient();
 
+  const { data: category } = useQuery<Category>({
+    queryKey: ["category", category_id],
+    queryFn: async () => {
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/category/${category_id}`
+      );
+
+      if (!response.ok) {
+        const { message: errorMessage } = (await response.json()) as {
+          message: string;
+        };
+        throw Error(errorMessage);
+      }
+
+      const { data } = (await response.json()) as BackendResponse<Category>;
+      return data;
+    },
+  });
+
   const { mutate, isPending } = useMutation({
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
-
-      toast({
-        description: "Editing Expense...",
-      });
       const final_price = price ?? 0;
+      console.log("date: ", timeDate);
 
-      // handle form logic
       const newExpense: Expense = {
         expense_id: expense.expense_id,
         expense_name: name,
@@ -42,8 +59,9 @@ const EditExpense = () => {
         total,
         category_id: expense.category_id,
         date: new Date(timeDate),
-        saved_category_id: expense.saved_category_id,
       };
+
+      console.log(newExpense);
 
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/expense/${expense.expense_id}`,
@@ -57,25 +75,23 @@ const EditExpense = () => {
       );
 
       if (!response.ok) {
-        const { message } = await response.json();
-        throw Error(message);
+        const { error } = await response.json();
+        throw Error(error);
       }
 
-      await queryClient.invalidateQueries({
-        queryKey: ["categories"],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ["category", category_id],
-      });
-      await queryClient.refetchQueries({
-        queryKey: ["expense", expense.expense_id],
-      });
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["weeklySummary"],
+        queryKey: ["categories"],
       });
-      nav(-1);
+      queryClient.invalidateQueries({
+        queryKey: ["category", category_id],
+      });
+      queryClient.refetchQueries({
+        queryKey: ["expense", expense.expense_id],
+      });
+      closeForm();
       toast({
         description: "Expense Edited!",
       });
@@ -90,9 +106,7 @@ const EditExpense = () => {
   });
 
   const closeForm = () => {
-    if (!isPending) {
-      nav(-1);
-    }
+    nav(-1);
   };
 
   return (
@@ -103,67 +117,94 @@ const EditExpense = () => {
       ></div>
       <form
         onSubmit={mutate}
-        className="z-10 flex h-max w-full max-w-sm flex-col items-center justify-center gap-2 rounded-lg bg-neutral-600 px-2 py-10 text-white"
+        className="z-10 flex h-max flex-col items-center justify-center rounded-3xl bg-white px-20 py-10"
       >
-        <div className="flex flex-col gap-2">
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+        <div className="flex justify-center pb-4">
+          <div className="flex flex-col items-center">
+            <h1 className="text-darkCopper text-xl font-bold">Edit Expense</h1>
+            <h3 className="text-lg">Money left: ₱{category?.amount_left}</h3>
+          </div>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label htmlFor="price">Price</label>
-          <input
-            type="number"
-            id="price"
-            name="price"
-            value={price ?? ""}
-            step="0.01"
-            onChange={(e) => setPrice(parseFloat(e.target.value) || null)}
-          />
+        {isPending && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-white bg-opacity-70">
+            <l-bouncy size="45" speed="1.75" color="black"></l-bouncy>
+          </div>
+        )}
+
+        <div className="flex w-full justify-between gap-x-20 pb-6">
+          <div className="flex flex-1 flex-col">
+            <label htmlFor="name">Expense Name:</label>
+            <input
+              className="focus:ring-green rounded-3xl border-2 border-black focus:ring"
+              type="text"
+              id="name"
+              name="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-1 flex-col">
+            <label htmlFor="datetime">Day Spent:</label>
+            <input
+              className="focus:ring-green rounded-3xl border-2 border-black focus:ring"
+              type="date"
+              id="datetime"
+              name="timeDate"
+              value={timeDate.toISOString().split("T")[0]}
+              onChange={(e) => setTimeDate(new Date(e.target.value))}
+              required
+            />
+          </div>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label htmlFor="quantity">Quantity</label>
-          <input
-            type="text"
-            id="quantity"
-            name="quantity"
-            value={quantity === 0 ? "" : quantity}
-            onChange={(e) => setQuantity(parseInt(e.target.value) || 0)}
-          />
+        <div className="flex w-full justify-between gap-x-20 pb-6">
+          <div className="flex flex-1 flex-col">
+            <label htmlFor="price">Price:</label>
+            <input
+              className="focus:ring-green rounded-2xl border-2 border-black focus:ring"
+              type="number"
+              id="price"
+              name="price"
+              value={price ?? ""}
+              step="0.01"
+              onChange={(e) => setPrice(parseFloat(e.target.value) || null)}
+            />
+          </div>
+
+          <div className="flex flex-1 flex-col">
+            <label htmlFor="quantity">Quantity:</label>
+            <input
+              className="focus:ring-green rounded-2xl border-2 border-black focus:ring"
+              type="text"
+              id="quantity"
+              name="quantity"
+              value={quantity === 0 ? "" : quantity}
+              onChange={(e) => setQuantity(parseInt(e.target.value) || 0)}
+            />
+          </div>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label htmlFor="datetime">Select Date and Time:</label>
-          <input
-            type="date"
-            id="datetime"
-            name="timeDate"
-            value={timeDate.toISOString().split("T")[0]}
-            onChange={(e) => setTimeDate(new Date(e.target.value))}
-            required
-          />
+        <div className="flex w-full justify-between">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="total">Total:</label>
+            <input
+              className="rounded-2xl bg-[#eaffed]"
+              type="text"
+              id="total"
+              name="quantity"
+              value={total ? total.toFixed(2) : 0}
+              disabled
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={isPending}
+            className="text-darkCopper mt-auto rounded-full bg-[#487474] px-4 py-2 text-sm font-semibold transition duration-200"
+          >
+            Edit Expense
+          </button>
         </div>
-
-        <div className="flex flex-col gap-2">
-          <label htmlFor="total">Total</label>
-          <input
-            type="text"
-            id="total"
-            name="quantity"
-            value={total ? total.toFixed(2) : 0}
-            disabled
-          />
-        </div>
-        <button type="submit" disabled={isPending}>
-          Edit Expense
-        </button>
       </form>
     </div>
   );
