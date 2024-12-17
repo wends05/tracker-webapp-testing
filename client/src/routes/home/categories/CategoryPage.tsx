@@ -9,6 +9,8 @@ import { Link, Outlet, useParams } from "react-router-dom";
 import { CiCirclePlus } from "react-icons/ci";
 import { ArrowDown } from "lucide-react";
 import { ArrowUp } from "lucide-react";
+import emptyListIcon from "./../../../assets/empty_list_icon.png";
+// import { Skeleton } from "@/components/ui/skeleton";
 
 const CategoryPage = () => {
   const { category_id } = useParams();
@@ -119,7 +121,7 @@ const CategoryPage = () => {
 
   if (!category || !expenses)
     return (
-      <p className="flex h-full items-center justify-center">Please wait...</p>
+      <p className="flex h-full items-center justify-center">Almost there...</p>
     );
 
   return (
@@ -262,7 +264,7 @@ const CategoryPage = () => {
           {/* Place the button to the right */}
           <Link
             to={"expense/add"}
-            className="ml-auto duration-300 hover:scale-110 hover:text-green-500 hover:transition-transform"
+            className="ml-auto pr-10 duration-300 hover:scale-110 hover:text-green-500 hover:transition-transform"
           >
             <CiCirclePlus
               style={{
@@ -281,24 +283,46 @@ const CategoryPage = () => {
           {selectedDay}
         </div>
 
+        <div className="pl-2">
+          <h2>Expenses</h2>
+        </div>
+
+        {/* Add this condition to render an icon or message */}
         <div className="flex w-full flex-col">
           {(sortHighLow || sortLowHigh
             ? sortHighLow
               ? descending
               : ascending
             : filteredExpenses
-          )?.map((expense: Expense) => (
-            <ExpenseBox
-              date={expense.date}
-              category_id={expense.category_id}
-              price={expense.price}
-              expense_name={expense.expense_name}
-              quantity={expense.quantity}
-              total={expense.total}
-              expense_id={Number(expense.expense_id)}
-              key={expense.expense_id}
-            />
-          ))}
+          )?.length > 0 ? (
+            // Render the filtered expenses
+            (sortHighLow || sortLowHigh
+              ? sortHighLow
+                ? descending
+                : ascending
+              : filteredExpenses
+            )?.map((expense: Expense) => (
+              <ExpenseBox
+                date={expense.date}
+                category_id={expense.category_id}
+                price={expense.price}
+                expense_name={expense.expense_name}
+                quantity={expense.quantity}
+                total={expense.total}
+                expense_id={Number(expense.expense_id)}
+                key={expense.expense_id}
+              />
+            ))
+          ) : (
+            <div className="justify-centerflex mx-auto my-4 flex flex-col items-center">
+              <img
+                src={emptyListIcon}
+                alt="Empty List"
+                className="h-48 w-48 object-contain opacity-50"
+              />
+              <h4 className="text-slate-600">Nothing to see here</h4>
+            </div>
+          )}
         </div>
       </div>
       <div>
