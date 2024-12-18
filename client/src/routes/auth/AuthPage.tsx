@@ -142,22 +142,20 @@ const AuthPage = () => {
     <div className="flex h-screen w-full items-center justify-center bg-gradient-to-t from-[#4C9182] to-[#D9DBBC]">
       {loading ? (
         <>
-          <div>
-            <div className="justify-center rounded-3xl bg-white/50 px-10 py-10 shadow-md">
-              <p className="text-[40px] font-bold text-[#292421]">Loading...</p>
-            </div>
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-white bg-opacity-70">
+            <l-bouncy size="45" speed="1.75" color="black"></l-bouncy>
           </div>
         </>
       ) : (
         <div className="flex h-full w-full items-center justify-center">
-          <div className="w-4/4 flex flex-col items-center justify-center rounded-3xl bg-white/50 py-10 shadow-md">
+          <div className="w-4/4 flex flex-col items-center justify-center rounded-3xl bg-white/50 py-10 shadow-2xl">
             <p className="text-[40px] font-bold text-[#292421]">{change}</p>
-            <div className="flex">
+            <div className="flex pt-7">
               <button
                 className={
                   change === "SIGN UP"
-                    ? "mx- h-[50px] w-[151px] rounded-l-full bg-[#F1E7DD] p-[10px] text-[#292421] hover:bg-[#e4e4e4]"
-                    : "mx- h-[50px] w-[151px] rounded-l-full bg-[#2F4F4F] p-[10px] hover:bg-[#7A9590]"
+                    ? "hover:text-vanilla h-[50px] w-[151px] rounded-l-full border-2 border-[#F1E7DD] bg-none p-[10px] text-[#292421] transition duration-300 ease-linear hover:bg-[#2F4F4F]"
+                    : "text-vanilla h-[50px] w-[151px] scale-110 rounded-l-full bg-[#2F4F4F] p-[10px] font-bold shadow-lg shadow-emerald-800 transition duration-300 ease-linear hover:bg-[#7A9590]"
                 }
                 onClick={() => {
                   setChange("LOG IN");
@@ -168,8 +166,8 @@ const AuthPage = () => {
               <button
                 className={
                   change === "LOG IN"
-                    ? "mx- h-[50px] w-[151px] rounded-r-full bg-[#F1E7DD] p-[10px] text-[#292421] hover:bg-[#e4e4e4]"
-                    : "mx- h-[50px] w-[151px] rounded-r-full bg-[#2F4F4F] p-[10px] hover:bg-[#7A9590]"
+                    ? "hover:text-vanilla h-[50px] w-[151px] rounded-r-full border-2 border-[#F1E7DD] bg-none p-[10px] text-[#292421] transition duration-300 ease-linear hover:bg-[#2F4F4F]"
+                    : "text-vanilla h-[50px] w-[151px] scale-110 rounded-r-full bg-[#2F4F4F] p-[10px] font-bold shadow-lg shadow-emerald-800 transition duration-300 ease-linear hover:bg-[#7A9590]"
                 }
                 onClick={() => {
                   setChange("SIGN UP");
@@ -188,7 +186,7 @@ const AuthPage = () => {
                 {change === "SIGN UP" && (
                   <>
                     <input
-                      className="placeholder:[#6b7280] my-4 h-[54px] w-[400px] overflow-x-auto rounded-[50px] bg-[#e9e9e9] ps-[70px] font-light hover:bg-[#D9D9D9CC] focus:outline-none focus:outline-[#2F4F4F]"
+                      className="placeholder:[#6b7280] my-4 h-[54px] w-[400px] overflow-x-auto rounded-[50px] bg-[#e9e9e9] ps-[70px] font-light transition delay-300 ease-out hover:bg-[#D9D9D9CC] focus:outline-none focus:outline-[#2F4F4F]"
                       placeholder="username"
                       type="text"
                       value={username}
