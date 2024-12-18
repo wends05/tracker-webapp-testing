@@ -1,5 +1,10 @@
 import { useState } from "react";
 import { Category } from "@/utils/types";
+import {
+  ArrowDownWideNarrow,
+  ArrowUpWideNarrow,
+  ListFilter,
+} from "lucide-react";
 
 interface CategorySorterProps {
   categories: Category[] | undefined;
@@ -7,104 +12,98 @@ interface CategorySorterProps {
 }
 
 const CategorySorter = ({ categories, onSort }: CategorySorterProps) => {
-  const [sortOrder, setSortOrder] = useState<string | null>(null);
-  const [isAscending, setIsAscending] = useState(false);
-  const [previousIsAscending, setPreviousIsAscending] = useState(false);
+  const [sortBy, setSortBy] = useState<string>("none");
+  const [sortOrder, setSortOrder] = useState<string>("asc");
 
-  const handleSort = (sortBy: string, isAscending: boolean) => {
-    if (sortOrder === sortBy && isAscending === previousIsAscending) {
-      setSortOrder(null);
-      setIsAscending(false);
-      setPreviousIsAscending(false);
+  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortBy(event.target.value);
+    handleSort();
+  };
+
+  const handleOrderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSortOrder(event.target.value);
+    handleSort();
+  };
+
+  const handleSort = () => {
+    if (sortBy === "none") {
       onSort(categories || []);
       return;
     }
+    const isAscending = sortOrder === "asc";
 
-    setSortOrder(sortBy);
-    setIsAscending(isAscending);
-    setPreviousIsAscending(isAscending);
     const sortedCategories = categories?.slice().sort((a, b) => {
-      if (sortBy === "budget") {
-        return isAscending ? a.budget - b.budget : b.budget - a.budget;
-      } else if (sortBy === "spent") {
-        return isAscending
-          ? a.amount_spent - b.amount_spent
-          : b.amount_spent - a.amount_spent;
-      } else if (sortBy === "left") {
-        return isAscending
-          ? a.amount_left - b.amount_left
-          : b.amount_left - a.amount_left;
+      let comparison = 0;
+      switch (sortBy) {
+        case "budget":
+          comparison = a.budget - b.budget;
+          break;
+        case "spent":
+          comparison = a.amount_spent - b.amount_spent;
+          break;
+        case "left":
+          comparison = a.amount_left - b.amount_left;
+          break;
       }
-      return 0;
+      return isAscending ? comparison : -comparison;
     });
     onSort(sortedCategories || []);
   };
 
+  const isDefault = sortBy === "none";
+
   return (
-    <div className="mb-4 flex overflow-scroll">
-      <div className="flex gap-2">
-        <button
-          className={`min-w-fit rounded-md border border-[#7A9590] px-4 py-2 text-sm font-semibold ${
-            sortOrder === "budget" && isAscending
-              ? "bg-[#7A9590] text-white"
-              : "text-[#7A9590]"
-          }`}
-          onClick={() => handleSort("budget", true)}
+    <form className="mb-4 flex">
+      <div className="flex items-center gap-2">
+        <ListFilter />
+        <label htmlFor="sortBySelect" className="mr-2 font-bold">
+          Sort By
+        </label>
+        <select
+          id="sortBySelect"
+          value={sortBy}
+          onChange={handleSortChange}
+          className={`rounded-lg border px-4 py-2 text-sm font-semibold text-white`}
+          style={{ backgroundColor: "#729688" }}
         >
-          Budget: Low to High
-        </button>
-        <button
-          className={`min-w-fit rounded-md border border-[#7A9590] px-4 py-2 text-sm font-semibold ${
-            sortOrder === "budget" && !isAscending
-              ? "bg-[#7A9590] text-white"
-              : "text-[#7A9590]"
-          }`}
-          onClick={() => handleSort("budget", false)}
-        >
-          Budget: High to Low
-        </button>
-        <button
-          className={`min-w-fit rounded-md border border-[#7A9590] px-4 py-2 text-sm font-semibold ${
-            sortOrder === "spent" && isAscending
-              ? "bg-[#7A9590] text-white"
-              : "text-[#7A9590]"
-          }`}
-          onClick={() => handleSort("spent", true)}
-        >
-          Spent: Low to High
-        </button>
-        <button
-          className={`min-w-fit rounded-md border border-[#7A9590] px-4 py-2 text-sm font-semibold ${
-            sortOrder === "spent" && !isAscending
-              ? "bg-[#7A9590] text-white"
-              : "text-[#7A9590]"
-          }`}
-          onClick={() => handleSort("spent", false)}
-        >
-          Spent: High to Low
-        </button>
-        <button
-          className={`min-w-fit rounded-md border border-[#7A9590] px-4 py-2 text-sm font-semibold ${
-            sortOrder === "left" && isAscending
-              ? "bg-[#7A9590] text-white"
-              : "text-[#7A9590]"
-          }`}
-          onClick={() => handleSort("left", true)}
-        >
-          Remaining: Low to High
-        </button>
-        <button
-          className={`min-w-fit rounded-md border border-[#7A9590] px-4 py-2 text-sm font-semibold ${
-            sortOrder === "left" && !isAscending
-              ? "bg-[#7A9590] text-white"
-              : "text-[#7A9590]"
-          }`}
-          onClick={() => handleSort("left", false)}
-        >
-          Remaining: High to Low
-        </button>
+          <option value="none" className="bg-white text-black">
+            None
+          </option>
+          <option value="budget" className="bg-white text-black">
+            Budget
+          </option>
+          <option value="spent" className="bg-white text-black">
+            Money Spent
+          </option>
+          <option value="left" className="bg-white text-black">
+            Money Left
+          </option>
+        </select>
+        <div className={`${isDefault ? "text-gray-500" : ""} flex`}>
+          <label className="ml-4 mr-4 flex items-center">
+            <input
+              type="radio"
+              value="asc"
+              checked={sortOrder === "asc"}
+              onChange={handleOrderChange}
+              disabled={isDefault}
+            />
+            <ArrowUpWideNarrow className="ml-2 mr-1 inline h-4 w-4" /> Ascending
+          </label>
+          <label className="flex items-center">
+            <input
+              type="radio"
+              value="desc"
+              checked={sortOrder === "desc"}
+              onChange={handleOrderChange}
+              disabled={isDefault}
+            />
+            <ArrowDownWideNarrow className="ml-2 mr-1 inline h-4 w-4" />{" "}
+            Descending
+          </label>
+        </div>
       </div>
-    </div>
+    </form>
   );
 };
 
