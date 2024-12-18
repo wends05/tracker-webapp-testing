@@ -54,32 +54,41 @@ const CategorySorter = ({ categories, onSort }: CategorySorterProps) => {
 
   return (
     <form className="mb-4 flex">
-      <div className="flex items-center gap-2">
-        <ListFilter />
-        <label htmlFor="sortBySelect" className="mr-2 font-bold">
-          Sort By
-        </label>
-        <select
-          id="sortBySelect"
-          value={sortBy}
-          onChange={handleSortChange}
-          className={`rounded-lg border px-4 py-2 text-sm font-semibold text-white`}
-          style={{ backgroundColor: "#729688" }}
+      <div className="flex flex-col items-center gap-2 md:flex-row">
+        <div className="flex flex-row">
+          <div className="flex flex-row">
+            <ListFilter className="mr-1 self-center" />
+            <label
+              htmlFor="sortBySelect"
+              className="mr-2 mr-4 self-center font-bold"
+            >
+              Sort By
+            </label>
+          </div>
+          <select
+            id="sortBySelect"
+            value={sortBy}
+            onChange={handleSortChange}
+            className={`rounded-lg border px-4 py-2 text-sm font-semibold text-white`}
+            style={{ backgroundColor: "#729688" }}
+          >
+            <option value="none" className="bg-white text-black">
+              None
+            </option>
+            <option value="budget" className="bg-white text-black">
+              Budget
+            </option>
+            <option value="spent" className="bg-white text-black">
+              Money Spent
+            </option>
+            <option value="left" className="bg-white text-black">
+              Money Left
+            </option>
+          </select>
+        </div>
+        <div
+          className={`${isDefault ? "text-gray-500" : ""} ml-4 flex md:ml-0`}
         >
-          <option value="none" className="bg-white text-black">
-            None
-          </option>
-          <option value="budget" className="bg-white text-black">
-            Budget
-          </option>
-          <option value="spent" className="bg-white text-black">
-            Money Spent
-          </option>
-          <option value="left" className="bg-white text-black">
-            Money Left
-          </option>
-        </select>
-        <div className={`${isDefault ? "text-gray-500" : ""} flex`}>
           <label className="ml-4 mr-4 flex items-center">
             <input
               type="radio"
