@@ -1,3 +1,16 @@
+export interface DataResponse<T> {
+  data: T;
+}
+
+export interface WeeklySummaryBodyRequest {
+  newBudgets: Record<number, number>;
+}
+
+export interface ErrorResponse {
+  message: string;
+  error: string;
+}
+
 export interface Expense {
   expense_id?: number;
   expense_name: string;

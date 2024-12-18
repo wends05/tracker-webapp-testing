@@ -15,30 +15,32 @@ const EditCategory = () => {
   const [categoryName, setCategoryName] = useState<string>(
     category.category_name
   );
-  const [budget, setBudget] = useState<number | null>(category.budget);
+  const [budget, setBudget] = useState<number>(category.budget);
   const [backgroundColor, setBackgroundColor] = useState<string>(
     category.category_color
   );
 
   const [description, setDescription] = useState<string>("");
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
 
-      const final_budget = budget ?? 0;
-
-      if (final_budget < category.amount_spent) {
+      if (budget < category.amount_spent) {
         throw Error(
           `Your budget is lower than your amount spent. Amount spent is ${category.amount_spent}.`
         );
       }
 
-      const newAmountLeft = final_budget - category.amount_spent;
+      toast({
+        description: "Editing category...",
+      });
+
+      const newAmountLeft = budget - category.amount_spent;
 
       const newCategory: Category = {
         category_id: category.category_id,
         category_name: categoryName,
-        budget: final_budget,
+        budget: budget,
         category_color: backgroundColor,
         amount_left: newAmountLeft,
         description: description,
@@ -61,37 +63,36 @@ const EditCategory = () => {
         const { error } = await response.json();
         throw Error(error);
       }
+
+      await queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+      await queryClient.refetchQueries({
+        queryKey: ["category", category.category_id],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["weeklySummary"],
+      });
     },
 
     onSuccess: () => {
       toast({
         description: "Category edited!",
       });
-      queryClient.invalidateQueries({
-        queryKey: ["categories"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["category", category.category_id],
-      });
-      closeForm();
+      nav(-1);
     },
-    onError: (error) => {
+    onError: () => {
       toast({
         variant: "destructive",
-        title: "Error editing category",
-        description: error.message,
+        description: "Error editing category ",
       });
     },
   });
 
-  // const handleReset = () => {
-  //   setCategoryName(category.category_name);
-  //   setBudget(category.budget);
-  //   setBackgroundColor(category.category_color);
-  // };
-
   const closeForm = () => {
-    nav(-1);
+    if (!isPending) {
+      nav(-1);
+    }
   };
 
   const deleteCategory = useMutation({
@@ -107,23 +108,26 @@ const EditCategory = () => {
         const { error } = await response.json();
         throw new Error(error || "Failed to delete category");
       }
+      toast({
+        description: "Deleting Category",
+      });
+      await queryClient.refetchQueries({
+        queryKey: ["categories"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["category", category.category_id],
+      });
     },
     onSuccess: () => {
       toast({
-        description: "Category successfully deleted",
+        description: "Category deleted!",
       });
-      queryClient.invalidateQueries({
-        queryKey: ["categories"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["category", category.category_id],
-      });
-      closeForm();
+      nav(-1);
     },
     onError: (error) => {
       toast({
         variant: "destructive",
-        description: error.message || "An error has occured huhuhu",
+        description: error.message || "An error has occured :<",
       });
     },
   });
@@ -142,11 +146,23 @@ const EditCategory = () => {
           <h1 className="text-left text-xl font-bold text-black">
             Edit Category
           </h1>
+
+          {isPending && (
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-white bg-opacity-70">
+              <l-bouncy size="45" speed="1.75" color="black"></l-bouncy>
+            </div>
+          )}
+
           <button
             className="text-darkCopper p-1 hover:text-red-600"
             type="button"
             onClick={() => deleteCategory.mutate()}
           >
+            {isPending && (
+              <div className="absolute inset-0 z-20 flex items-center justify-center bg-white bg-opacity-70">
+                <l-bouncy size="45" speed="1.75" color="black"></l-bouncy>
+              </div>
+            )}
             <Trash className="h-6 w-6"></Trash>
           </button>
         </div>
@@ -165,7 +181,7 @@ const EditCategory = () => {
               value={categoryName}
               onChange={(e) => setCategoryName(e.target.value)}
               required
-              className="border-darkCopper focus:ring-green h-auto w-full rounded-2xl border p-2 shadow-sm"
+              className="border-darkCopper h-auto w-full rounded-2xl border p-2 shadow-sm focus:ring-blue-500"
               placeholder="Enter category name"
             />
           </div>
@@ -180,10 +196,10 @@ const EditCategory = () => {
               type="number"
               id="budget"
               step={0.01}
-              value={budget ?? ""}
+              value={budget}
               onChange={(e) => setBudget(Number(e.target.value) || budget)}
               required
-              className="border-darkCopper focus:ring-green block w-full rounded-2xl border p-2 focus:ring"
+              className="border-darkCopper block w-full rounded-2xl border p-2 focus:ring focus:ring-blue-500"
               placeholder="Enter budget"
             />
           </div>
@@ -195,7 +211,7 @@ const EditCategory = () => {
               htmlFor="description"
               className="mb-3 flex text-sm font-medium text-gray-700"
             >
-              Category Description
+              Description
               <p className="text-gray-400">(Optional)</p>
             </label>
           </div>
@@ -204,37 +220,21 @@ const EditCategory = () => {
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="border-darkCopper focus:ring-green h-20 w-full resize-none rounded-2xl border p-4 focus:ring"
+            className="border-darkCopper h-20 w-full resize-none rounded-2xl border p-4 focus:ring focus:ring-blue-500"
             placeholder="Enter category description"
           />
         </div>
 
-        {/* <div>
-          <label htmlFor="budget" className="text-sm font-medium text-gray-700">
-            Budget
-          </label>
-          <input
-            type="number"
-            id="budget"
-            step={0.01}
-            value={budget ?? ""}
-            onChange={(e) => setBudget(Number(e.target.value) || null)}
-            required
-            className="block w-full rounded-md border border-gray-300 p-2 focus:ring focus:ring-green"
-            placeholder="Enter budget"
-          />
-        </div> */}
-
         <div>
           <label className="text-sm font-medium text-gray-700">
-            Category Color:
+            Category Color
           </label>
           <div className="mt-1 flex space-x-2">
             {CATEGORY_COLORS.map((color) => (
               <div
                 key={color}
                 onClick={() => setBackgroundColor(color)}
-                className={`h-10 w-10 cursor-pointer rounded-full border-2 transition duration-1000 ${
+                className={`h-10 w-10 cursor-pointer rounded-full border-2 transition duration-700 ${
                   backgroundColor === color
                     ? "border-black"
                     : "border-transparent"

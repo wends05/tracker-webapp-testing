@@ -23,39 +23,36 @@ interface WeekData {
   day: string;
   expense: number;
 }
-// const chartData = [
-//   { day: "Sunday", expense: 186 },
-//   { day: "Monday", expense: 305 },
-//   { day: "Tuesday", expense: 237 },
-//   { day: "Wednesday", expense: 73 },
-//   { day: "Thursday", expense: 209 },
-//   { day: "Friday", expense: 214 },
-//   { day: "Saturday", expense: 214 },
-// ];
+
+interface WeeklyDataResult {
+  arranged: WeekData[];
+  date_start: string;
+  date_end: string;
+}
 
 const chartConfig = {
   expense: {
-    label: "",
-    color: "hsl(var(--chart-1))",
+    label: "Expense",
+    color: "#7A958F",
   },
 } satisfies ChartConfig;
 
 interface WeeklyChartProps {
-  week: number | null;
+  weekly_summary_id: number | null;
 }
 
-export function WeeklyChart({ week }: WeeklyChartProps) {
+export function WeeklyChart({ weekly_summary_id }: WeeklyChartProps) {
   const { data: user } = useQuery<User>({
     queryKey: ["user"],
     queryFn: getUser,
   });
 
-  const { data: weeklyData } = useQuery<WeekData[]>({
+  const { data: weeklyData } = useQuery<WeeklyDataResult>({
     enabled: !!user,
-    queryKey: ["weekchart", week],
+    queryKey: ["weekchart", weekly_summary_id ?? undefined],
     queryFn: async () => {
       const response = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/charts/user/${user?.user_id}/week/${week}`
+        `${import.meta.env.VITE_SERVER_URL}/charts/user/${user?.user_id}/weekly_summary/${weekly_summary_id}`
       );
 
       if (!response.ok) {
@@ -63,7 +60,7 @@ export function WeeklyChart({ week }: WeeklyChartProps) {
         throw Error(errorMessage);
       }
 
-      const { data } = await response.json();
+      const { data } = (await response.json()) as { data: WeeklyDataResult };
       return data;
     },
   });
@@ -72,13 +69,15 @@ export function WeeklyChart({ week }: WeeklyChartProps) {
     <Card>
       <CardHeader>
         <CardTitle>Summary</CardTitle>
-        <CardDescription>Dec 1 - Dec 7, 2024</CardDescription>
+        <CardDescription>
+          {weeklyData?.date_start} - {weeklyData?.date_end}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
           <BarChart
             accessibilityLayer
-            data={weeklyData}
+            data={weeklyData?.arranged}
             width={400} // Set the width
             height={300} // Set the height
           >
