@@ -20,7 +20,6 @@ const WrapupInfoPage = () => {
 
   const [spentPercentage, setSpentPercentage] = useState<number>(0);
   const [savedPercentage, setSavePercentage] = useState<number>(0);
-  const [topExpenses, setTopExpenses] = useState<Expense[]>([]);
 
   const { data: wrapUpInfo, isLoading } = useQuery({
     enabled: !!user,
@@ -40,6 +39,23 @@ const WrapupInfoPage = () => {
     },
   });
 
+  const { data: highestExpenses } = useQuery({
+    enabled: !!user,
+    queryKey: ["highestExpenses"],
+    queryFn: async () => {
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/expenses/highest-expenses/week`
+      );
+
+      if (!response.ok) {
+        throw Error("Error Fetching Top Expenses");
+      }
+
+      const { data } = (await response.json()) as BackendResponse<Expense[]>;
+      return data;
+    },
+  });
+
   useEffect(() => {
     if (wrapUpInfo) {
       setSavePercentage(
@@ -48,16 +64,6 @@ const WrapupInfoPage = () => {
       setSpentPercentage(
         Math.round((wrapUpInfo.total_spent / wrapUpInfo.total_budget) * 100)
       );
-
-      //array checking wrapupinfio exists
-      if (Array.isArray(wrapUpInfo.expenses)) {
-        const sortedExpenses = wrapUpInfo.expenses
-          .sort((a, b) => b.total - a.total) //soorting by order 
-          .slice(0, 5); //  top 5 expenses
-        setTopExpenses(sortedExpenses);
-      } else {
-        setTopExpenses([]); // empty if no expenses are fetched
-      }
     }
   }, [wrapUpInfo]);
 
@@ -129,9 +135,9 @@ const WrapupInfoPage = () => {
 
           <div className="mt-6">
             <h4 className="mb-4 text-lg font-medium">Your highest expenses</h4>
-            {topExpenses.length > 0 ? (
+            {highestExpenses && highestExpenses.length > 0 ? (
               <div className="flex flex-col gap-4">
-                {topExpenses.map((expense) => ( //maps to see top expenses exists
+                {highestExpenses.map((expense) => (//maps to see top expenses exists
                   <Card
                     key={expense.expense_id || expense.expense_name}// shows wither expense ID or message that no expenses exists
                     className="flex items-center justify-between p-4"
