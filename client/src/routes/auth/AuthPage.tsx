@@ -5,6 +5,7 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { supabase, UserContext } from "../../utils/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+// import button from "./../../../src/index.css"
 // import { ToastAction } from "@/components/ui/toast"
 
 const AuthPage = () => {
@@ -30,21 +31,27 @@ const AuthPage = () => {
 
   const handleSubmit = async (ev: FormEvent) => {
     ev.preventDefault();
+    setLoading(true);
+
     try {
       if (change === "LOG IN") {
         if (email === "" || password === "") {
           throw new Error("Empty email or password");
         }
         console.log(change);
+        setLoading(false);
       } else {
         if (email === "" || password === "" || username === "")
           throw new Error("Empty input fields");
+        setLoading(false);
       }
 
       if (change === "SIGN UP") {
         await register();
+        setLoading(false);
       } else {
         await logIn();
+        setLoading(false);
       }
     } catch (error: any) {
       toast({
@@ -53,9 +60,12 @@ const AuthPage = () => {
       });
       console.log("ERROR FETCH: ", error.message);
     }
+    setLoading(false);
   };
 
   const logIn = async () => {
+    setLoading(true);
+
     console.log("HSHDASDHAGSCHAJSHGDAJHGSDA");
     console.log("EMAIL: " + email);
     const { error } = await supabase.auth.signInWithPassword({
@@ -89,11 +99,14 @@ const AuthPage = () => {
 
     setUser(data);
     nav("/dashboard");
+    setLoading(false);
 
     // add user to context
   };
 
   const register = async () => {
+    setLoading(true);
+
     if (username === "") {
       throw new Error("Empty username");
     }
@@ -126,6 +139,8 @@ const AuthPage = () => {
       description: "Your account has been registered",
     });
     console.log("registered!");
+
+    setLoading(false);
   };
 
   const createUser = async () => {
@@ -143,7 +158,97 @@ const AuthPage = () => {
       {loading ? (
         <>
           <div className="absolute inset-0 z-20 flex items-center justify-center bg-white bg-opacity-70">
-            <l-bouncy size="45" speed="1.75" color="black"></l-bouncy>
+            <l-bouncy size="77" speed="1.75" color="black"></l-bouncy>
+          </div>
+          <div className="flex h-full w-full items-center justify-center">
+            <div className="w-4/4 flex flex-col items-center justify-center rounded-3xl bg-white/50 py-10 shadow-2xl">
+              <p className="text-[40px] font-bold text-[#292421]">{change}</p>
+              <div className="flex pt-7">
+                <button
+                  className={
+                    change === "SIGN UP"
+                      ? "hover:text-vanilla h-[50px] w-[151px] rounded-l-full border-2 border-[#F1E7DD] bg-none p-[10px] text-[#292421] transition duration-300 ease-linear hover:bg-[#2F4F4F]"
+                      : "text-vanilla h-[50px] w-[151px] scale-110 rounded-l-full bg-[#2F4F4F] p-[10px] font-bold shadow-lg shadow-emerald-800 transition duration-300 ease-linear hover:bg-[#7A9590]"
+                  }
+                  onClick={() => {
+                    setChange("LOG IN");
+                  }}
+                >
+                  LOG IN
+                </button>
+                <button
+                  className={
+                    change === "LOG IN"
+                      ? "hover:text-vanilla h-[50px] w-[151px] rounded-r-full border-2 border-[#F1E7DD] bg-none p-[10px] text-[#292421] transition duration-300 ease-linear hover:bg-[#2F4F4F]"
+                      : "text-vanilla h-[50px] w-[151px] scale-110 rounded-r-full bg-[#2F4F4F] p-[10px] font-bold shadow-lg shadow-emerald-800 transition duration-300 ease-linear hover:bg-[#7A9590]"
+                  }
+                  onClick={() => {
+                    setChange("SIGN UP");
+                  }}
+                  data-testid="SIGN UP"
+                >
+                  SIGN UP
+                </button>
+              </div>
+
+              <form
+                onSubmit={handleSubmit}
+                className="inputs flex flex-col items-center px-20 py-10"
+              >
+                <div className="username relative">
+                  {change === "SIGN UP" && (
+                    <>
+                      <input
+                        className="placeholder:[#6b7280] my-4 h-[54px] w-[400px] overflow-x-auto rounded-[50px] bg-[#e9e9e9] ps-[70px] font-light transition delay-300 ease-out hover:bg-[#D9D9D9CC] focus:outline-none focus:outline-[#2F4F4F]"
+                        placeholder="username"
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                      />
+                      <FaUser
+                        color="#D9B9A0"
+                        className="absolute left-5 top-1/2 -translate-y-1/2 text-xl"
+                      />
+                    </>
+                  )}
+                </div>
+                <div className="email relative">
+                  <input
+                    className="placeholder:[#6b7280] my-4 h-[54px] w-[400px] overflow-x-auto rounded-[30px] bg-[#e9e9e9] ps-[70px] font-light hover:bg-[#D9D9D9CC] focus:outline-none focus:outline-[#2F4F4F]"
+                    placeholder="email"
+                    type="text"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <MdEmail
+                    color="#D9B9A0"
+                    className="absolute left-5 top-1/2 -translate-y-1/2 text-xl"
+                  />
+                </div>
+
+                <div className="password relative">
+                  <input
+                    className="placeholder:[#6b7280] my-4 h-[54px] w-[400px] overflow-x-auto rounded-[30px] bg-[#e9e9e9] ps-[70px] font-light hover:bg-[#D9D9D9CC] focus:outline-none focus:outline-[#2F4F4F]"
+                    placeholder="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <RiLockPasswordFill
+                    color="#D9B9A0"
+                    className="absolute left-5 top-1/2 -translate-y-1/2 text-xl"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="mt-10 w-max transition delay-100 ease-in"
+                  id="submit"
+                  data-testid="submit"
+                >
+                  {change}
+                </button>
+              </form>
+            </div>
           </div>
         </>
       ) : (
@@ -228,7 +333,7 @@ const AuthPage = () => {
               </div>
               <button
                 type="submit"
-                className="bg-green w-max rounded-lg px-4 py-2 text-white hover:bg-[#6f4717]"
+                className="mt-10 w-max transition delay-100 ease-in"
                 id="submit"
                 data-testid="submit"
               >
