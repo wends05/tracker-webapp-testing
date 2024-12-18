@@ -168,7 +168,7 @@ const AuthPage = () => {
                   className={
                     change === "SIGN UP"
                       ? "hover:text-vanilla h-[50px] w-[151px] rounded-l-full border-2 border-[#F1E7DD] bg-none p-[10px] text-[#292421] transition duration-300 ease-linear hover:bg-[#2F4F4F]"
-                      : "text-vanilla h-[50px] w-[151px] scale-110 rounded-l-full bg-[#2F4F4F] p-[10px] font-bold shadow-lg shadow-emerald-800 transition duration-300 ease-linear hover:bg-[#7A9590]"
+                      : "text-vanilla h-[50px] w-[151px] scale-110 rounded-l-full bg-[#2F4F4F] p-[10px] font-bold shadow-md shadow-black transition duration-300 ease-linear hover:bg-[#7A9590]"
                   }
                   onClick={() => {
                     setChange("LOG IN");
@@ -180,7 +180,7 @@ const AuthPage = () => {
                   className={
                     change === "LOG IN"
                       ? "hover:text-vanilla h-[50px] w-[151px] rounded-r-full border-2 border-[#F1E7DD] bg-none p-[10px] text-[#292421] transition duration-300 ease-linear hover:bg-[#2F4F4F]"
-                      : "text-vanilla h-[50px] w-[151px] scale-110 rounded-r-full bg-[#2F4F4F] p-[10px] font-bold shadow-lg shadow-emerald-800 transition duration-300 ease-linear hover:bg-[#7A9590]"
+                      : "text-vanilla h-[50px] w-[151px] scale-110 rounded-r-full bg-[#2F4F4F] p-[10px] font-bold shadow-md shadow-black transition duration-300 ease-linear hover:bg-[#7A9590]"
                   }
                   onClick={() => {
                     setChange("SIGN UP");
@@ -260,7 +260,7 @@ const AuthPage = () => {
                 className={
                   change === "SIGN UP"
                     ? "hover:text-vanilla h-[50px] w-[151px] rounded-l-full border-2 border-[#F1E7DD] bg-none p-[10px] text-[#292421] transition duration-300 ease-linear hover:bg-[#2F4F4F]"
-                    : "text-vanilla h-[50px] w-[151px] scale-110 rounded-l-full bg-[#2F4F4F] p-[10px] font-bold shadow-lg shadow-emerald-800 transition duration-300 ease-linear hover:bg-[#7A9590]"
+                    : "text-vanilla h-[50px] w-[151px] scale-110 rounded-l-full bg-[#2F4F4F] p-[10px] font-bold shadow-md shadow-black transition duration-300 ease-linear hover:bg-[#7A9590]"
                 }
                 onClick={() => {
                   setChange("LOG IN");
@@ -272,7 +272,7 @@ const AuthPage = () => {
                 className={
                   change === "LOG IN"
                     ? "hover:text-vanilla h-[50px] w-[151px] rounded-r-full border-2 border-[#F1E7DD] bg-none p-[10px] text-[#292421] transition duration-300 ease-linear hover:bg-[#2F4F4F]"
-                    : "text-vanilla h-[50px] w-[151px] scale-110 rounded-r-full bg-[#2F4F4F] p-[10px] font-bold shadow-lg shadow-emerald-800 transition duration-300 ease-linear hover:bg-[#7A9590]"
+                    : "text-vanilla h-[50px] w-[151px] scale-110 rounded-r-full bg-[#2F4F4F] p-[10px] font-bold shadow-md shadow-black transition duration-300 ease-linear hover:bg-[#7A9590]"
                 }
                 onClick={() => {
                   setChange("SIGN UP");
