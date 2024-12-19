@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/carousel";
 import { BackendResponse } from "@/interfaces/BackendResponse";
 import getUser from "@/utils/getUser";
-import { User, WeeklySummary, Expense } from "@/utils/types";
+import { User, WeeklySummary, Expense, Category } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
@@ -38,6 +38,30 @@ const WrapupInfoPage = () => {
       return data;
     },
   });
+
+  const { data: categories } = useQuery({
+    queryKey: ["categories"],
+    enabled: !!user,
+    queryFn: async () => {
+      if (!user) {
+        throw Error("No user provided");
+      }
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/user/${user.user_id}/categories`
+      );
+
+      if (!response.ok) {
+        throw Error("Error Fetched");
+      }
+
+      const { data } = (await response.json()) as BackendResponse<Category[]>;
+      return data;
+    },
+  });
+
+  const topSpentCategories = categories
+    ?.sort((a, b) => b.amount_spent - a.amount_spent)
+    .slice(0, 5);
 
   const { data: highestExpenses } = useQuery({
     enabled: !!user,
@@ -108,29 +132,32 @@ const WrapupInfoPage = () => {
           <h4 className="mb-4 text-lg font-medium">
             Your most spent categories
           </h4>
-          <Carousel
-            opts={{
-              align: "start",
-            }}
-            className="w-full max-w-lg overflow-visible"
-          >
+          <Carousel className="relative w-full max-w-md">
             <CarouselContent>
-              {Array.from({ length: 5 }).map((_, index) => (
-                <CarouselItem key={index} className="md:basis-1/2 lg:basis-36">
-                  <div className="p-1">
-                    <Card>
-                      <CardContent className="flex aspect-square items-center justify-center p-6">
-                        <span className="text-3xl font-semibold">
-                          {index + 1}
-                        </span>
-                      </CardContent>
-                    </Card>
-                  </div>
+              {topSpentCategories?.map((category) => (
+                <CarouselItem
+                  key={category.category_id}
+                  className="flex items-center justify-center"
+                >
+                  <Card className="w-full max-w-[400px] rounded-xl shadow-lg">
+                    <CardContent
+                      className="flex flex-col items-center justify-center p-8"
+                      style={{ backgroundColor: category.category_color }}
+                    >
+                      <h3 className="text-4xl font-bold text-white">
+                        {category.category_name}
+                      </h3>
+                      <h6 className="font-bold text-white">
+                        Spent: PHP {category.amount_spent}
+                      </h6>
+                    </CardContent>
+                  </Card>
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
+
+            <CarouselPrevious className="absolute left-[-2rem] top-1/2 z-10 -translate-y-1/2" />
+            <CarouselNext className="absolute right-[-2rem] top-1/2 z-10 -translate-y-1/2" />
           </Carousel>
 
           <div className="mt-6">
