@@ -6,10 +6,9 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { DrawerDemo } from "@/components/ui/DrawerDemo";
 import { BackendResponse } from "@/interfaces/BackendResponse";
 import getUser from "@/utils/getUser";
-import { Category, User, WeeklySummary } from "@/utils/types";
+import { User, WeeklySummary, Expense, Category } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
@@ -19,8 +18,8 @@ const WrapupInfoPage = () => {
     queryFn: getUser,
   });
 
-  const [spentPercentage, setSpentPercentage] = useState(0);
-  const [savedPercentage, setSavePercentage] = useState(0);
+  const [spentPercentage, setSpentPercentage] = useState<number>(0);
+  const [savedPercentage, setSavePercentage] = useState<number>(0);
 
   const { data: wrapUpInfo, isLoading } = useQuery({
     enabled: !!user, // Only fetch wrapUpInfo if the user is available
@@ -60,7 +59,26 @@ const WrapupInfoPage = () => {
     },
   });
 
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const topSpentCategories = categories
+    ?.sort((a, b) => b.amount_spent - a.amount_spent)
+    .slice(0, 5);
+
+  const { data: highestExpenses } = useQuery({
+    enabled: !!user,
+    queryKey: ["highestExpenses"],
+    queryFn: async () => {
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/expense/user/${user?.user_id}/highest-expenses`
+      );
+
+      if (!response.ok) {
+        throw Error("Error Fetching Top Expenses");
+      }
+
+      const { data } = (await response.json()) as BackendResponse<Expense[]>;
+      return data;
+    },
+  });
 
   useEffect(() => {
     if (wrapUpInfo) {
@@ -73,46 +91,24 @@ const WrapupInfoPage = () => {
     }
   }, [wrapUpInfo]);
 
-  const topSpentCategories = categories
-    ?.sort((a, b) => b.amount_spent - a.amount_spent)
-    .slice(0, 5);
-
-  if (isLoading) return <div>Loading page...</div>;
-
-  const startDate = new Date(wrapUpInfo!.date_start);
-  const startShortDate = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-  }).format(startDate);
-
-  const endDate = new Date(wrapUpInfo!.date_end);
-  const endShortDate = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(endDate);
-
-  return (
-    <div className="relative h-screen overflow-hidden">
-      <div className="mt-3 flex items-center justify-between px-5 text-4xl font-bold">
-        Week-End Review
-        <div className="flex text-2xl font-normal">
-          {startShortDate} - {endShortDate}
-        </div>
-      </div>
-      <hr className="border-t-2 border-slate-950 pl-6 pr-6 pt-3" />
-      <div className="flex gap-80 pl-8 pt-3">
+  return isLoading ? (
+    <>loading page</>
+  ) : (
+    <div className="overflow-hidden">
+      <div className="ml-5 mt-3 text-4xl font-bold">Week-End Review</div>
+      <hr className="ml-6 mr-6 mt-3 border-t-2 border-slate-950" />
+      <div className="ml-8 mt-3 flex gap-80">
         <div>
           <h4 className="text-lg font-medium">Summary of Expenses</h4>
           <div className="h-[15rem] w-[30rem] bg-slate-700 text-white">
             insert ang graph here
           </div>
-          <div className="pl-2 pt-3">
+          <div className="ml-2 mt-3">
             <h4 className="text-lg font-medium">
               From a total budget of {wrapUpInfo?.total_budget} this week
             </h4>
 
-            <div className="flex gap-12 pt-7 font-semibold">
+            <div className="mt-7 flex gap-12 font-semibold">
               <div>
                 <h3 className="font-semibold">You saved</h3>
                 <br />
@@ -132,11 +128,10 @@ const WrapupInfoPage = () => {
           </div>
         </div>
 
-        <div className="pt-6">
-          <h4 className="pb-4 text-lg font-medium">
+        <div className="mt-6">
+          <h4 className="mb-4 text-lg font-medium">
             Your most spent categories
           </h4>
-
           <Carousel className="relative w-full max-w-md">
             <CarouselContent>
               {topSpentCategories?.map((category) => (
@@ -165,24 +160,36 @@ const WrapupInfoPage = () => {
             <CarouselNext className="absolute right-[-2rem] top-1/2 z-10 -translate-y-1/2" />
           </Carousel>
 
-          <div className="pt-6">
-            <h4 className="pb-4 text-lg font-medium">Your highest expenses</h4>
-            <div className="h-[10rem] w-[30rem] bg-slate-700 text-white">
-              insert ang expenses here
-            </div>
+          <div className="mt-6">
+            <h4 className="mb-4 text-lg font-medium">Your highest expenses</h4>
+            {highestExpenses && highestExpenses.length > 0 ? (
+              <div className="flex flex-col gap-4">
+                {highestExpenses.map(
+                  (
+                    expense //maps to see top expenses exists
+                  ) => (
+                    <Card
+                      key={expense.expense_id || expense.expense_name} // shows wither expense ID or message that no expenses exists
+                      className="flex items-center justify-between p-4"
+                    >
+                      <div>
+                        <h5 className="text-lg font-semibold">
+                          {expense.expense_name}
+                        </h5>
+                        <p className="text-sm text-gray-500">
+                          {expense.price} × {expense.quantity}
+                        </p>
+                      </div>
+                      <h5 className="text-xl font-bold">{expense.total}</h5>
+                    </Card>
+                  )
+                )}
+              </div>
+            ) : (
+              <p className="text-gray-500">No expenses found.</p>
+            )}
           </div>
         </div>
-      </div>
-
-      <button
-        className="bg-green absolute bottom-10 right-44 rounded px-4 py-2 text-white hover:bg-teal-700"
-        onClick={() => setIsDrawerOpen(true)}
-      >
-        Next
-      </button>
-
-      <div className="absolute bottom-6 left-6">
-        <DrawerDemo open={isDrawerOpen} setOpen={setIsDrawerOpen} />
       </div>
     </div>
   );
