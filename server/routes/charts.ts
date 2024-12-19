@@ -90,24 +90,25 @@ chartRouter.get(
               JOIN
               "Weekly Summary" ws
                 ON sc.weekly_summary_id = ws.weekly_summary_id
-              ON
-                e.saved_category_id = sc.saved_category_id
               WHERE
                 sc.weekly_summary_id = $1
                 `,
             [weekly_summary_id]
           );
 
+          const date_start = new Date(rows[0].date_start).toDateString();
+          const date_end = new Date(rows[0].date_end).toDateString();
+
           console.log(rows);
-          console.log(rows[0].date_start);
-          console.log(rows[0].date_end);
+          console.log(date_start);
+          console.log(date_end);
 
           const arranged = groupExpensesByDay(rows);
           res.status(200).json({
             data: {
               arranged,
-              date_start: rows[0].date_start,
-              date_end: rows[0].date_end,
+              date_start: date_start,
+              date_end: date_end,
             },
           });
         }
