@@ -7,9 +7,10 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { DrawerDemo } from "@/components/ui/DrawerDemo";
+import { WeeklyChart } from "@/components/WeeklyChart";
 import { BackendResponse } from "@/interfaces/BackendResponse";
 import getUser from "@/utils/getUser";
-import { Category, User, WeeklySummary } from "@/utils/types";
+import { User, WeeklySummary, Expense, Category } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
@@ -19,8 +20,10 @@ const WrapupInfoPage = () => {
     queryFn: getUser,
   });
 
-  const [spentPercentage, setSpentPercentage] = useState(0);
-  const [savedPercentage, setSavePercentage] = useState(0);
+  const [spentPercentage, setSpentPercentage] = useState<number>(0);
+  const [savedPercentage, setSavePercentage] = useState<number>(0);
+
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const { data: wrapUpInfo, isLoading } = useQuery({
     enabled: !!user,
@@ -57,7 +60,26 @@ const WrapupInfoPage = () => {
     },
   });
 
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const topSpentCategories = categories
+    ?.sort((a, b) => b.amount_spent - a.amount_spent)
+    .slice(0, 5);
+
+  const { data: highestExpenses } = useQuery({
+    enabled: !!user,
+    queryKey: ["highestExpenses"],
+    queryFn: async () => {
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/expense/user/${user?.user_id}/highest-expenses`
+      );
+
+      if (!response.ok) {
+        throw Error("Error Fetching Top Expenses");
+      }
+
+      const { data } = (await response.json()) as BackendResponse<Expense[]>;
+      return data;
+    },
+  });
 
   useEffect(() => {
     if (wrapUpInfo) {
@@ -70,49 +92,31 @@ const WrapupInfoPage = () => {
     }
   }, [wrapUpInfo]);
 
-  const topSpentCategories = categories
-    ?.sort((a, b) => b.amount_spent - a.amount_spent)
-    .slice(0, 5);
-
-  if (isLoading) return <div>Loading page...</div>;
-
-  const startDate = new Date(wrapUpInfo!.date_start);
-  const startShortDate = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-  }).format(startDate);
-
-  const endDate = new Date(wrapUpInfo!.date_end);
-  const endShortDate = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(endDate);
-
-  return (
-    <div className="relative h-screen overflow-auto p-4">
-      <div className="mt-3 flex flex-col items-center justify-between gap-4 px-5 font-bold md:flex-row md:text-4xl">
-        <div className="text-2xl md:text-4xl">Week-End Review</div>
-        <div className="text-lg font-normal md:text-2xl">
-          {startShortDate} - {endShortDate}
-        </div>
-      </div>
-      <hr className="my-4 border-t-2 border-slate-950" />
-
-      <div className="flex flex-col gap-8 md:flex-row md:gap-16">
-        {/* Summary of Expenses */}
-        <div className="w-full md:w-1/2">
-          <h4 className="text-lg font-medium">Summary of Expenses</h4>
-          <div className="flex h-[15rem] w-full items-center justify-center bg-slate-700 text-white">
-            insert ang graph here
+  return isLoading ? (
+    <>loading page</>
+  ) : (
+    <div className="overflow-hidden">
+      <div className="ml-5 mt-3 text-4xl font-bold">Week-End Review</div>
+      <hr className="ml-6 mr-6 mt-3 border-t-2 border-slate-950" />
+      <div className="ml-8 mt-3 flex gap-80">
+        <div className="flex flex-col">
+          <div>
+            <h4 className="text-lg font-medium">Summary of Expenses</h4>
+            <div className="">
+              {wrapUpInfo?.weekly_summary_id && ( //checks if weekly_summary_id exists
+                <WeeklyChart
+                  weekly_summary_id={wrapUpInfo?.weekly_summary_id}
+                  isRecent={true}
+                />
+              )}
+            </div>
           </div>
-
-          <div className="pt-4">
+          <div className="ml-2 mt-3">
             <h4 className="text-lg font-medium">
               From a total budget of {wrapUpInfo?.total_budget} this week
             </h4>
 
-            <div className="flex flex-col gap-6 pt-4 font-semibold md:flex-row md:gap-12">
+            <div className="mt-7 flex gap-12 font-semibold">
               <div>
                 <h3 className="font-semibold">You saved</h3>
                 <h4 className="pt-2 text-lime-600">
@@ -130,13 +134,11 @@ const WrapupInfoPage = () => {
           </div>
         </div>
 
-        {/* Top Spent Categories */}
-        <div className="w-full md:w-1/2">
-          <h4 className="pb-4 text-lg font-medium">
+        <div className="mt-6">
+          <h4 className="mb-4 text-lg font-medium">
             Your most spent categories
           </h4>
-
-          <Carousel className="relative w-full">
+          <Carousel className="relative w-full max-w-md">
             <CarouselContent>
               {topSpentCategories?.map((category) => (
                 <CarouselItem
@@ -164,11 +166,34 @@ const WrapupInfoPage = () => {
             <CarouselNext className="absolute right-[-1rem] top-1/2 z-10 -translate-y-1/2" />
           </Carousel>
 
-          <div className="pt-6">
-            <h4 className="pb-4 text-lg font-medium">Your highest expenses</h4>
-            <div className="flex h-[10rem] w-full items-center justify-center bg-slate-700 text-white">
-              insert ang expenses here
-            </div>
+          <div className="mt-6">
+            <h4 className="mb-4 text-lg font-medium">Your highest expenses</h4>
+            {highestExpenses && highestExpenses.length > 0 ? (
+              <div className="flex flex-col gap-4">
+                {highestExpenses.map(
+                  (
+                    expense //maps to see top expenses exists
+                  ) => (
+                    <Card
+                      key={expense.expense_id || expense.expense_name} // shows wither expense ID or message that no expenses exists
+                      className="flex items-center justify-between p-4"
+                    >
+                      <div>
+                        <h5 className="text-lg font-semibold">
+                          {expense.expense_name}
+                        </h5>
+                        <p className="text-sm text-gray-500">
+                          {expense.price} × {expense.quantity}
+                        </p>
+                      </div>
+                      <h5 className="text-xl font-bold">{expense.total}</h5>
+                    </Card>
+                  )
+                )}
+              </div>
+            ) : (
+              <p className="text-gray-500">No expenses found.</p>
+            )}
           </div>
         </div>
       </div>

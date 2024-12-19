@@ -10,19 +10,21 @@ chartRouter.get(
   "/user/:user_id/weekly_summary/:weekly_summary_id",
   async (req: Request, res: Response) => {
     const { user_id, weekly_summary_id } = req.params;
-
+    const { isRecent } = req.query;
+    console.log(weekly_summary_id);
     try {
-      if (parseInt(weekly_summary_id) != 0) {
+      if (weekly_summary_id === "0") {
+        console.log("parse equal to 0");
         // SQL Query with user_id filter
         const query = `SELECT e.total, e.date
-      FROM
-        "Expense" e
-      LEFT JOIN
-        "Category" c
-        ON e.category_id = c.category_id
-      WHERE
-        c.user_id = $1
-      `;
+          FROM
+            "Expense" e
+          LEFT JOIN
+            "Category" c
+            ON e.category_id = c.category_id
+          WHERE
+            c.user_id = $1
+        `;
 
         // Pass user_id as a parameter to the query
         const { rows } = await pool.query<Expense>(query, [user_id]);
@@ -41,28 +43,75 @@ chartRouter.get(
           },
         });
       } else {
-        const { rows } = await pool.query(
-          `SELECT e.total, e.date, sc.date_start, sc.date_end FROM "Expense" e
+        if (isRecent === "true") {
+          const { rows } = await pool.query(
+            `SELECT e.total, e.date FROM "Expense" e
               LEFT JOIN
-                "Saved Categories" sc
-              ON
-                e.saved_category_id = sc.saved_category_id
+                "Category" c
+              ON e.category_id = c.category_id
+              WHERE c.user_id = $1
+            `,
+            [user_id]
+          );
+
+          const { rows: weeklySummaryRows } = await pool.query(
+            `SELECT date_start, date_end FROM "Weekly Summary"
+              WHERE user_id = $1
+              ORDER BY weekly_summary_id
+              DESC LIMIT 1`,
+            [user_id]
+          );
+
+          const date_start = new Date(
+            weeklySummaryRows[0].date_start
+          ).toDateString();
+          const date_end = new Date(
+            weeklySummaryRows[0].date_end
+          ).toDateString();
+
+          console.log(rows);
+          console.log(date_start);
+          console.log(date_end);
+
+          const arranged = groupExpensesByDay(rows);
+          res.status(200).json({
+            data: {
+              arranged,
+              date_start: date_start,
+              date_end: date_end,
+            },
+          });
+        } else {
+          const { rows } = await pool.query(
+            `SELECT e.total, e.date, ws.date_start, ws.date_end FROM "Expense" e
+            LEFT JOIN
+            "Saved Categories" sc
+            ON e.saved_category_id = sc.saved_category_id
+              JOIN
+              "Weekly Summary" ws
+                ON sc.weekly_summary_id = ws.weekly_summary_id
               WHERE
                 sc.weekly_summary_id = $1
-            `,
-          [weekly_summary_id]
-        );
+                `,
+            [weekly_summary_id]
+          );
 
-        console.log(rows);
+          const date_start = new Date(rows[0].date_start).toDateString();
+          const date_end = new Date(rows[0].date_end).toDateString();
 
-        const arranged = groupExpensesByDay(rows);
-        res.status(200).json({
-          data: {
-            arranged,
-            date_start: rows[0].date_start,
-            date_end: rows[0].date_end,
-          },
-        });
+          console.log(rows);
+          console.log(date_start);
+          console.log(date_end);
+
+          const arranged = groupExpensesByDay(rows);
+          res.status(200).json({
+            data: {
+              arranged,
+              date_start: date_start,
+              date_end: date_end,
+            },
+          });
+        }
       }
     } catch (error) {
       console.error("Error fetching weekly expenses:", error);

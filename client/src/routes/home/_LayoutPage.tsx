@@ -7,6 +7,9 @@ import { User, WeeklySummary } from "@/utils/types";
 import getUser from "@/utils/getUser";
 import { BackendResponse } from "@/interfaces/BackendResponse";
 import getLastSunday from "@/utils/getLastSunday";
+import { bouncy } from "ldrs";
+
+bouncy.register();
 
 const LayoutPage = () => {
   const nav = useNavigate();
@@ -67,9 +70,9 @@ const LayoutPage = () => {
 
       <div className="h-full">
         {isLoading || !wrapUpInfo ? (
-          <p className="flex h-full w-full items-center justify-center">
-            Loading weekly summary
-          </p>
+          <div className="flex h-full w-full flex-col items-center justify-center">
+            <l-bouncy size="77" speed="1.75" color="black"></l-bouncy>
+          </div>
         ) : (
           <Outlet />
         )}
