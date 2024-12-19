@@ -7,6 +7,9 @@ import { User, WeeklySummary } from "@/utils/types";
 import getUser from "@/utils/getUser";
 import { BackendResponse } from "@/interfaces/BackendResponse";
 import getLastSunday from "@/utils/getLastSunday";
+import { bouncy } from "ldrs";
+
+bouncy.register();
 
 const LayoutPage = () => {
   const nav = useNavigate();
@@ -18,7 +21,7 @@ const LayoutPage = () => {
   const path = useLocation();
   const { data: wrapUpInfo, isLoading } = useQuery({
     enabled: !!user,
-    queryKey: ["wrapUpInfo"],
+    queryKey: ["weeklySummary"],
     queryFn: async () => {
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/summary/user/${user!.user_id}/recent`
@@ -49,8 +52,6 @@ const LayoutPage = () => {
     if (wrapUpInfo && !path.pathname.startsWith("/wrapup")) {
       const lastSunday = new Date(getLastSunday()).getDate();
       const recentSummaryStart = new Date(wrapUpInfo.date_start).getDate();
-      console.log(lastSunday);
-      console.log(recentSummaryStart);
 
       if (lastSunday != recentSummaryStart) {
         nav("/wrapup/1");
@@ -62,7 +63,13 @@ const LayoutPage = () => {
     <div className="flex h-screen flex-col">
       <Drawer />
       <div className="h-full">
-        {isLoading ? <h1>Loading weekly summary</h1> : <Outlet />}
+        {isLoading || !wrapUpInfo ? (
+          <div className="flex h-full w-full flex-col items-center justify-center">
+            <l-bouncy size="77" speed="1.75" color="black"></l-bouncy>
+          </div>
+        ) : (
+          <Outlet />
+        )}
       </div>
     </div>
   );

@@ -22,8 +22,8 @@ const WrapupInfoPage = () => {
   const [savedPercentage, setSavePercentage] = useState<number>(0);
 
   const { data: wrapUpInfo, isLoading } = useQuery({
-    enabled: !!user,
-    queryKey: ["wrapUpInfo"],
+    enabled: !!user, // Only fetch wrapUpInfo if the user is available
+    queryKey: ["weeklySummary"],
     queryFn: async () => {
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/summary/user/${user!.user_id}/recent`
@@ -137,22 +137,26 @@ const WrapupInfoPage = () => {
             <h4 className="mb-4 text-lg font-medium">Your highest expenses</h4>
             {highestExpenses && highestExpenses.length > 0 ? (
               <div className="flex flex-col gap-4">
-                {highestExpenses.map((expense) => (//maps to see top expenses exists
-                  <Card
-                    key={expense.expense_id || expense.expense_name}// shows wither expense ID or message that no expenses exists
-                    className="flex items-center justify-between p-4"
-                  >
-                    <div>
-                      <h5 className="text-lg font-semibold">
-                        {expense.expense_name}
-                      </h5>
-                      <p className="text-sm text-gray-500">
-                        {expense.price} × {expense.quantity}
-                      </p>
-                    </div>
-                    <h5 className="text-xl font-bold">{expense.total}</h5>
-                  </Card>
-                ))}
+                {highestExpenses.map(
+                  (
+                    expense //maps to see top expenses exists
+                  ) => (
+                    <Card
+                      key={expense.expense_id || expense.expense_name} // shows wither expense ID or message that no expenses exists
+                      className="flex items-center justify-between p-4"
+                    >
+                      <div>
+                        <h5 className="text-lg font-semibold">
+                          {expense.expense_name}
+                        </h5>
+                        <p className="text-sm text-gray-500">
+                          {expense.price} × {expense.quantity}
+                        </p>
+                      </div>
+                      <h5 className="text-xl font-bold">{expense.total}</h5>
+                    </Card>
+                  )
+                )}
               </div>
             ) : (
               <p className="text-gray-500">No expenses found.</p>

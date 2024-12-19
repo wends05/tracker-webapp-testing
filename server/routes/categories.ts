@@ -1,7 +1,8 @@
 import express, { Request, Response } from "express";
 import { pool } from "../db";
-import { Category } from "../utils/types";
+import { Category, Expense } from "../utils/types";
 import recalculateCategoryExpenses from "../utils/recalculateCategoryExpenses";
+import recalculateWeekSummaryWithCategory from "../utils/recalculateWeekSummaryWithCategory";
 
 const categoryRouter = express.Router();
 
@@ -15,8 +16,8 @@ categoryRouter.post("", async (req: Request, res: Response) => {
       user_id,
       amount_left,
       amount_spent,
-    }: Category = req.body;
-    const data = await pool.query(
+    } = req.body as Category;
+    const data = await pool.query<Category>(
       `INSERT INTO "Category" (
         budget,
         category_color,
@@ -36,11 +37,16 @@ categoryRouter.post("", async (req: Request, res: Response) => {
         amount_spent,
       ]
     );
+
+    await recalculateWeekSummaryWithCategory({
+      pool,
+      category_id: Number(data.rows[0].category_id),
+    });
     res.status(200).json({ data: data.rows[0] });
-  } catch (error: any) {
+  } catch (error: unknown) {
     res.status(500).json({
       message: "An error has occured",
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 });
@@ -48,11 +54,17 @@ categoryRouter.post("", async (req: Request, res: Response) => {
 categoryRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    await recalculateCategoryExpenses({
-      pool,
-      category_id: Number(id),
-    });
-    const data = await pool.query(
+
+    // await recalculateCategoryExpenses({
+    //   pool,
+    //   category_id: Number(id),
+    // });
+    // await recalculateWeekSummaryWithCategory({
+    //   pool,
+    //   category_id: Number(id),
+    // });
+
+    const data = await pool.query<Category>(
       'SELECT * FROM "Category" WHERE category_id = $1',
       [id]
     );
@@ -63,10 +75,10 @@ categoryRouter.get("/:id", async (req: Request, res: Response) => {
     res.json({
       data: data.rows[0],
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     res.status(500).json({
       message: "An error has occured",
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 });
@@ -82,9 +94,9 @@ categoryRouter.put("/:id", async (req: Request, res: Response) => {
       amount_spent,
       description,
       user_id,
-    }: Category = req.body;
+    } = req.body as Category;
 
-    const data = await pool.query(
+    const data = await pool.query<Category>(
       `UPDATE "Category" SET
         category_name = $1,
         budget = $2,
@@ -111,13 +123,18 @@ categoryRouter.put("/:id", async (req: Request, res: Response) => {
       category_id: Number(id),
     });
 
+    await recalculateWeekSummaryWithCategory({
+      pool,
+      category_id: Number(id),
+    });
+
     res.json({
       data: data.rows[0],
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     res.status(500).json({
       message: "An error has occured",
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 });
@@ -125,7 +142,7 @@ categoryRouter.put("/:id", async (req: Request, res: Response) => {
 categoryRouter.get("/:id/expenses", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const data = await pool.query(
+    const data = await pool.query<Expense>(
       'SELECT * FROM "Expense" WHERE category_id = $1',
       [id]
     );
@@ -135,13 +152,18 @@ categoryRouter.get("/:id/expenses", async (req: Request, res: Response) => {
       category_id: Number(id),
     });
 
+    await recalculateWeekSummaryWithCategory({
+      pool,
+      category_id: Number(id),
+    });
+
     res.status(200).json({
       data: data.rows,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     res.status(500).json({
       message: "An error has occured",
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 });
@@ -149,19 +171,25 @@ categoryRouter.get("/:id/expenses", async (req: Request, res: Response) => {
 categoryRouter.delete("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const data = await pool.query(
+    const data = await pool.query<Category>(
       'DELETE FROM "Category" WHERE category_id = $1 RETURNING *',
       [id]
     );
+
+    await recalculateWeekSummaryWithCategory({
+      pool,
+      category_id: Number(data.rows[0].category_id),
+      user_id: data.rows[0].user_id,
+    });
 
     res.status(200).json({
       message: "Category successfully deleted",
       data: data.rows[0],
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     res.status(500).json({
       message: "An error has occured",
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 });

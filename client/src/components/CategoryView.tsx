@@ -20,6 +20,7 @@ const CategoryView = (category: { category: Category }) => {
           <p className="mt-1 text-sm">Total Budget: ₱{budget}</p>
         </div>
       </Link>
+
       <Link
         className="absolute right-2 top-2 rounded px-2 py-1 text-xs text-white hover:text-rose-600"
         to={`category/${category_id}/edit`}

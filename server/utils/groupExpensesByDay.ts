@@ -1,6 +1,13 @@
 import { Expense } from "./types";
 
-export default function groupExpensesByDay(expenses: Expense[]): any[] {
+type WeekExpenseData = {
+  day: string;
+  expense: number;
+}[];
+
+export default function groupExpensesByDay(
+  expenses: Expense[]
+): WeekExpenseData {
   console.log(expenses);
   // Days of the week in order
   const daysOfWeek = [

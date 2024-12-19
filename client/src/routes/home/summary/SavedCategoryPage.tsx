@@ -4,16 +4,35 @@ import calculatePercentages from "@/utils/calculateCategoryPercentages";
 import { Expense, SavedCategories } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Outlet, useLoaderData, Link } from "react-router-dom";
+import { Outlet, Link, useParams } from "react-router-dom";
 
 const SavedCategoryPage = () => {
-  const category = useLoaderData() as SavedCategories;
+  const { saved_category_id } = useParams();
 
-  const { data: savedCategoryExpenses } = useQuery<Expense[]>({
-    queryKey: ["savedCategory", category.saved_category_id, "expenses"],
+  const { data: category } = useQuery<SavedCategories>({
+    queryKey: ["savedCategory", saved_category_id],
     queryFn: async () => {
       const response = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/savedCategories/${category.saved_category_id}/expenses`
+        `${import.meta.env.VITE_SERVER_URL}/savedCategories/${saved_category_id}`
+      );
+
+      if (!response.ok) {
+        const { message } = (await response.json()) as { message: string };
+        throw Error(message);
+      }
+
+      const { data } =
+        (await response.json()) as BackendResponse<SavedCategories>;
+      return data;
+    },
+  });
+
+  const { data: savedCategoryExpenses } = useQuery<Expense[]>({
+    enabled: !!category,
+    queryKey: ["savedCategory", category?.saved_category_id, "expenses"],
+    queryFn: async () => {
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/savedCategories/${category?.saved_category_id}/expenses`
       );
       if (!response.ok) {
         const { message } = (await response.json()) as { message: string };
@@ -68,7 +87,9 @@ const SavedCategoryPage = () => {
     }
   }, [category]);
 
-  return (
+  return !saved_category_id || !category || !savedCategoryExpenses ? (
+    <>mama</>
+  ) : (
     <div
       className={`relative mt-12 flex min-h-full flex-col justify-center px-16`}
     >

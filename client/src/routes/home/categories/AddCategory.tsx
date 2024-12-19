@@ -6,6 +6,9 @@ import { toast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Category } from "@/utils/types";
 import getUser from "@/utils/getUser";
+import { bouncy } from "ldrs";
+
+bouncy.register();
 
 const AddCategory: React.FC = () => {
   const { data: user } = useQuery({
@@ -29,7 +32,7 @@ const AddCategory: React.FC = () => {
   const nav = useNavigate();
 
   const queryClient = useQueryClient();
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
 
@@ -50,6 +53,10 @@ const AddCategory: React.FC = () => {
       }
 
       if (hasEmptyField) throw Error("Some fields are empty.");
+
+      toast({
+        description: "Adding Category...",
+      });
 
       const category: Category = {
         budget: parseFloat(budget) || 0,
@@ -76,15 +83,19 @@ const AddCategory: React.FC = () => {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to add category");
       }
+
+      await queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["weeklySummary"],
+      });
     },
     onSuccess: () => {
       toast({
-        description: "Added category!",
+        description: "Category added!",
       });
-      closeForm();
-      queryClient.invalidateQueries({
-        queryKey: ["categories"],
-      });
+      nav(-1);
     },
     onError: (error) => {
       toast({
@@ -96,93 +107,106 @@ const AddCategory: React.FC = () => {
   });
 
   const closeForm = () => {
-    nav(-1);
+    if (!isPending) {
+      nav(-1);
+    }
   };
 
   return (
-    <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center">
+    <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center">
       <div
-        onClick={closeForm}
         className="absolute h-full w-full bg-black opacity-60"
+        onClick={closeForm}
       ></div>
       <form
         onSubmit={mutate}
-        className="z-10 flex h-max w-full max-w-lg flex-col gap-2 rounded-md bg-white p-5"
+        className="z-10 flex w-full max-w-2xl flex-col gap-2 rounded-3xl bg-white p-6"
       >
-        <h1 className="text-center text-2xl font-bold text-black">
-          Add Category
-        </h1>
+        <h1 className="text-left text-xl font-bold text-black">Add Category</h1>
 
-        <div className="flex flex-col gap-2">
-          <label
-            htmlFor="categoryName"
-            className="text-sm font-medium text-gray-700"
-          >
-            Category Name:
-          </label>
-          <input
-            type="text"
-            id="categoryName"
-            value={categoryName}
-            onChange={(e) => setCategoryName(e.target.value)}
-            className={`w-full rounded-lg border p-3 shadow-sm ${
-              categoryNameError ? "border-red-600" : "border-gray-300"
-            }`}
-            placeholder="Enter category name"
-          />
-          {categoryNameError && (
-            <p className="mt-1 text-xs text-red-600">{categoryNameError}</p>
-          )}
+        {isPending && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-white bg-opacity-70">
+            <l-bouncy size="45" speed="1.75" color="black"></l-bouncy>
+          </div>
+        )}
+
+        <div className="mb-5 flex flex-row space-x-10">
+          <div>
+            <label
+              htmlFor="categoryName"
+              className="mb-3 text-sm font-medium text-gray-700"
+            >
+              Category Name
+            </label>
+            <input
+              type="text"
+              id="categoryName"
+              value={categoryName}
+              onChange={(e) => setCategoryName(e.target.value)}
+              className={`h-auto w-full rounded-2xl border border-black p-2 focus:ring-blue-500 ${
+                categoryNameError ? "border-red-600" : "border-black"
+              }`}
+              placeholder="Enter category name"
+            />
+            {categoryNameError && (
+              <p className="mt-1 text-xs text-red-600">{categoryNameError}</p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="budget"
+              className="text-sm font-medium text-gray-700"
+            >
+              Budget
+            </label>
+            <input
+              type="text"
+              id="budget"
+              value={budget}
+              onChange={(e) => setBudget(e.target.value)}
+              className={`h-auto w-full rounded-2xl border border-black p-2 focus:ring-blue-500 ${
+                budgetError ? "border-red-600" : "border-black"
+              }`}
+              placeholder="Enter budget"
+            />
+            {budgetError && (
+              <p className="mt-1 text-xs text-red-600">{budgetError}</p>
+            )}
+          </div>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label
-            htmlFor="description"
-            className="text-sm font-medium text-gray-700"
-          >
-            Description:
-          </label>
-          <input
-            type="text"
+        <div>
+          <div>
+            <label
+              htmlFor="description"
+              className="mb-3 flex text-sm font-medium text-gray-700"
+            >
+              Description
+              <p className="text-gray-400">(Optional):</p>
+            </label>
+          </div>
+
+          <textarea
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className={`w-full border p-2 ${
-              categoryNameError ? "border-red-600" : "border-gray-300"
+            className={`h-20 w-full resize-none rounded-2xl border border-black p-4 focus:ring focus:ring-blue-500 ${
+              categoryNameError ? "border-red-600" : "border-black"
             }`}
             placeholder="Enter category description"
           />
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label htmlFor="budget" className="text-sm font-medium text-gray-700">
-            Budget:
-          </label>
-          <input
-            type="text"
-            id="budget"
-            value={budget}
-            onChange={(e) => setBudget(e.target.value)}
-            className={`w-full rounded-lg border p-3 shadow-sm ${
-              budgetError ? "border-red-600" : "border-gray-300"
-            }`}
-            placeholder="Enter budget"
-          />
-          {budgetError && (
-            <p className="mt-1 text-xs text-red-600">{budgetError}</p>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-2">
+        <div>
           <label className="text-sm font-medium text-gray-700">
-            Select Background Color:
+            Category Color
           </label>
           <div className="mt-1 flex space-x-2">
             {CATEGORY_COLORS.map((color) => (
               <div
                 key={color}
                 onClick={() => setBackgroundColor(color)}
-                className={`h-10 w-10 cursor-pointer rounded-full border-2 ${
+                className={`h-10 w-10 cursor-pointer rounded-full border-2 transition duration-700 ${
                   backgroundColor === color
                     ? "border-gray-950"
                     : "border-transparent"
@@ -193,17 +217,17 @@ const AddCategory: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-4 flex gap-4">
-          <button
+        <div className="flex justify-end">
+          {/* <button
             type="button"
             onClick={closeForm}
-            className="w-full rounded-md bg-gray-300 py-2 font-semibold text-gray-700 transition duration-200 hover:bg-gray-400"
+            className="text-darkCopper w-1/4 rounded-full border-2 bg-[#487474] p-5 font-semibold transition duration-200"
           >
             Cancel
-          </button>
+          </button> */}
           <button
             type="submit"
-            className="w-full rounded-md bg-teal-800 py-2 font-semibold text-white transition duration-200 hover:bg-blue-700"
+            className="text-darkCopper w-1/4 rounded-full border-2 bg-[#487474] p-5 font-semibold transition duration-200"
           >
             Add Category
           </button>
