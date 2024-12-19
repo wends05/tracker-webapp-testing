@@ -172,16 +172,16 @@ const AuthPage = () => {
           <div className="flex h-full w-full items-center justify-center">
             <div className="w-4/4 flex flex-col items-center justify-center rounded-3xl bg-white/50 py-10 shadow-2xl">
               <div className="grid grid-cols-1 md:grid-cols-2">
-                <div className="flex flex-col items-center justify-center">
-                  <p className="text-darkCopper text-[40px] font-bold text-[#292421]">
+                <div className="bg-vanilla/60 ml-10 flex flex-col items-center justify-center rounded-xl shadow-xl">
+                  <h1 className="text-darkCopper text-[40px] font-bold text-[#292421]">
                     {text(change)}
-                  </p>
+                  </h1>
 
                   <div className="flex pt-7">
                     <button
                       className={
                         change === "SIGN UP"
-                          ? "hover:text-vanilla h-[50px] w-[151px] rounded-l-full border-2 border-[#F1E7DD] bg-none p-[10px] text-[#292421] transition duration-300 ease-linear hover:bg-[#2F4F4F]"
+                          ? "hover:text-vanilla border-vanilla h-[50px] w-[151px] rounded-l-full border-2 bg-none p-[10px] text-[#292421] transition duration-300 ease-linear hover:bg-[#2F4F4F]"
                           : "text-vanilla h-[50px] w-[151px] scale-110 rounded-l-full bg-[#2F4F4F] p-[10px] font-bold shadow-md shadow-black transition duration-300 ease-linear hover:bg-[#7A9590]"
                       }
                       onClick={() => setChange("LOG IN")}
@@ -191,7 +191,7 @@ const AuthPage = () => {
                     <button
                       className={
                         change === "LOG IN"
-                          ? "hover:text-vanilla h-[50px] w-[151px] rounded-r-full border-2 border-[#F1E7DD] bg-none p-[10px] text-[#292421] transition duration-300 ease-linear hover:bg-[#2F4F4F]"
+                          ? "hover:text-vanilla border-vanilla h-[50px] w-[151px] rounded-r-full border-2 bg-none p-[10px] text-[#292421] transition duration-300 ease-linear hover:bg-[#2F4F4F]"
                           : "text-vanilla h-[50px] w-[151px] scale-110 rounded-r-full bg-[#2F4F4F] p-[10px] font-bold shadow-md shadow-black transition duration-300 ease-linear hover:bg-[#7A9590]"
                       }
                       onClick={() => setChange("SIGN UP")}
@@ -269,7 +269,7 @@ const AuthPage = () => {
                   <h2 className="mt-2 text-xl font-bold text-[#292421]">
                     Welcome to WaEase
                   </h2>
-                  <p className="mt-2 text-center text-sm text-[#6b7280]">
+                  <p className="text-md mt-2 text-center text-[#6b7280]">
                     Join us and experience the new level of budgeting
                   </p>
                 </div>
@@ -281,16 +281,16 @@ const AuthPage = () => {
         <div className="flex h-full w-full items-center justify-center">
           <div className="w-4/4 flex flex-col items-center justify-center rounded-3xl bg-white/50 py-10 shadow-2xl">
             <div className="grid grid-cols-1 md:grid-cols-2">
-              <div className="flex flex-col items-center justify-center">
-                <p className="text-darkCopper text-[40px] font-bold text-[#292421]">
+              <div className="bg-vanilla/60 ml-10 flex flex-col items-center justify-center rounded-xl shadow-xl">
+                <h1 className="text-darkCopper text-[40px] font-bold text-[#292421]">
                   {text(change)}
-                </p>
+                </h1>
 
                 <div className="flex pt-7">
                   <button
                     className={
                       change === "SIGN UP"
-                        ? "hover:text-vanilla h-[50px] w-[151px] rounded-l-full border-2 border-[#F1E7DD] bg-none p-[10px] text-[#292421] transition duration-300 ease-linear hover:bg-[#2F4F4F]"
+                        ? "hover:text-vanilla border-vanilla h-[50px] w-[151px] rounded-l-full border-2 bg-none p-[10px] text-[#292421] transition duration-300 ease-linear hover:bg-[#2F4F4F]"
                         : "text-vanilla h-[50px] w-[151px] scale-110 rounded-l-full bg-[#2F4F4F] p-[10px] font-bold shadow-md shadow-black transition duration-300 ease-linear hover:bg-[#7A9590]"
                     }
                     onClick={() => setChange("LOG IN")}
@@ -300,7 +300,7 @@ const AuthPage = () => {
                   <button
                     className={
                       change === "LOG IN"
-                        ? "hover:text-vanilla h-[50px] w-[151px] rounded-r-full border-2 border-[#F1E7DD] bg-none p-[10px] text-[#292421] transition duration-300 ease-linear hover:bg-[#2F4F4F]"
+                        ? "hover:text-vanilla border-vanilla h-[50px] w-[151px] rounded-r-full border-2 bg-none p-[10px] text-[#292421] transition duration-300 ease-linear hover:bg-[#2F4F4F]"
                         : "text-vanilla h-[50px] w-[151px] scale-110 rounded-r-full bg-[#2F4F4F] p-[10px] font-bold shadow-md shadow-black transition duration-300 ease-linear hover:bg-[#7A9590]"
                     }
                     onClick={() => setChange("SIGN UP")}
