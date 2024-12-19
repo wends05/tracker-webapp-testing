@@ -1,3 +1,4 @@
+// utils/types.ts or interfaces/types.ts
 export interface Expense {
   expense_id?: number;
   expense_name: string;

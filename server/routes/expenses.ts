@@ -93,6 +93,43 @@ expenseRouter.post("", async (req: Request, res: Response) => {
   }
 });
 
+//fetch the top 5 highest expenses of the week
+expenseRouter.get(
+  "/user/:id/highest-expenses",
+  async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+
+      const result = await pool.query(
+        `SELECT * FROM "Expense"
+          INNER JOIN "Category"
+            ON "Expense".category_id = "Category".category_id
+          WHERE
+            "Category".user_id = $1
+          ORDER BY total DESC
+          LIMIT 5
+        `,
+        [id]
+      );
+
+      if (result.rows.length > 0) {
+        res.status(200).json({
+          data: result.rows,
+        });
+      } else {
+        res.status(200).json({
+          message: "No expenses found for the current week.",
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        message: "An error has occurred",
+        error: (error as Error).message,
+      });
+    }
+  }
+);
+
 expenseRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
