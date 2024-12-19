@@ -36,12 +36,12 @@ const Dashboard = () => {
   const { data: categories, isLoading } = useQuery({
     queryKey: ["categories"],
     enabled: !!user,
-    staleTime: 10,
+    // staleTime: 10,
     queryFn: async () => {
       if (!user) {
         throw Error("No user provided");
       }
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      // await new Promise((resolve) => setTimeout(resolve, 5000));
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/user/${user.user_id}/categories`
       );
@@ -75,6 +75,9 @@ const Dashboard = () => {
           Welcome, {user?.username} <span className="wave">👋</span>
         </h1>
       </header>
+      <div className="pb-5">
+        <h2>Dashboard</h2>
+      </div>
       <div className="grid grid-cols-1 gap-8 px-8 md:grid-cols-3">
         {/* Placeholder for Summary Graph */}
         <div className="shadow-none">
@@ -122,9 +125,7 @@ const Dashboard = () => {
           <div className="relative flex h-full w-full flex-row justify-between gap-14 rounded-lg p-4">
             {/* Replace this with proper SkeletonCard components */}
             <Skeleton className="h-[230px] w-[450px] rounded-xl" />
-
             <Skeleton className="h-[230px] w-[500px] rounded-xl" />
-
             <Skeleton className="h-[230px] w-[500px] rounded-xl" />
           </div>
         ) : (
@@ -132,12 +133,14 @@ const Dashboard = () => {
         )}
         <div className="grid grid-cols-1 gap-1 md:grid-cols-3">
           {/* Add New Category */}
-          <Link
-            className="mx-5 my-5 flex h-48 items-center justify-center rounded-lg bg-gray-100 text-gray-500 shadow-lg hover:bg-gray-200"
-            to="category/add"
-          >
-            <span className="text-4xl">+</span>
-          </Link>
+          {!isLoading && (
+            <Link
+              className="mx-5 my-5 flex h-48 items-center justify-center rounded-lg bg-gray-100 text-gray-500 shadow-lg hover:bg-gray-200"
+              to="category/add"
+            >
+              <span className="text-4xl">+</span>
+            </Link>
+          )}
 
           {sortedCategories?.map((category) => (
             <CategoryView category={category} key={category.category_id} />
