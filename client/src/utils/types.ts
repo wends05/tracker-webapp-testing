@@ -29,9 +29,6 @@ export interface WeeklySummary {
   total_spent: number;
   total_not_spent: number;
   user_id?: number;
-  expenses: Expense[];
-  name: string;
-  amount: number;
 }
 
 export interface SavedCategories {

@@ -44,7 +44,7 @@ const WrapupInfoPage = () => {
     queryKey: ["highestExpenses"],
     queryFn: async () => {
       const response = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/expenses/highest-expenses/week`
+        `${import.meta.env.VITE_SERVER_URL}/expense/highest-expenses/week`
       );
 
       if (!response.ok) {

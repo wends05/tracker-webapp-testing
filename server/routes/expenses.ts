@@ -109,12 +109,11 @@ expenseRouter.get(
       currentWeekEnd.setHours(23, 59, 59, 999);
 
       const result = await pool.query(
-        `
-      SELECT * FROM "Expense"
-      WHERE date BETWEEN $1 AND $2
-      ORDER BY total DESC
-      LIMIT 5
-      `,
+        `SELECT * FROM "Expense"
+          WHERE date BETWEEN $1 AND $2
+          ORDER BY total DESC
+          LIMIT 5
+        `,
         [currentWeekStart.toISOString(), currentWeekEnd.toISOString()]
       );
 
@@ -127,10 +126,10 @@ expenseRouter.get(
           message: "No expenses found for the current week.",
         });
       }
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({
         message: "An error has occurred",
-        error: error.message,
+        error: (error as Error).message,
       });
     }
   }
