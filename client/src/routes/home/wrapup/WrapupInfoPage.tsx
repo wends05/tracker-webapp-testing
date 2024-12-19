@@ -6,6 +6,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { WeeklyChart } from "@/components/WeeklyChart";
 import { BackendResponse } from "@/interfaces/BackendResponse";
 import getUser from "@/utils/getUser";
 import { User, WeeklySummary, Expense, Category } from "@/utils/types";
@@ -98,10 +99,17 @@ const WrapupInfoPage = () => {
       <div className="ml-5 mt-3 text-4xl font-bold">Week-End Review</div>
       <hr className="ml-6 mr-6 mt-3 border-t-2 border-slate-950" />
       <div className="ml-8 mt-3 flex gap-80">
-        <div>
-          <h4 className="text-lg font-medium">Summary of Expenses</h4>
-          <div className="h-[15rem] w-[30rem] bg-slate-700 text-white">
-            insert ang graph here
+        <div className="flex flex-col">
+          <div>
+            <h4 className="text-lg font-medium">Summary of Expenses</h4>
+            <div className="">
+              {wrapUpInfo?.weekly_summary_id && ( //checks if weekly_summary_id exists
+                <WeeklyChart
+                  weekly_summary_id={wrapUpInfo?.weekly_summary_id}
+                  isRecent={true}
+                />
+              )}
+            </div>
           </div>
           <div className="ml-2 mt-3">
             <h4 className="text-lg font-medium">
