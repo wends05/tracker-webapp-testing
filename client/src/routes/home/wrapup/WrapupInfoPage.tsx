@@ -6,6 +6,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { DrawerDemo } from "@/components/ui/DrawerDemo";
 import { WeeklyChart } from "@/components/WeeklyChart";
 import { BackendResponse } from "@/interfaces/BackendResponse";
 import getUser from "@/utils/getUser";
@@ -21,6 +22,8 @@ const WrapupInfoPage = () => {
 
   const [spentPercentage, setSpentPercentage] = useState<number>(0);
   const [savedPercentage, setSavePercentage] = useState<number>(0);
+
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const { data: wrapUpInfo, isLoading } = useQuery({
     enabled: !!user, // Only fetch wrapUpInfo if the user is available
@@ -198,6 +201,17 @@ const WrapupInfoPage = () => {
             )}
           </div>
         </div>
+      </div>
+
+      <button
+        className="bg-green absolute bottom-10 right-44 rounded px-4 py-2 text-white hover:bg-teal-700"
+        onClick={() => setIsDrawerOpen(true)}
+      >
+        Next
+      </button>
+
+      <div className="absolute bottom-6 left-6">
+        <DrawerDemo open={isDrawerOpen} setOpen={setIsDrawerOpen} />
       </div>
     </div>
   );
