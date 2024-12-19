@@ -95,9 +95,10 @@ expenseRouter.post("", async (req: Request, res: Response) => {
 
 //fetch the top 5 highest expenses of the week
 expenseRouter.get(
-  "/highest-expenses/week",
+  "/user/:id/highest-expenses",
   async (req: Request, res: Response) => {
     try {
+      const { id } = req.params;
       const currentWeekStart = new Date();
       currentWeekStart.setDate(
         currentWeekStart.getDate() - currentWeekStart.getDay()
@@ -110,11 +111,15 @@ expenseRouter.get(
 
       const result = await pool.query(
         `SELECT * FROM "Expense"
-          WHERE date BETWEEN $1 AND $2
+          INNER JOIN "Category"
+            ON "Expense".category_id = "Category".category_id
+          WHERE
+            date BETWEEN $1 AND $2 AND
+            "Category".user_id = $3
           ORDER BY total DESC
           LIMIT 5
         `,
-        [currentWeekStart.toISOString(), currentWeekEnd.toISOString()]
+        [currentWeekStart.toISOString(), currentWeekEnd.toISOString(), id]
       );
 
       if (result.rows.length > 0) {
