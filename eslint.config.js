@@ -6,6 +6,13 @@ import pluginReact from "eslint-plugin-react";
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   {
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
+  },
+  {
     ignores: [
       "**/node_modules/**",
       "**/dist/**",
