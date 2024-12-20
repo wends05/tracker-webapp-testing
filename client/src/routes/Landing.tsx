@@ -169,7 +169,7 @@ const Landing = () => {
           >
             <div className="mx-auto p-6 text-center">
               <h1 className="mb-6 text-4xl font-bold">Our Mission</h1>
-              <p className="text-lg leading-relaxed">
+              <p className="max-w-screen-md text-lg leading-relaxed">
                 Our mission is to empower individuals to take control of their
                 financial well-being through intuitive and seamless tracking
                 solutions. We aim to simplify budgeting, expense management, and
