@@ -58,6 +58,9 @@ export function DrawerDemo({ open, setOpen }: DrawerDemoProps) {
       await queryClient.invalidateQueries({
         queryKey: ["categories"],
       });
+      await queryClient.refetchQueries({
+        predicate: (query) => query.queryKey[0] === "category",
+      });
       nav("/dashboard");
     },
     onError: (error) => {

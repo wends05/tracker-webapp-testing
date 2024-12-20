@@ -11,7 +11,7 @@ import { WeeklyChart } from "@/components/WeeklyChart";
 import { BackendResponse } from "@/interfaces/BackendResponse";
 import getUser from "@/utils/getUser";
 import { User, WeeklySummary, Expense, Category } from "@/utils/types";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 const WrapupInfoPage = () => {
@@ -19,6 +19,8 @@ const WrapupInfoPage = () => {
     queryKey: ["user"],
     queryFn: getUser,
   });
+
+  const queryClient = useQueryClient();
 
   const [spentPercentage, setSpentPercentage] = useState<number>(0);
   const [savedPercentage, setSavePercentage] = useState<number>(0);
@@ -29,6 +31,9 @@ const WrapupInfoPage = () => {
     enabled: !!user, // Only fetch wrapUpInfo if the user is available
     queryKey: ["weeklySummary"],
     queryFn: async () => {
+      await queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === "category",
+      });
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/summary/user/${user!.user_id}/recent`
       );

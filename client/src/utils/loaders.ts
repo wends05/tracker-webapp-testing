@@ -45,7 +45,7 @@ export const getExpense = (queryClient: QueryClient) => {
 
 export const getPreviousWeekCategories = (queryClient: QueryClient) => {
   return async () => {
-    return await queryClient.ensureQueryData({
+    return await queryClient.fetchQuery({
       queryKey: ["previousWeekCategories"],
       queryFn: async () => {
         const { user_id } = await queryClient.ensureQueryData({

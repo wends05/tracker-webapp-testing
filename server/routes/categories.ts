@@ -56,6 +56,17 @@ categoryRouter.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
+
+      await recalculateCategoryExpenses({
+        pool,
+        category_id: Number(id),
+      });
+
+      await recalculateWeekSummaryWithCategory({
+        pool,
+        category_id: Number(id),
+      });
+
       const data = await pool.query<Category>(
         'SELECT * FROM "Category" WHERE category_id = $1',
         [id]
