@@ -6,6 +6,8 @@ import { supabase, UserContext } from "../../utils/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import logo from "./../../assets/logo.png";
+import { User } from "@/utils/types";
+import { BackendResponse } from "@/interfaces/BackendResponse";
 // import logo_name from "./../../assets/logo_name.png";
 // import button from "./../../../src/index.css"
 // import { ToastAction } from "@/components/ui/toast"
@@ -123,15 +125,6 @@ const AuthPage = () => {
     if (/[A-Z]/.test(email)) {
       throw new Error("Email should not contain capital letters");
     }
-
-    // const fetchedUser = await fetch(
-    //   `http://localhost:3000/user?email=${email}`
-    // );
-
-    // if (fetchedUser.status === 200) {
-    //   throw new Error("User already exists");
-    // }
-
     const { error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
@@ -153,13 +146,13 @@ const AuthPage = () => {
   };
 
   const createUser = async () => {
-    return await fetch(`http://localhost:3000/user`, {
+    return await fetch(`${import.meta.env.VITE_SERVER_URL}`, {
       method: "POST",
       body: JSON.stringify({ username, email }),
       headers: {
         "Content-Type": "application/json",
       },
-    }).then((res) => res.json());
+    }).then((res) => res.json() as Promise<BackendResponse<User>>);
   };
 
   return (
