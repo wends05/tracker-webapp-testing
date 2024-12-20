@@ -60,7 +60,7 @@ const CategorySorter = ({ categories, onSort }: CategorySorterProps) => {
             <ListFilter className="mr-1 self-center" />
             <label
               htmlFor="sortBySelect"
-              className="mr-2 mr-4 self-center font-bold"
+              className="mr-4 self-center font-bold"
             >
               Sort By
             </label>
