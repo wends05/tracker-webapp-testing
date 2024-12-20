@@ -7,7 +7,7 @@
   line-height: 1.5;
   font-weight: 400;
 
-  background-color: #f2e7dd;
+  background-color: #f8fafc;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -84,7 +84,7 @@
 
   input[type="submit"],
   button[type="submit"] {
-    @apply bg-copper cursor-pointer rounded-lg px-4 py-2 text-white hover:bg-[#6f4717] disabled:bg-[#6f4717];
+    @apply disabled:bg-green cursor-pointer rounded-2xl bg-[#4c9182] px-4 py-2 text-white hover:bg-[#2f4f4f];
   }
   input {
     @apply focus:outline-darkCopper focus:border-darkCopper rounded-md px-2 py-1 text-black;

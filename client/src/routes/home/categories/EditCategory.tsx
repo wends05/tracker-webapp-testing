@@ -1,14 +1,13 @@
 import { useState, FormEvent } from "react";
 import { CATEGORY_COLORS } from "../../../utils/constants";
-import { Link, useLoaderData, useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { Category } from "@/utils/types";
-import { BackendResponse } from "../../../interfaces/BackendResponse";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { Trash } from "lucide-react";
 
 const EditCategory = () => {
-  const { data: category } = useLoaderData() as BackendResponse<Category>;
+  const category = useLoaderData() as Category;
   const nav = useNavigate();
 
   const queryClient = useQueryClient();
@@ -16,13 +15,13 @@ const EditCategory = () => {
   const [categoryName, setCategoryName] = useState<string>(
     category.category_name
   );
-  const [budget, setBudget] = useState<number | 0>(category.budget);
+  const [budget, setBudget] = useState<number>(category.budget);
   const [backgroundColor, setBackgroundColor] = useState<string>(
     category.category_color
   );
 
   const [description, setDescription] = useState<string>("");
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
 
@@ -31,6 +30,10 @@ const EditCategory = () => {
           `Your budget is lower than your amount spent. Amount spent is ${category.amount_spent}.`
         );
       }
+
+      toast({
+        description: "Editing category...",
+      });
 
       const newAmountLeft = budget - category.amount_spent;
 
@@ -60,36 +63,36 @@ const EditCategory = () => {
         const { error } = await response.json();
         throw Error(error);
       }
+
+      await queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+      await queryClient.refetchQueries({
+        queryKey: ["category", category.category_id],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["weeklySummary"],
+      });
     },
 
     onSuccess: () => {
       toast({
         description: "Category edited!",
       });
-      queryClient.invalidateQueries({
-        queryKey: ["categories"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["category", category.category_id],
-      });
-      closeForm();
+      nav(-1);
     },
     onError: () => {
       toast({
         variant: "destructive",
-        description: "hindi",
+        description: "Error editing category ",
       });
     },
   });
 
-  const handleReset = () => {
-    setCategoryName(category.category_name);
-    setBudget(category.budget);
-    setBackgroundColor(category.category_color);
-  };
-
   const closeForm = () => {
-    nav(-1);
+    if (!isPending) {
+      nav(-1);
+    }
   };
 
   const deleteCategory = useMutation({
@@ -105,113 +108,135 @@ const EditCategory = () => {
         const { error } = await response.json();
         throw new Error(error || "Failed to delete category");
       }
+      toast({
+        description: "Deleting Category",
+      });
+      await queryClient.refetchQueries({
+        queryKey: ["categories"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["category", category.category_id],
+      });
     },
     onSuccess: () => {
       toast({
-        description: "Category successfully deleted",
+        description: "Category deleted!",
       });
-      queryClient.invalidateQueries({
-        queryKey: ["categories"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["category", category.category_id],
-      });
-      closeForm();
+      nav(-1);
     },
     onError: (error) => {
       toast({
         variant: "destructive",
-        description: error.message || "An error has occured huhuhu",
+        description: error.message || "An error has occured :<",
       });
     },
   });
 
   return (
-    <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-gray-100">
+    <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center">
       <div
         className="absolute h-full w-full bg-black opacity-60"
         onClick={closeForm}
       ></div>{" "}
       <form
         onSubmit={mutate}
-        className="z-10 flex w-full max-w-lg flex-col gap-2 rounded-md bg-white p-5"
+        className="z-10 flex w-full max-w-2xl flex-col gap-2 rounded-3xl bg-white p-6"
       >
-        <div className="justify between flex items-center">
-          <h1 className="text-left text-2xl font-bold text-black">
+        <div className="mb-5 flex items-center justify-between">
+          <h1 className="text-left text-xl font-bold text-black">
             Edit Category
           </h1>
+
+          {isPending && (
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-white bg-opacity-70">
+              <l-bouncy size="45" speed="1.75" color="black"></l-bouncy>
+            </div>
+          )}
+
           <button
-            className="p-1 text-red-500 hover:text-red-700"
+            className="text-darkCopper p-1 hover:text-red-600"
             type="button"
             onClick={() => deleteCategory.mutate()}
           >
+            {isPending && (
+              <div className="absolute inset-0 z-20 flex items-center justify-center bg-white bg-opacity-70">
+                <l-bouncy size="45" speed="1.75" color="black"></l-bouncy>
+              </div>
+            )}
             <Trash className="h-6 w-6"></Trash>
           </button>
         </div>
 
-        <div>
-          <label
-            htmlFor="categoryName"
-            className="text-sm font-medium text-gray-700"
-          >
-            Category Name
-          </label>
-          <input
-            type="text"
-            id="categoryName"
-            value={categoryName}
-            onChange={(e) => setCategoryName(e.target.value)}
-            required
-            className="w-full rounded-md border border-gray-300 p-2 focus:ring focus:ring-blue-500"
-            placeholder="Enter category name"
-          />
+        <div className="mb-5 flex flex-row space-x-10">
+          <div>
+            <label
+              htmlFor="categoryName"
+              className="mb-3 text-sm font-medium text-gray-700"
+            >
+              Category Name
+            </label>
+            <input
+              type="text"
+              id="categoryName"
+              value={categoryName}
+              onChange={(e) => setCategoryName(e.target.value)}
+              required
+              className="border-darkCopper h-auto w-full rounded-2xl border p-2 shadow-sm focus:ring-blue-500"
+              placeholder="Enter category name"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="budget"
+              className="mb-3 text-sm font-medium text-gray-700"
+            >
+              Budget
+            </label>
+            <input
+              type="number"
+              id="budget"
+              step={0.01}
+              value={budget}
+              onChange={(e) => setBudget(Number(e.target.value) || budget)}
+              required
+              className="border-darkCopper block w-full rounded-2xl border p-2 focus:ring focus:ring-blue-500"
+              placeholder="Enter budget"
+            />
+          </div>
         </div>
 
         <div>
-          <label
-            htmlFor="description"
-            className="text-sm font-medium text-gray-700"
-          >
-            Description
-          </label>
-          <input
-            type="text"
+          <div>
+            <label
+              htmlFor="description"
+              className="mb-3 flex text-sm font-medium text-gray-700"
+            >
+              Description
+              <p className="text-gray-400">(Optional)</p>
+            </label>
+          </div>
+
+          <textarea
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full rounded-md border border-gray-300 p-2 focus:ring focus:ring-blue-500"
+            className="border-darkCopper h-20 w-full resize-none rounded-2xl border p-4 focus:ring focus:ring-blue-500"
             placeholder="Enter category description"
           />
         </div>
 
         <div>
-          <label htmlFor="budget" className="text-sm font-medium text-gray-700">
-            Budget
-          </label>
-          <input
-            type="number"
-            id="budget"
-            step={0.01}
-            value={budget}
-            onChange={(e) => setBudget(Number(e.target.value) || budget)}
-            required
-            className="block w-full rounded-md border border-gray-300 p-2 focus:ring focus:ring-blue-500"
-            placeholder="Enter budget"
-          />
-        </div>
-
-        <div>
           <label className="text-sm font-medium text-gray-700">
-            Select Background Color
+            Category Color
           </label>
           <div className="mt-1 flex space-x-2">
             {CATEGORY_COLORS.map((color) => (
               <div
                 key={color}
                 onClick={() => setBackgroundColor(color)}
-                className={`h-10 w-10 cursor-pointer rounded-full border-2 ${
+                className={`h-10 w-10 cursor-pointer rounded-full border-2 transition duration-700 ${
                   backgroundColor === color
-                    ? "border-blue-500"
+                    ? "border-black"
                     : "border-transparent"
                 }`}
                 style={{ backgroundColor: color }}
@@ -220,26 +245,27 @@ const EditCategory = () => {
           </div>
         </div>
 
-        <button
+        {/* <button
           className="w-full rounded-md bg-neutral-600 py-2 font-semibold text-white transition duration-200 hover:bg-blue-700"
           type="button"
         >
           <Link to={`/category/${category.category_id}`}>Cancel</Link>
-        </button>
-        <button
+        </button> */}
+        {/* <button
           className="w-full rounded-md bg-red-600 py-2 font-semibold text-white transition duration-200 hover:bg-blue-700"
           type="reset"
           onClick={handleReset}
         >
           Reset
-        </button>
-
-        <button
-          type="submit"
-          className="w-full rounded-md bg-teal-800 py-2 font-semibold text-white transition duration-200 hover:bg-blue-700"
-        >
-          Edit Category
-        </button>
+        </button> */}
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            className="text-darkCopper w-1/4 rounded-full border-2 bg-[#487474] p-5 font-semibold transition duration-200"
+          >
+            Save
+          </button>
+        </div>
       </form>
     </div>
   );

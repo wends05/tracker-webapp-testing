@@ -1,9 +1,10 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { pool } from "../db";
+import { User } from "../utils/types";
 
 const userRouter = express.Router();
 
-userRouter.get("", async (req: Request, res: Response) => {
+userRouter.get("", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email } = req.query;
 
@@ -11,9 +12,10 @@ userRouter.get("", async (req: Request, res: Response) => {
       throw Error("No email provided");
     }
 
-    const user = await pool.query('SELECT * FROM "User" WHERE email = $1', [
-      email,
-    ]);
+    const user = await pool.query<User>(
+      'SELECT * FROM "User" WHERE email = $1',
+      [email]
+    );
 
     if (user.rows[0]) {
       res.status(200).json({ data: user.rows[0] });
@@ -21,52 +23,44 @@ userRouter.get("", async (req: Request, res: Response) => {
     }
 
     throw Error("User not found");
-  } catch (error: any) {
-    console.error(error);
-    res.status(500).json({
-      message: "An error has occured",
-      error: error.message,
-    });
+  } catch (error: unknown) {
+    next(error);
   }
 });
 
-userRouter.post("", async (req: Request, res: Response) => {
+userRouter.post("", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { username, email } = req.body;
+    const { username, email } = req.body as User;
 
-    const user = await pool.query(
-      'INSERT INTO "User"(username, email) VALUES ($1, $2) RETURNING *',
+    const { rows: userRows } = await pool.query<User>(
+      `INSERT INTO "User"(username, email) VALUES ($1, $2) RETURNING *`,
       [username, email]
     );
 
     res.json({
-      user,
+      data: userRows[0],
     });
-  } catch (error: any) {
-    console.error(error);
-    res.status(500).json({
-      message: "An error has occured",
-      error: error.message,
-    });
+  } catch (error: unknown) {
+    next(error);
   }
 });
 
-userRouter.get("/:id/categories", async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const data = await pool.query(
-      'SELECT * FROM "Category" WHERE user_id = $1',
-      [id]
-    );
+userRouter.get(
+  "/:id/categories",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const data = await pool.query(
+        'SELECT * FROM "Category" WHERE user_id = $1 ORDER BY category_id',
+        [id]
+      );
 
-    res.json({
-      data: data.rows,
-    });
-  } catch (error: any) {
-    res.status(500).json({
-      message: "An error has occured",
-      error: error.message,
-    });
+      res.json({
+        data: data.rows,
+      });
+    } catch (error: unknown) {
+      next(error);
+    }
   }
-});
+);
 export default userRouter;
