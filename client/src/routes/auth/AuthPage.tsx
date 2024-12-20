@@ -173,7 +173,7 @@ const AuthPage = () => {
             <div className="w-4/4 flex flex-col items-center justify-center rounded-3xl bg-white/50 py-10 shadow-2xl">
               <div className="grid grid-cols-1 md:grid-cols-2">
                 <div className="bg-vanilla/60 ml-10 flex flex-col items-center justify-center rounded-xl shadow-xl">
-                  <h1 className="text-darkCopper text-[40px] font-bold text-[#292421]">
+                  <h1 className="text-darkCopper text-[40px] font-bold">
                     {text(change)}
                   </h1>
 
@@ -280,11 +280,13 @@ const AuthPage = () => {
       ) : (
         <div className="flex h-full w-full items-center justify-center">
           <div className="w-4/4 flex flex-col items-center justify-center rounded-3xl bg-white/50 py-10 shadow-2xl">
-            <div className="grid grid-cols-1 md:grid-cols-2">
-              <div className="bg-vanilla/60 ml-10 flex flex-col items-center justify-center rounded-xl shadow-xl">
-                <h1 className="text-darkCopper text-[40px] font-bold text-[#292421]">
+            <div className="grid grid-cols-1 lg:grid-cols-2">
+              {/* Form Section */}
+              <div className="lg:bg-vanilla/60 flex flex-col items-center justify-center rounded-xl md:ml-0 md:bg-none md:shadow-none lg:ml-10 lg:shadow-xl">
+                <h2 className="text-darkCopper text-[40px] font-semibold">
                   {text(change)}
-                </h1>
+                  <hr className="mt-4 h-0.5 bg-black dark:bg-black"></hr>
+                </h2>
 
                 <div className="flex pt-7">
                   <button
@@ -369,7 +371,8 @@ const AuthPage = () => {
                 </form>
               </div>
 
-              <div className="hidden flex-col items-center justify-center md:flex">
+              {/* Logo Section */}
+              <div className="hidden flex-col items-center justify-center lg:flex">
                 <img
                   src={logo}
                   alt="Logo"
