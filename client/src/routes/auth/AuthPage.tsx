@@ -146,7 +146,7 @@ const AuthPage = () => {
   };
 
   const createUser = async () => {
-    return await fetch(`${import.meta.env.VITE_SERVER_URL}`, {
+    return await fetch(`${import.meta.env.VITE_SERVER_URL}/user`, {
       method: "POST",
       body: JSON.stringify({ username, email }),
       headers: {
