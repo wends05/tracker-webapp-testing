@@ -133,7 +133,7 @@ const CategoryPage = () => {
     );
 
   return (
-    <div className="relative flex min-h-full flex-col bg-slate-300">
+    <div className="relative flex min-h-full flex-col">
       <div className="bg- flex justify-center pt-16">
         <div className="flex flex-col sm:gap-4 md:flex-col md:gap-36 lg:flex-row">
           <div className="mb-8 flex h-full w-full flex-grow-0 flex-col px-8">
@@ -174,7 +174,7 @@ const CategoryPage = () => {
               </text>
             </div>
 
-            <div className="mb-4 flex flex-row gap-3 md:gap-4">
+            <div className="mb-4 flex flex-row gap-3 self-center md:gap-4">
               {/* saved */}
               <div
                 className="flex h-[12rem] w-[13rem] flex-col items-center rounded-lg bg-white px-4 py-8 text-center drop-shadow-lg md:h-[15rem] md:w-[15rem]"
