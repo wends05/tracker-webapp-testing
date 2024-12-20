@@ -5,6 +5,7 @@ import { Category } from "@/utils/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { Trash } from "lucide-react";
+import { BackendError } from "@/interfaces/ErrorResponse";
 
 const EditCategory = () => {
   const category = useLoaderData() as Category;
@@ -60,9 +61,7 @@ const EditCategory = () => {
       );
 
       if (!response.ok) {
-        const { message } = (await response.json()) as {
-          message: string;
-        };
+        const { message } = (await response.json()) as BackendError;
         throw Error(message);
       }
 
@@ -83,10 +82,11 @@ const EditCategory = () => {
       });
       nav(-1);
     },
-    onError: () => {
+    onError: (error) => {
       toast({
         variant: "destructive",
-        description: "Error editing category ",
+        title: "Error editing Category",
+        description: error.message,
       });
     },
   });
