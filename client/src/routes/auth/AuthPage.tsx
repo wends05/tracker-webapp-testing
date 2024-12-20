@@ -6,6 +6,8 @@ import { supabase, UserContext } from "../../utils/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import logo from "./../../assets/logo.png";
+import { User } from "@/utils/types";
+import { BackendResponse } from "@/interfaces/BackendResponse";
 // import logo_name from "./../../assets/logo_name.png";
 // import button from "./../../../src/index.css"
 // import { ToastAction } from "@/components/ui/toast"
@@ -123,15 +125,6 @@ const AuthPage = () => {
     if (/[A-Z]/.test(email)) {
       throw new Error("Email should not contain capital letters");
     }
-
-    // const fetchedUser = await fetch(
-    //   `http://localhost:3000/user?email=${email}`
-    // );
-
-    // if (fetchedUser.status === 200) {
-    //   throw new Error("User already exists");
-    // }
-
     const { error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
@@ -153,13 +146,13 @@ const AuthPage = () => {
   };
 
   const createUser = async () => {
-    return await fetch(`http://localhost:3000/user`, {
+    return await fetch(`${import.meta.env.VITE_SERVER_URL}`, {
       method: "POST",
       body: JSON.stringify({ username, email }),
       headers: {
         "Content-Type": "application/json",
       },
-    }).then((res) => res.json());
+    }).then((res) => res.json() as Promise<BackendResponse<User>>);
   };
 
   return (
@@ -173,7 +166,7 @@ const AuthPage = () => {
             <div className="w-4/4 flex flex-col items-center justify-center rounded-3xl bg-white/50 py-10 shadow-2xl">
               <div className="grid grid-cols-1 md:grid-cols-2">
                 <div className="bg-vanilla/60 ml-10 flex flex-col items-center justify-center rounded-xl shadow-xl">
-                  <h1 className="text-darkCopper text-[40px] font-bold text-[#292421]">
+                  <h1 className="text-darkCopper text-[40px] font-bold">
                     {text(change)}
                   </h1>
 
@@ -280,11 +273,13 @@ const AuthPage = () => {
       ) : (
         <div className="flex h-full w-full items-center justify-center">
           <div className="w-4/4 flex flex-col items-center justify-center rounded-3xl bg-white/50 py-10 shadow-2xl">
-            <div className="grid grid-cols-1 md:grid-cols-2">
-              <div className="bg-vanilla/60 ml-10 flex flex-col items-center justify-center rounded-xl shadow-xl">
-                <h1 className="text-darkCopper text-[40px] font-bold text-[#292421]">
+            <div className="grid grid-cols-1 lg:grid-cols-2">
+              {/* Form Section */}
+              <div className="lg:bg-vanilla/60 flex flex-col items-center justify-center rounded-xl md:ml-0 md:bg-none md:shadow-none lg:ml-10 lg:shadow-xl">
+                <h2 className="text-darkCopper text-[40px] font-semibold">
                   {text(change)}
-                </h1>
+                  <hr className="mt-4 h-0.5 bg-black dark:bg-black"></hr>
+                </h2>
 
                 <div className="flex pt-7">
                   <button
@@ -369,7 +364,8 @@ const AuthPage = () => {
                 </form>
               </div>
 
-              <div className="hidden flex-col items-center justify-center md:flex">
+              {/* Logo Section */}
+              <div className="hidden flex-col items-center justify-center lg:flex">
                 <img
                   src={logo}
                   alt="Logo"

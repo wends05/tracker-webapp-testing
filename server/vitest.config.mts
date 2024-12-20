@@ -2,6 +2,7 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
+    fileParallelism: false,
     environment: "node", // Important: Use the Node.js environment
     globals: true, // Optional: Makes test functions globally available (describe, it, expect)
     coverage: {
