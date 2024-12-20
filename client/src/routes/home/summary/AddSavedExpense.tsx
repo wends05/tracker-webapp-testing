@@ -1,11 +1,31 @@
 import { toast } from "@/hooks/use-toast";
-import { Expense } from "@/utils/types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { BackendResponse } from "@/interfaces/BackendResponse";
+import { Expense, SavedCategories } from "@/utils/types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
 import { useNavigate, useParams } from "react-router-dom";
 
 const AddSavedExpense = () => {
   const { saved_category_id } = useParams();
+
+  const { data: category } = useQuery<SavedCategories>({
+    queryKey: ["savedCategory", saved_category_id],
+    queryFn: async () => {
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/savedCategories/${saved_category_id}`
+      );
+
+      if (!response.ok) {
+        const { message } = (await response.json()) as { message: string };
+        throw Error(message);
+      }
+
+      const { data } =
+        (await response.json()) as BackendResponse<SavedCategories>;
+      return data;
+    },
+  });
 
   const queryClient = useQueryClient();
   const nav = useNavigate();
@@ -76,7 +96,7 @@ const AddSavedExpense = () => {
           error: string;
           message: string;
         };
-        throw Error(errorMessage.message);
+        throw Error(errorMessage.error);
       }
 
       await queryClient.invalidateQueries({
@@ -112,17 +132,29 @@ const AddSavedExpense = () => {
       <div
         onClick={closeForm}
         className="absolute h-full w-full bg-black opacity-60"
-      ></div>
-      <div className="relative">
-        <form
-          onSubmit={mutate}
-          className="z-10 flex h-max max-w-[350px] flex-col gap-2 rounded-md bg-neutral-100 p-5 px-12 sm:w-full"
-        >
-          <h2>Add an Expense</h2>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe.</p>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="expense_name">Name</label>
+      ></div>{" "}
+      <form
+        onSubmit={mutate}
+        className="z-10 flex h-max flex-col items-center justify-center rounded-3xl bg-white px-20 py-10"
+      >
+        <div className="flex justify-center pb-4">
+          <div className="flex flex-col items-center">
+            <h1 className="text-darkCopper text-xl font-bold">Add Expense</h1>
+            <h3 className="text-lg">Money left: ₱{category?.amount_left}</h3>
+          </div>
+        </div>
+
+        {isPending && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-white bg-opacity-70">
+            <l-bouncy size="45" speed="1.75" color="black"></l-bouncy>
+          </div>
+        )}
+
+        <div className="flex w-full justify-between gap-x-20 pb-6">
+          <div className="flex flex-1 flex-col">
+            <label htmlFor="expense_name">Expense Name:</label>
             <input
+              className="focus:ring-green rounded-3xl border-2 border-black focus:ring"
               type="text"
               id="expense_name"
               name="expense_name"
@@ -130,55 +162,73 @@ const AddSavedExpense = () => {
               onChange={handleChange}
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="price">Price</label>
+          <div className="flex flex-1 flex-col">
+            <label htmlFor="date">Day Spent:</label>
+            <DatePicker
+              className="focus:ring-green rounded-3xl border-2 border-black focus:ring"
+              id="datetime"
+              name="timeDate"
+              // selected={timeDate}
+              // minDate={startOfWeek}
+              // maxDate={endOfWeek}
+              // onChange={(date: Date | null) => setTimeDate(date)}
+              // required
+            />
+          </div>
+        </div>
+
+        <div className="flex w-full justify-between gap-x-20 pb-6">
+          <div className="flex flex-1 flex-col">
+            <label htmlFor="price">Price:</label>
             <input
+              className="focus:ring-green rounded-3xl border-2 border-black focus:ring"
               type="number"
               id="price"
               name="price"
-              value={expense.price}
+              value={expense.price === 0 ? "" : expense.price}
+              step="0.01"
               onChange={handleChange}
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="quantity">Quantity</label>
+          <div className="flex flex-1 flex-col">
+            <label htmlFor="quantity">Quantity:</label>
             <input
-              type="number"
+              className="focus:ring-green rounded-3xl border-2 border-black focus:ring"
+              type="text"
               id="quantity"
               name="quantity"
-              value={expense.quantity}
+              value={expense.quantity === 0 ? "" : expense.quantity}
               onChange={handleChange}
             />
           </div>
+        </div>
+
+        <div className="flex w-full justify-between">
           <div className="flex flex-col gap-2">
-            <label htmlFor="total">Total</label>
+            <label htmlFor="total">Total:</label>
             <input
+              className="rounded-2xl bg-[#eaffed]"
               type="text"
               id="total"
-              name="total"
-              value={expense.total ?? 0}
+              name="quantity"
+              value={expense.total ? expense.total : 0}
               disabled
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="date">Select Date and Time</label>
-            <input
-              type="date"
-              id="date"
-              name="date"
-              value={expense.date?.toISOString().split("T")[0]}
-              required
-              onChange={handleChange}
-            />
-          </div>
-          <button type="button" className="cancel" onClick={closeForm}>
-            Cancel
-          </button>
-          <button type="submit" disabled={isPending}>
+
+          {/* <button type="button" className="cancel" onClick={closeForm}>
+                  Cancel
+                </button> */}
+
+          <button
+            type="submit"
+            disabled={isPending}
+            className="text-darkCopper mt-auto rounded-full bg-[#487474] px-4 py-2 text-sm font-semibold transition duration-200"
+          >
             Add Expense
           </button>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
   );
 };
