@@ -109,7 +109,7 @@ const ExpenseBox = ({
   const dayString = daysOfWeek[dayNum];
 
   return (
-    <div className="flex h-auto transform flex-row justify-between rounded-t-xl border-b-2 border-black p-2 duration-200 ease-in hover:bg-slate-200">
+    <div className="flex h-auto transform flex-row justify-between rounded-t-xl border-b-2 border-black p-2 px-8 duration-200 ease-in">
       <div className="flex flex-col">
         <h2 className="font-bold">{expense_name}</h2>
         <h6>
