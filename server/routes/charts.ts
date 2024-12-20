@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { pool } from "../db";
 import groupExpensesByDay from "../utils/groupExpensesByDay";
 import { Expense } from "../utils/types";
@@ -8,7 +8,7 @@ const chartRouter = express.Router();
 
 chartRouter.get(
   "/user/:user_id/weekly_summary/:weekly_summary_id",
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     const { user_id, weekly_summary_id } = req.params;
     const { isRecent } = req.query;
     console.log(weekly_summary_id);
@@ -114,8 +114,7 @@ chartRouter.get(
         }
       }
     } catch (error) {
-      console.error("Error fetching weekly expenses:", error);
-      res.status(500).json({ error: "Internal Server Error", message: error });
+      next(error);
     }
   }
 );
