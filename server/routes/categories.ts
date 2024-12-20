@@ -19,7 +19,7 @@ categoryRouter.post(
         amount_left,
         amount_spent,
       } = req.body as Category;
-      const data = await pool.query<Category>(
+      const { rows: categoryRows } = await pool.query<Category>(
         `INSERT INTO "Category" (
         budget,
         category_color,
@@ -42,9 +42,9 @@ categoryRouter.post(
 
       await recalculateWeekSummaryWithCategory({
         pool,
-        category_id: Number(data.rows[0].category_id),
+        category_id: Number(categoryRows[0].category_id),
       });
-      res.status(200).json({ data: data.rows[0] });
+      res.status(200).json({ data: categoryRows[0] });
     } catch (error: unknown) {
       next(error);
     }
