@@ -1,6 +1,6 @@
 import { describe, beforeEach, expect, it, vi } from "vitest";
 import AuthPage from "@/routes/auth/AuthPage";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { supabase } from "@/utils/UserContext";
 
@@ -111,13 +111,14 @@ describe("AuthPage", () => {
     const passwordInput = screen.getByPlaceholderText("password");
 
     const submitButton = await screen.findByTestId("submit");
-
-    fireEvent.change(emailInput, { target: { value: sampleEmail } });
-    fireEvent.change(passwordInput, { target: { value: samplePassword } });
-
-    fireEvent.click(submitButton);
-
     expect(submitButton).toBeDefined();
+
+    await act(async () => {
+      fireEvent.change(emailInput, { target: { value: sampleEmail } });
+      fireEvent.change(passwordInput, { target: { value: samplePassword } });
+      fireEvent.click(submitButton);
+    });
+
     expect(supabase.auth.signInWithPassword).toHaveBeenCalledWith({
       email: sampleEmail,
       password: samplePassword,
@@ -132,10 +133,10 @@ describe("AuthPage", () => {
     });
     const signUpButton = await screen.findByTestId("SIGN UP");
 
-    fireEvent.click(signUpButton);
     const sampleUserName = "testuser";
     const sampleEmail = "testemail@gmail.com";
     const samplePassword = "password123";
+    fireEvent.click(signUpButton);
 
     const usernameInput = screen.getByPlaceholderText("username");
     const emailInput = screen.getByPlaceholderText("email");
@@ -145,17 +146,18 @@ describe("AuthPage", () => {
 
     expect(usernameInput).not.toBeNull();
 
-    fireEvent.change(usernameInput, {
-      target: { value: sampleUserName },
+    await act(async () => {
+      fireEvent.change(usernameInput, {
+        target: { value: sampleUserName },
+      });
+      fireEvent.change(emailInput, {
+        target: { value: sampleEmail },
+      });
+      fireEvent.change(passwordInput, {
+        target: { value: samplePassword },
+      });
+      fireEvent.click(submitButton);
     });
-    fireEvent.change(emailInput, {
-      target: { value: sampleEmail },
-    });
-    fireEvent.change(passwordInput, {
-      target: { value: samplePassword },
-    });
-
-    fireEvent.click(submitButton);
 
     expect(supabase.auth.signUp).toHaveBeenCalledWith({
       email: sampleEmail,

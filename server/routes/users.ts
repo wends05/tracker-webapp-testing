@@ -36,6 +36,10 @@ userRouter.post("", async (req: Request, res: Response) => {
   try {
     const { username, email } = req.body as User;
 
+    if (!username || !email) {
+      throw Error("Username or email not provided");
+    }
+
     const { rows: userRows } = await pool.query<User>(
       `INSERT INTO "User"(username, email) VALUES ($1, $2) RETURNING *`,
       [username, email]
