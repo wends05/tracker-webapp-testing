@@ -33,16 +33,17 @@ const WeeklySummaryCard = ({ summary }: { summary: WeeklySummary }) => {
 
   return (
     <Link to={`/weeklysummary/${summary.weekly_summary_id}`}>
-      <div className="border-green hover:bg-green group relative mb-10 ml-14 mr-14 flex items-center rounded-xl border-2 bg-none p-6 transition-transform duration-300 ease-in-out hover:translate-y-[-5px] hover:text-white hover:shadow-xl">
+      <div className="border-green hover:bg-green group relative mb-10 flex flex-col items-center rounded-xl border-2 bg-none p-4 transition-transform duration-300 ease-in-out hover:translate-y-[-5px] hover:text-white hover:shadow-xl sm:mx-4 md:mx-4 md:flex-row md:p-6 lg:mx-20">
         {/* Chart Container */}
-        <div className="bg-green h-72 w-1/3 transition-colors duration-300 group-hover:bg-white">
+        <div className="duration-30 mb-4 max-h-full w-full transition-colors md:mb-0 md:w-1/3 md:pl-10">
           {weeklySummaryCategories && (
             <CategoryGraph categories={weeklySummaryCategories} />
           )}
         </div>
+
         {/* Start and End Date */}
-        <div className="absolute left-[35%] top-[10%] font-bold">
-          <p className="text-green text-3xl transition-colors duration-300 group-hover:text-white">
+        <div className="mb-4 w-full text-center font-bold md:absolute md:left-[35%] md:top-[10%] md:mb-0 md:w-2/3 md:text-left">
+          <p className="text-green text-xl transition-colors duration-300 group-hover:text-white md:text-3xl">
             {startDate.toLocaleDateString("en-US", {
               month: "long",
               day: "numeric",
@@ -58,19 +59,19 @@ const WeeklySummaryCard = ({ summary }: { summary: WeeklySummary }) => {
         </div>
 
         {/* Total Budget */}
-        <div className="absolute bottom-6 left-[35%]">
-          <p className="text-lg text-black transition-colors duration-300 group-hover:text-white">
+        <div className="w-full text-center md:absolute md:bottom-6 md:left-[35%] md:w-auto md:text-left">
+          <p className="text-sm text-black transition-colors duration-300 group-hover:text-white md:text-lg">
             <span className="font-semibold">Total Budget: </span>$
             {summary.total_budget}
           </p>
         </div>
 
         {/* Saved Amount */}
-        <div className="absolute bottom-6 right-6">
+        <div className="w-full text-center md:absolute md:bottom-6 md:right-6 md:w-auto md:text-right">
           <p className="text-sm transition-colors duration-300 group-hover:text-white">
             Saved:
           </p>
-          <p className="text-2xl font-bold transition-colors duration-300 group-hover:text-white">
+          <p className="text-lg font-bold transition-colors duration-300 group-hover:text-white md:text-2xl">
             ${summary.total_not_spent}
           </p>
         </div>
