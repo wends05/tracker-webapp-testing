@@ -15,6 +15,7 @@ import {
   ArrowUp,
 } from "lucide-react";
 import emptyListIcon from "./../../../assets/empty_list_icon.png";
+import { BackendError } from "@/interfaces/ErrorResponse";
 
 const CategoryPage = () => {
   const { category_id } = useParams();
@@ -36,9 +37,8 @@ const CategoryPage = () => {
       );
 
       if (!response.ok) {
-        const { message: errorMessage } = (await response.json()) as {
-          message: string;
-        };
+        const { message: errorMessage } =
+          (await response.json()) as BackendError;
         throw Error(errorMessage);
       }
 
@@ -55,11 +55,13 @@ const CategoryPage = () => {
       );
 
       if (!response.ok) {
-        const errorMessage = await response.json();
-        throw Error(errorMessage);
+        const { message } = (await response.json()) as {
+          message: string;
+        };
+        throw Error(message);
       }
 
-      const { data } = await response.json();
+      const { data } = (await response.json()) as BackendResponse<Expense[]>;
       return data;
     },
   });

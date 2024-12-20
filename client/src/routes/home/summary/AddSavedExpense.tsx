@@ -76,7 +76,7 @@ const AddSavedExpense = () => {
           error: string;
           message: string;
         };
-        throw Error(errorMessage.error);
+        throw Error(errorMessage.message);
       }
 
       await queryClient.invalidateQueries({

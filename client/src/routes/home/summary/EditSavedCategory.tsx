@@ -48,8 +48,10 @@ const EditSavedCategory = () => {
       );
 
       if (!response.ok) {
-        const error = await response.json();
-        throw Error(error);
+        const error = (await response.json()) as {
+          message: string;
+        };
+        throw Error(error.message || "Failed to edit saved category");
       }
 
       await queryClient.invalidateQueries({

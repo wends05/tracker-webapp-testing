@@ -97,7 +97,8 @@ const CategorySorter = ({ categories, onSort }: CategorySorterProps) => {
               onChange={handleOrderChange}
               disabled={isDefault}
             />
-            <ArrowUpWideNarrow className="ml-2 mr-1 inline h-4 w-4" /> Ascending
+            <ArrowUpWideNarrow className="ml-2 mr-1 inline h-4 w-4" />{" "}
+            Descending
           </label>
           <label className="flex items-center">
             <input
@@ -108,7 +109,7 @@ const CategorySorter = ({ categories, onSort }: CategorySorterProps) => {
               disabled={isDefault}
             />
             <ArrowDownWideNarrow className="ml-2 mr-1 inline h-4 w-4" />{" "}
-            Descending
+            Ascending
           </label>
         </div>
       </div>

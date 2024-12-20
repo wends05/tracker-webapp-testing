@@ -7,6 +7,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Category } from "@/utils/types";
 import getUser from "@/utils/getUser";
 import { bouncy } from "ldrs";
+import { BackendError } from "@/interfaces/ErrorResponse";
 
 bouncy.register();
 
@@ -59,7 +60,7 @@ const AddCategory: React.FC = () => {
       });
 
       const category: Category = {
-        budget: parseFloat(budget) || 0,
+        budget: parseFloat(budget),
         category_color: backgroundColor,
         category_name: categoryName,
         description: description || "",
@@ -80,7 +81,7 @@ const AddCategory: React.FC = () => {
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = (await response.json()) as BackendError;
         throw new Error(errorData.message || "Failed to add category");
       }
 
@@ -218,13 +219,6 @@ const AddCategory: React.FC = () => {
         </div>
 
         <div className="flex justify-end">
-          {/* <button
-            type="button"
-            onClick={closeForm}
-            className="text-darkCopper w-1/4 rounded-full border-2 bg-[#487474] p-5 font-semibold transition duration-200"
-          >
-            Cancel
-          </button> */}
           <button
             type="submit"
             className="text-darkCopper w-1/4 rounded-full border-2 bg-[#487474] p-5 font-semibold transition duration-200"

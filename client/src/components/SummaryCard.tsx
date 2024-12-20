@@ -3,6 +3,7 @@ import { SavedCategories, WeeklySummary } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { CategoryGraph } from "./PieChart";
+import { BackendError } from "@/interfaces/ErrorResponse";
 
 const WeeklySummaryCard = ({ summary }: { summary: WeeklySummary }) => {
   const { data: weeklySummaryCategories } = useQuery({
@@ -13,9 +14,8 @@ const WeeklySummaryCard = ({ summary }: { summary: WeeklySummary }) => {
       );
 
       if (!response.ok) {
-        const { message: errorMessage } = (await response.json()) as {
-          message: string;
-        };
+        const { message: errorMessage } =
+          (await response.json()) as BackendError;
         throw Error(errorMessage);
       }
 
