@@ -118,7 +118,7 @@ const Landing = () => {
             transition={{ duration: 1 }}
           >
             <div
-              className="absolute right-0 top-[-13rem] mr-[6rem] h-[350px] w-[550px] bg-cover bg-no-repeat"
+              className="absolute right-0 top-[-13rem] mr-[1rem] h-[350px] w-[550px] bg-cover bg-no-repeat"
               style={{
                 backgroundImage: `url(${sampleDesign})`,
                 zIndex: 1,
@@ -127,7 +127,7 @@ const Landing = () => {
               }}
             ></div>
             <div
-              className="absolute right-32 top-[-475px] mr-48 h-[600px] w-[550px] bg-cover bg-no-repeat shadow-2xl"
+              className="absolute right-32 top-[-475px] mr-40 h-[600px] w-[550px] bg-cover bg-no-repeat shadow-2xl"
               style={{
                 backgroundImage: `url(${categoryLanding})`,
                 zIndex: -1,
@@ -210,7 +210,7 @@ const Landing = () => {
                     : { opacity: 0, y: 50 }
                 }
                 transition={{ duration: 1, delay: 0.5 }}
-                className="p-5 text-5xl"
+                className="p-5 text-8xl"
               >
                 Expense Tracking
               </motion.h1>
@@ -290,7 +290,7 @@ const Landing = () => {
                     : { opacity: 0, y: 50 }
                 }
                 transition={{ duration: 1, delay: 0.5 }}
-                className="p-5 text-5xl"
+                className="p-5 text-8xl"
               >
                 Budgeting Made Simple
               </motion.h1>
@@ -333,7 +333,7 @@ const Landing = () => {
                     : { opacity: 0, y: 50 }
                 }
                 transition={{ duration: 1, delay: 0.5 }}
-                className="p-5 text-5xl"
+                className="p-5 text-7xl"
               >
                 Comprehensive Weekly Summary
               </motion.h1>
