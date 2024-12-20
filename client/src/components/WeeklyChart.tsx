@@ -18,6 +18,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import getUser from "@/utils/getUser";
 import { User } from "@/utils/types";
+import { BackendError } from "@/interfaces/ErrorResponse";
 
 interface WeekData {
   day: string;
@@ -60,8 +61,8 @@ export function WeeklyChart({
       );
 
       if (!response.ok) {
-        const errorMessage = await response.json();
-        throw Error(errorMessage);
+        const error = (await response.json()) as BackendError;
+        throw Error(error.message);
       }
 
       const { data } = (await response.json()) as { data: WeeklyDataResult };

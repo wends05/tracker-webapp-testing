@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import getUser from "@/utils/getUser";
 import { toast } from "@/hooks/use-toast";
+import { BackendError } from "@/interfaces/ErrorResponse";
 
 const WrapupEditCategory = () => {
   const categories = useLoaderData() as Category[];
@@ -66,8 +67,8 @@ const WrapupEditCategory = () => {
       );
 
       if (!response.ok) {
-        const errorMessage = await response.json();
-        throw Error(errorMessage);
+        const { message } = (await response.json()) as BackendError;
+        throw Error(message);
       }
 
       return await response.json();

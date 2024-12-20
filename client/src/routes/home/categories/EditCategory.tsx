@@ -15,17 +15,17 @@ const EditCategory = () => {
   const [categoryName, setCategoryName] = useState<string>(
     category.category_name
   );
-  const [budget, setBudget] = useState<number>(category.budget);
+  const [budget, setBudget] = useState<number | string>(category.budget);
   const [backgroundColor, setBackgroundColor] = useState<string>(
     category.category_color
   );
 
-  const [description, setDescription] = useState<string>("");
+  const [description, setDescription] = useState<string>(category.description);
   const { mutate, isPending } = useMutation({
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
 
-      if (budget < category.amount_spent) {
+      if (Number(budget) < category.amount_spent) {
         throw Error(
           `Your budget is lower than your amount spent. Amount spent is ${category.amount_spent}.`
         );
@@ -35,12 +35,12 @@ const EditCategory = () => {
         description: "Editing category...",
       });
 
-      const newAmountLeft = budget - category.amount_spent;
+      const newAmountLeft = Number(budget) - category.amount_spent;
 
       const newCategory: Category = {
         category_id: category.category_id,
         category_name: categoryName,
-        budget: budget,
+        budget: Number(budget),
         category_color: backgroundColor,
         amount_left: newAmountLeft,
         description: description,
@@ -60,8 +60,10 @@ const EditCategory = () => {
       );
 
       if (!response.ok) {
-        const { error } = await response.json();
-        throw Error(error);
+        const { message } = (await response.json()) as {
+          message: string;
+        };
+        throw Error(message);
       }
 
       await queryClient.invalidateQueries({
@@ -105,8 +107,10 @@ const EditCategory = () => {
       );
 
       if (!response.ok) {
-        const { error } = await response.json();
-        throw new Error(error || "Failed to delete category");
+        const { message } = (await response.json()) as {
+          message: string;
+        };
+        throw new Error(message || "Failed to delete category");
       }
       toast({
         description: "Deleting Category",
@@ -193,11 +197,10 @@ const EditCategory = () => {
               Budget
             </label>
             <input
-              type="number"
+              type="text"
               id="budget"
-              step={0.01}
               value={budget}
-              onChange={(e) => setBudget(Number(e.target.value) || budget)}
+              onChange={(e) => setBudget(e.target.value || "")}
               required
               className="border-darkCopper block w-full rounded-2xl border p-2 focus:ring focus:ring-blue-500"
               placeholder="Enter budget"
