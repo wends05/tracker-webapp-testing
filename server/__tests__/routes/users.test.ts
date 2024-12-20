@@ -46,7 +46,7 @@ describe("GET /user", () => {
   it("should return an error if there is no user that corresponds to that email", async () => {
     const mockQuery = testPool.query as Mock;
     const queryEmail = "john@gmail.com";
-    mockQuery.mockRejectedValue(new Error("An error has occured"));
+    mockQuery.mockResolvedValue(new Error("An error has occured"));
 
     const res = await request(app).get("/user").query({ email: queryEmail });
 
