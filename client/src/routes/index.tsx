@@ -3,6 +3,7 @@ import categoryLanding from "../assets/Category-landing.jpg";
 import feature1 from "../assets/feature-1.png";
 import feature2 from "../assets/feature-2.png";
 import feature3 from "../assets/feature-3.png";
+import logo from "../assets/sample_logo.png";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Button } from "../components/ui/button";
@@ -29,12 +30,48 @@ const Landing = () => {
 
   return (
     <div className="overflow-x-hidden">
-      {/* <div>
-        <div className="absolute bg-contain bg-no-repeat w-20 h-20 " style={{backgroundImage: `url(${sampleLogo})`}}></div>
-      </div>
-       */}
+      <header className="fixed left-0 top-0 z-50 w-full bg-white/30 shadow-md backdrop-blur-md">
+        <div className="container mx-auto flex items-center justify-between p-4">
+          <div className="flex items-center space-x-3">
+            <img src={logo} alt="WaEase Logo" className="h-10 w-14" />
+            <h1 className="text-darkCopper text-2xl font-bold">WaEase</h1>
+          </div>
+          <nav>
+            <ul className="flex items-center space-x-6">
+              <li className="flex items-center">
+                <a href="#section1" className="hover:text-tan">
+                  About
+                </a>
+              </li>
+              <li className="flex items-center">
+                <a href="#section2" className="hover:text-tan">
+                  Mission
+                </a>
+              </li>
+              <li className="flex items-center">
+                <a href="#section3" className="hover:text-tan">
+                  Features
+                </a>
+              </li>
+              <li>
+                <Button
+                  onClick={handleToAuth}
+                  className="bg-vanilla text-darkCopper hover:text-vanilla hover:bg-darkCopper px-5 py-2"
+                >
+                  Get Started
+                </Button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+
       {/* Section 1 */}
-      <section className="relative min-h-screen" ref={section1Ref}>
+      <section
+        id="section1"
+        className="relative mt-24 min-h-screen"
+        ref={section1Ref}
+      >
         <div className="h-full w-full">
           <div className="ml-20 mt-12 flex h-full flex-col">
             <motion.div
@@ -108,7 +145,11 @@ const Landing = () => {
 
       {/* Section 2 */}
       <motion.div ref={section2Ref}>
-        <section className="text-darkCopper relative flex min-h-screen flex-col items-center justify-center bg-[#f2e7dd]">
+        <section
+          id="section2"
+          className="relative flex min-h-screen flex-col items-center justify-center bg-[#f2e7dd]"
+          ref={section2Ref}
+        >
           <motion.div
             initial={{ opacity: 0, y: 50, filter: "blur(5px)" }}
             animate={
@@ -117,17 +158,20 @@ const Landing = () => {
                 : { opacity: 0, y: 50, filter: "blur(5px)" }
             }
             transition={{ duration: 1, delay: 0.3 }}
+            className="flex w-full items-center justify-center"
           >
-            <div className="mx-auto h-20 w-4/5 p-6 text-center">
+            <div className="mx-auto p-6 text-center">
               <h1 className="mb-6 text-4xl font-bold">Our Mission</h1>
               <p className="text-lg leading-relaxed">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                sunt in culpa qui officia deserunt mollit anim id est laborum.
+                Our mission is to empower individuals to take control of their
+                financial well-being through intuitive and seamless tracking
+                solutions. We aim to simplify budgeting, expense management, and
+                savings by providing user-friendly tools that foster financial
+                clarity and confidence. The team aims to create a world where
+                everyone, regardless of background, can easily manage their
+                finances and achieve financial security. We aspire to be the
+                leading platform for innovative financial solutions that promote
+                smart saving, wise spending, and a stress-free financial future.
               </p>
             </div>
           </motion.div>
@@ -138,10 +182,10 @@ const Landing = () => {
       <div className="bg-gradient-to-r from-[#4c9182] to-[#efd293] text-white">
         {/* Feature 1 */}
         <section
+          id="section3"
           className="relative grid min-h-screen grid-cols-2"
           ref={section3Ref}
         >
-          {/* Text Column */}
           <motion.div
             initial={{ opacity: 0, x: -100 }}
             animate={
@@ -180,7 +224,6 @@ const Landing = () => {
             </div>
           </motion.div>
 
-          {/* Image Column */}
           <motion.div
             initial={{ opacity: 0, x: 100 }}
             animate={
@@ -205,7 +248,6 @@ const Landing = () => {
           className="relative grid min-h-screen grid-cols-2"
           ref={section4Ref}
         >
-          {/* Image Column */}
           <motion.div
             initial={{ opacity: 0, x: -100 }}
             animate={
@@ -224,7 +266,6 @@ const Landing = () => {
             ></div>
           </motion.div>
 
-          {/* Text Column */}
           <motion.div
             initial={{ opacity: 0, x: 100 }}
             animate={
@@ -268,7 +309,6 @@ const Landing = () => {
           className="relative grid min-h-screen grid-cols-2"
           ref={section5Ref}
         >
-          {/* Text Column */}
           <motion.div
             initial={{ opacity: 0, x: -100 }}
             animate={
@@ -306,7 +346,6 @@ const Landing = () => {
             </div>
           </motion.div>
 
-          {/* Image Column */}
           <motion.div
             initial={{ opacity: 0, x: 100 }}
             animate={
@@ -326,6 +365,7 @@ const Landing = () => {
           </motion.div>
         </section>
       </div>
+
       {/* footer */}
       <section className="bg-darkCopper relative flex h-60 flex-col items-center justify-center">
         <div className="font-medium text-white">
