@@ -7,6 +7,7 @@ import { Category } from "@/utils/types";
 import { BackendResponse } from "@/interfaces/BackendResponse";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { BackendError } from "@/interfaces/ErrorResponse";
 
 const getCurrentWeekRange = () => {
   const today = new Date();
@@ -48,9 +49,8 @@ const AddExpense = () => {
       );
 
       if (!response.ok) {
-        const { message: errorMessage } = (await response.json()) as {
-          message: string;
-        };
+        const { message: errorMessage } =
+          (await response.json()) as BackendError;
         throw Error(errorMessage);
       }
 
@@ -103,10 +103,7 @@ const AddExpense = () => {
       );
 
       if (!response.ok) {
-        const errorMessage = (await response.json()) as {
-          error: string;
-          message: string;
-        };
+        const errorMessage = (await response.json()) as BackendError;
         throw Error(errorMessage.message);
       }
 
@@ -122,7 +119,6 @@ const AddExpense = () => {
       toast({
         description: "Expense Added!",
       });
-
       queryClient.invalidateQueries({
         queryKey: ["weeklySummary"],
       });
