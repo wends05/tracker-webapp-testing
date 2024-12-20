@@ -13,12 +13,13 @@ bouncy.register();
 
 const LayoutPage = () => {
   const nav = useNavigate();
+  const path = useLocation();
+
   const { data: user } = useQuery<User>({
     queryKey: ["user"],
     queryFn: getUser,
   });
 
-  const path = useLocation();
   const { data: wrapUpInfo, isLoading } = useQuery({
     enabled: !!user,
     queryKey: ["weeklySummary"],
@@ -53,15 +54,20 @@ const LayoutPage = () => {
       const lastSunday = new Date(getLastSunday()).getDate();
       const recentSummaryStart = new Date(wrapUpInfo.date_start).getDate();
 
-      if (lastSunday != recentSummaryStart) {
+      if (lastSunday !== recentSummaryStart) {
         nav("/wrapup/1");
       }
     }
   }, [wrapUpInfo, path.pathname]);
 
+  //  hide the sidebar on wrapup pages
+  const hideSidebarRoutes = ["/wrapup/1", "/wrapup/2"];
+  const shouldHideSidebar = hideSidebarRoutes.includes(path.pathname);
+
   return (
     <div className="flex h-screen flex-col">
-      <Drawer />
+      {!shouldHideSidebar && <Drawer />}
+
       <div className="h-full">
         {isLoading || !wrapUpInfo ? (
           <div className="flex h-full w-full flex-col items-center justify-center">
