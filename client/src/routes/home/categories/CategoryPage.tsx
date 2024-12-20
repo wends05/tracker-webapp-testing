@@ -15,7 +15,6 @@ import {
   ArrowUp,
 } from "lucide-react";
 import emptyListIcon from "./../../../assets/empty_list_icon.png";
-// import { Skeleton } from "@/components/ui/skeleton";
 
 const CategoryPage = () => {
   const { category_id } = useParams();
@@ -126,7 +125,9 @@ const CategoryPage = () => {
 
   if (!category || !expenses)
     return (
-      <p className="flex h-full items-center justify-center">Almost there...</p>
+      <div className="absolute inset-0 z-20 flex items-center justify-center bg-white bg-opacity-70">
+        <l-bouncy size="77" speed="1.75" color="black"></l-bouncy>
+      </div>
     );
 
   return (
