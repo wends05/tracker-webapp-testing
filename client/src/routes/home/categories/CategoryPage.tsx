@@ -142,7 +142,7 @@ const CategoryPage = () => {
                 className="mb-8 text-5xl font-bold md:text-7xl"
                 style={{
                   wordBreak: "break-all",
-                  color: category.category_color,
+                  color: category.category_color || "#7a958f",
                 }}
               >
                 {category.category_name}

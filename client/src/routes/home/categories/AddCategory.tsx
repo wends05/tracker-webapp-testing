@@ -24,7 +24,7 @@ const AddCategory: React.FC = () => {
   const [categoryName, setCategoryName] = useState<string>("");
   const [budget, setBudget] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [backgroundColor, setBackgroundColor] = useState<string>("");
+  const [backgroundColor, setBackgroundColor] = useState<string>("#7a958f");
   const [categoryNameError, setCategoryNameError] = useState<string | null>(
     null
   );
