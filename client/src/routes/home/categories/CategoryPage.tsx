@@ -131,13 +131,13 @@ const CategoryPage = () => {
     );
 
   return (
-    <div className="relative flex min-h-full flex-col">
+    <div className="relative flex min-h-full flex-col bg-slate-300">
       <div className="bg- flex justify-center pt-16">
-        <div className="flex flex-col sm:gap-4 md:flex-col md:gap-8 lg:flex-row">
-          <div className="mb-8 flex h-full w-full flex-grow-0 flex-col">
+        <div className="flex flex-col sm:gap-4 md:flex-col md:gap-36 lg:flex-row">
+          <div className="mb-8 flex h-full w-full flex-grow-0 flex-col px-8">
             <div>
               <h1
-                className="mb-16 text-5xl font-bold md:text-7xl"
+                className="mb-8 text-5xl font-bold md:text-7xl"
                 style={{
                   wordBreak: "break-all",
                   color: category.category_color,
