@@ -10,14 +10,14 @@ const CategoryView = (category: { category: Category }) => {
     <div className="relative mx-5 my-5 flex h-48 items-center justify-center rounded-lg shadow-lg">
       <Link
         to={`/category/${category_id}`}
-        className="relative flex h-full w-full flex-col justify-between rounded-lg p-4"
+        className="relative flex h-full w-full flex-col justify-end rounded-lg p-4"
         style={{
           backgroundColor: category_color || "#7a958f",
         }}
       >
-        <div className="top- relative">
-          <h3 className="text-lg font-medium">{category_name}</h3>
-          <p className="mt-1 text-sm">Total Budget: ₱{budget}</p>
+        <div className="absolute bottom-2 left-2">
+          <h3 className="text-2xl font-semibold text-white">{category_name}</h3>
+          <p className="mt-1 text-sm text-white">Total Budget: ₱{budget}</p>
         </div>
       </Link>
 
