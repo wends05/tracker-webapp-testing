@@ -102,7 +102,7 @@ const AddSavedExpense = () => {
   });
 
   const closeForm = () => {
-    if (isPending) {
+    if (!isPending) {
       nav(-1);
     }
   };

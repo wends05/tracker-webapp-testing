@@ -8,9 +8,7 @@ import LayoutPage from "../routes/home/_LayoutPage";
 import Dashboard from "../routes/home/Dashboard";
 import AddCategory from "../routes/home/categories/AddCategory";
 import CategoryPage from "../routes/home/categories/CategoryPage";
-// import Expense from "../routes/home/expense/Expense";
 import AddExpense from "../routes/home/expense/AddExpense";
-import Profile from "../routes/home/Profile";
 import Summaries from "../routes/home/summary/Summaries";
 import Summary from "../routes/home/summary/Summary";
 import WrapupEditCategory from "@/routes/home/wrapup/WrapupEditCategory";
@@ -100,10 +98,6 @@ const router = createBrowserRouter([
                 ],
               },
             ],
-          },
-          {
-            path: "profile",
-            element: <Profile />,
           },
           {
             path: "wrapup",

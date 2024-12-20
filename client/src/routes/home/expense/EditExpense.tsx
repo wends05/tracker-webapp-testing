@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Category } from "@/utils/types";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { BackendError } from "@/interfaces/ErrorResponse";
 
 const getCurrentWeekRange = () => {
   const today = new Date();
@@ -92,8 +93,8 @@ const EditExpense = () => {
       );
 
       if (!response.ok) {
-        const { error } = await response.json();
-        throw Error(error);
+        const { message } = (await response.json()) as BackendError;
+        throw Error(message);
       }
 
       return response.json();
@@ -108,7 +109,7 @@ const EditExpense = () => {
       queryClient.refetchQueries({
         queryKey: ["expense", expense.expense_id],
       });
-      closeForm();
+      nav(-1);
       toast({
         description: "Expense Edited!",
       });
@@ -123,7 +124,9 @@ const EditExpense = () => {
   });
 
   const closeForm = () => {
-    nav(-1);
+    if (!isPending) {
+      nav(-1);
+    }
   };
 
   return (
