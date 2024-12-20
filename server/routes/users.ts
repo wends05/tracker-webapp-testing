@@ -1,10 +1,10 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { pool } from "../db";
 import { User } from "../utils/types";
 
 const userRouter = express.Router();
 
-userRouter.get("", async (req: Request, res: Response) => {
+userRouter.get("", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email } = req.query;
 
@@ -24,15 +24,11 @@ userRouter.get("", async (req: Request, res: Response) => {
 
     throw Error("User not found");
   } catch (error: unknown) {
-    console.error(error);
-    res.status(500).json({
-      message: "An error has occured",
-      error: (error as Error).message,
-    });
+    next(error);
   }
 });
 
-userRouter.post("", async (req: Request, res: Response) => {
+userRouter.post("", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { username, email } = req.body as User;
 
@@ -49,30 +45,26 @@ userRouter.post("", async (req: Request, res: Response) => {
       data: userRows[0],
     });
   } catch (error: unknown) {
-    console.error(error);
-    res.status(500).json({
-      message: "An error has occured",
-      error: (error as Error).message,
-    });
+    next(error);
   }
 });
 
-userRouter.get("/:id/categories", async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const data = await pool.query(
-      'SELECT * FROM "Category" WHERE user_id = $1 ORDER BY category_id',
-      [id]
-    );
+userRouter.get(
+  "/:id/categories",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const data = await pool.query(
+        'SELECT * FROM "Category" WHERE user_id = $1 ORDER BY category_id',
+        [id]
+      );
 
-    res.json({
-      data: data.rows,
-    });
-  } catch (error: unknown) {
-    res.status(500).json({
-      message: "An error has occured",
-      error: (error as Error).message,
-    });
+      res.json({
+        data: data.rows,
+      });
+    } catch (error: unknown) {
+      next(error);
+    }
   }
-});
+);
 export default userRouter;

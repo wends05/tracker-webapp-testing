@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { pool } from "../db";
 import {
   Category,
@@ -11,43 +11,45 @@ import getLastSunday from "../utils/getLastSunday";
 
 const weeklySummaryRouter = express.Router();
 
-weeklySummaryRouter.post("/user/:id", async (req: Request, res: Response) => {
-  try {
-    const { newBudgets } = req.body as WeeklySummaryBodyRequest;
-    const { id } = req.params;
-    console.log(newBudgets);
+weeklySummaryRouter.post(
+  "/user/:id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { newBudgets } = req.body as WeeklySummaryBodyRequest;
+      const { id } = req.params;
+      console.log(newBudgets);
 
-    // get recent weekly summary, either from last week or a few weeks ago basta recent
+      // get recent weekly summary, either from last week or a few weeks ago basta recent
 
-    const { rows: recentWeeklySummaryRows } = await pool.query<WeeklySummary>(
-      `SELECT * FROM "Weekly Summary" WHERE user_id = $1 ORDER BY weekly_summary_id DESC`,
-      [id]
-    ); // here
+      const { rows: recentWeeklySummaryRows } = await pool.query<WeeklySummary>(
+        `SELECT * FROM "Weekly Summary" WHERE user_id = $1 ORDER BY weekly_summary_id DESC`,
+        [id]
+      ); // here
 
-    const weeklySummary = recentWeeklySummaryRows[0];
+      const weeklySummary = recentWeeklySummaryRows[0];
 
-    // get all user categories
+      // get all user categories
 
-    const { rows: categories } = await pool.query<Category>(
-      `SELECT * FROM "Category" WHERE user_id = $1`,
-      [id]
-    );
+      const { rows: categories } = await pool.query<Category>(
+        `SELECT * FROM "Category" WHERE user_id = $1`,
+        [id]
+      );
 
-    if (!categories) {
-      throw Error("Error fetching categories.");
-    }
+      if (!categories) {
+        throw Error("Error fetching categories.");
+      }
 
-    // do something for each of the categories
-    categories.forEach(async (category) => {
-      // create a new saved category on the saved categories table
+      // do something for each of the categories
+      categories.forEach(async (category) => {
+        // create a new saved category on the saved categories table
 
-      const newSavedCategory: SavedCategories = {
-        ...category,
-        weekly_summary_id: weeklySummary.weekly_summary_id!,
-      };
+        const newSavedCategory: SavedCategories = {
+          ...category,
+          weekly_summary_id: weeklySummary.weekly_summary_id!,
+        };
 
-      const { rows: savedCategoryRows } = await pool.query<SavedCategories>(
-        `INSERT INTO "Saved Categories"(
+        const { rows: savedCategoryRows } = await pool.query<SavedCategories>(
+          `INSERT INTO "Saved Categories"(
           category_name,
           budget,
           category_color,
@@ -56,78 +58,79 @@ weeklySummaryRouter.post("/user/:id", async (req: Request, res: Response) => {
           weekly_summary_id,
           description
         ) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-        [
-          newSavedCategory.category_name,
-          newSavedCategory.budget,
-          newSavedCategory.category_color,
-          newSavedCategory.amount_left,
-          newSavedCategory.amount_spent,
-          newSavedCategory.weekly_summary_id,
-          newSavedCategory.description,
-        ]
-      );
+          [
+            newSavedCategory.category_name,
+            newSavedCategory.budget,
+            newSavedCategory.category_color,
+            newSavedCategory.amount_left,
+            newSavedCategory.amount_spent,
+            newSavedCategory.weekly_summary_id,
+            newSavedCategory.description,
+          ]
+        );
 
-      const savedCategory = savedCategoryRows[0];
+        const savedCategory = savedCategoryRows[0];
 
-      // get expenses of this category
+        // get expenses of this category
 
-      const { rows: expensesRows } = await pool.query<Expense>(
-        `SELECT * FROM "Expense" WHERE category_id = $1`,
-        [category.category_id]
-      );
+        const { rows: expensesRows } = await pool.query<Expense>(
+          `SELECT * FROM "Expense" WHERE category_id = $1`,
+          [category.category_id]
+        );
 
-      // edit each expense of this category to have an assigned saved_category, and have a null category_id
+        // edit each expense of this category to have an assigned saved_category, and have a null category_id
 
-      expensesRows.forEach(async (expense) => {
-        try {
-          await pool.query(
-            `UPDATE "Expense" SET category_id = $1, saved_category_id = $2 WHERE expense_id = $3`,
-            [null, savedCategory.saved_category_id!, expense.expense_id]
+        expensesRows.forEach(async (expense) => {
+          try {
+            await pool.query(
+              `UPDATE "Expense" SET category_id = $1, saved_category_id = $2 WHERE expense_id = $3`,
+              [null, savedCategory.saved_category_id!, expense.expense_id]
+            );
+          } catch (error: unknown) {
+            throw new Error(error as string);
+          }
+        });
+
+        // update category's budget
+
+        if (newBudgets[category.category_id!]) {
+          console.log(
+            "new category budget ",
+            newBudgets[category.category_id!]
           );
-        } catch (error: unknown) {
-          throw new Error(error as string);
+          console.log("category id ", category.category_id);
+
+          await pool.query(
+            'UPDATE "Category" SET budget = $1 WHERE category_id = $2',
+            [newBudgets[category.category_id!], category.category_id]
+          );
+        } else {
+          console.log(category.category_id);
         }
       });
 
-      // update category's budget
+      const lastSunday = new Date(getLastSunday()).toLocaleDateString();
 
-      if (newBudgets[category.category_id!]) {
-        console.log("new category budget ", newBudgets[category.category_id!]);
-        console.log("category id ", category.category_id);
+      const nextSaturday = new Date(lastSunday);
+      nextSaturday.setDate(nextSaturday.getDate() + 6);
 
-        await pool.query(
-          'UPDATE "Category" SET budget = $1 WHERE category_id = $2',
-          [newBudgets[category.category_id!], category.category_id]
-        );
-      } else {
-        console.log(category.category_id);
-      }
-    });
+      const { rows: weeklySummaryRows } = await pool.query<WeeklySummary>(
+        `INSERT INTO "Weekly Summary"(date_start, date_end, user_id, total_budget, total_spent, total_not_spent) VALUES($1, $2, $3, $4, $5, $6) RETURNING *`,
+        [lastSunday, nextSaturday.toLocaleDateString(), id, 0, 0, 0]
+      );
 
-    const lastSunday = new Date(getLastSunday()).toLocaleDateString();
-
-    const nextSaturday = new Date(lastSunday);
-    nextSaturday.setDate(nextSaturday.getDate() + 6);
-
-    const { rows: weeklySummaryRows } = await pool.query<WeeklySummary>(
-      `INSERT INTO "Weekly Summary"(date_start, date_end, user_id, total_budget, total_spent, total_not_spent) VALUES($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [lastSunday, nextSaturday.toLocaleDateString(), id, 0, 0, 0]
-    );
-
-    res.json({
-      data: weeklySummaryRows[0],
-    });
-  } catch (error: unknown) {
-    res.status(500).json({
-      error: error,
-      message: (error as Error).message,
-    });
+      res.json({
+        data: weeklySummaryRows[0],
+      });
+    } catch (error: unknown) {
+      next(error);
+    }
   }
-});
+);
 
 weeklySummaryRouter.get(
   "/user/:id/categories",
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
       console.log(id);
@@ -138,32 +141,33 @@ weeklySummaryRouter.get(
       );
 
       res.status(200).json({ data: result.rows });
-    } catch {
-      res.status(500).send("Error fetching categories");
+    } catch (error) {
+      next(error);
     }
   }
 );
 
-weeklySummaryRouter.get("/user/:id", async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const { rows } = await pool.query(
-      `SELECT * FROM "Weekly Summary" WHERE user_id = $1 ORDER BY weekly_summary_id DESC`,
-      [id]
-    );
-    res.status(200).json({
-      data: rows,
-    });
-  } catch (error: unknown) {
-    res.status(500).json({
-      message: (error as Error).message,
-    });
+weeklySummaryRouter.get(
+  "/user/:id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const { rows } = await pool.query(
+        `SELECT * FROM "Weekly Summary" WHERE user_id = $1 ORDER BY weekly_summary_id DESC`,
+        [id]
+      );
+      res.status(200).json({
+        data: rows,
+      });
+    } catch (error: unknown) {
+      next(error);
+    }
   }
-});
+);
 
 weeklySummaryRouter.get(
   "/:id/savedcategories",
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
       console.log(id);
@@ -174,15 +178,15 @@ weeklySummaryRouter.get(
       );
 
       res.status(200).json({ data: result.rows });
-    } catch {
-      res.status(500).send("Error fetching saved categories");
+    } catch (error) {
+      next(error);
     }
   }
 );
 
 weeklySummaryRouter.get(
   "/user/:id/recent",
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
       const { rows } = await pool.query<WeeklySummary>(
@@ -208,9 +212,7 @@ weeklySummaryRouter.get(
         data: rows[0],
       });
     } catch (error: unknown) {
-      res.status(500).json({
-        message: (error as Error).message,
-      });
+      next(error);
     }
   }
 );
