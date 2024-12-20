@@ -8,6 +8,7 @@ import {
   WeeklySummaryBodyRequest,
 } from "../utils/types";
 import getLastSunday from "../utils/getLastSunday";
+import recalculateWeekSummary from "../utils/recalculateWeekSummary";
 
 const weeklySummaryRouter = express.Router();
 
@@ -118,6 +119,12 @@ weeklySummaryRouter.post(
         `INSERT INTO "Weekly Summary"(date_start, date_end, user_id, total_budget, total_spent, total_not_spent) VALUES($1, $2, $3, $4, $5, $6) RETURNING *`,
         [lastSunday, nextSaturday.toLocaleDateString(), id, 0, 0, 0]
       );
+
+      await recalculateWeekSummary({
+        pool,
+        weekly_summary_id: weeklySummaryRows[0].weekly_summary_id!,
+        user_id: Number(id),
+      });
 
       res.json({
         data: weeklySummaryRows[0],

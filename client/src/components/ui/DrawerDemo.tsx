@@ -55,6 +55,9 @@ export function DrawerDemo({ open, setOpen }: DrawerDemoProps) {
       await queryClient.invalidateQueries({
         queryKey: ["weeklySummary"],
       });
+      await queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
       nav("/dashboard");
     },
     onError: (error) => {

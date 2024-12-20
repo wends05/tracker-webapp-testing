@@ -94,7 +94,7 @@ const AuthPage = () => {
 
     // get user from database
     const fetchedUser = await fetch(
-      `http://localhost:3000/user?email=${email}`
+      `${import.meta.env.VITE_SERVER_URL}/user?email=${email}`
     );
 
     if (fetchedUser.status === 200) {
