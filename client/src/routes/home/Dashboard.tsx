@@ -75,44 +75,53 @@ const Dashboard = () => {
           Welcome, {user?.username} <span className="wave">👋</span>
         </h1>
       </header>
-      <div className="pb-5">
+      <div className="pb-3">
         <h2>Dashboard</h2>
       </div>
-      <div className="grid grid-cols-1 gap-8 px-8 md:grid-cols-3">
+      <div className="grid flex-auto grid-cols-1 gap-8 px-8 md:grid-cols-3">
         {/* Placeholder for Summary Graph */}
         <div className="shadow-none">
           <WeeklyChart weekly_summary_id={null} />
         </div>
 
         {/* Money Left */}
-        <div className="relative col-span-1 flex flex-col justify-center rounded-lg bg-white p-8 shadow-md before:absolute before:inset-5 before:rounded-xl before:border before:border-gray-200 before:shadow-lg">
+        <div className="relative col-span-1 flex flex-col justify-center rounded-lg bg-white p-8 shadow-md before:absolute before:inset-5 before:rounded-xl before:border before:border-gray-800 before:shadow-lg">
           <h2 className="mb-4 text-center text-xl font-medium text-black">
             Money Left
           </h2>
-          <p className="text-center text-5xl font-bold text-black">
-            {weeklySummary?.total_not_spent}
+          <p className="line-clamp-2 flex flex-col text-center text-5xl font-bold text-black">
+            {"₱ "}
+            {weeklySummary?.total_not_spent
+              ? new Intl.NumberFormat().format(weeklySummary.total_not_spent)
+              : 0}
           </p>
         </div>
 
         {/* Budget and Expenses */}
         <div className="col-span-1 flex flex-col gap-8">
           {/* Current Budget */}
-          <div className="relative flex flex-col justify-center rounded-lg bg-white p-6 shadow-xl before:absolute before:inset-5 before:rounded-lg before:border before:border-gray-200 before:shadow-lg">
-            <h2 className="mb-2 text-center text-lg font-medium text-black">
+          <div className="before:border-green relative justify-center rounded-lg bg-white p-10 shadow-xl before:absolute before:inset-5 before:rounded-lg before:border before:shadow-lg">
+            <h2 className="text-green mb-2 text-center text-lg font-medium">
               Current Budget
             </h2>
-            <p className="text-center text-4xl font-bold text-black">
-              {weeklySummary?.total_budget}
+            <p className="text-green line-clamp-2 flex flex-col text-center text-4xl font-bold">
+              {"₱ "}
+              {weeklySummary?.total_budget
+                ? new Intl.NumberFormat().format(weeklySummary.total_budget)
+                : 0}
             </p>
           </div>
 
           {/* Total Expenses */}
-          <div className="relative flex flex-col justify-center rounded-lg bg-white p-6 shadow-xl before:absolute before:inset-5 before:rounded-lg before:border before:border-gray-200 before:shadow-lg">
-            <h2 className="mb-2 text-center text-lg font-medium text-black">
+          <div className="relative flex flex-col justify-center rounded-lg bg-white p-10 shadow-xl before:absolute before:inset-5 before:rounded-lg before:border before:border-red-500 before:shadow-lg">
+            <h2 className="mb-2 text-center text-lg font-medium text-red-500">
               Total Expenses
             </h2>
-            <p className="text-center text-4xl font-bold text-black">
-              {weeklySummary?.total_spent}
+            <p className="line-clamp-2 flex flex-col text-center text-4xl font-bold text-red-500">
+              {"₱ "}
+              {weeklySummary?.total_spent
+                ? new Intl.NumberFormat().format(weeklySummary.total_spent)
+                : 0}
             </p>
           </div>
         </div>
