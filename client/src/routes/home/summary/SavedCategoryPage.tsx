@@ -88,7 +88,7 @@ const SavedCategoryPage = () => {
   }, [category]);
 
   return !saved_category_id || !category || !savedCategoryExpenses ? (
-    <>mama</>
+    <>loading</>
   ) : (
     <div
       className={`relative mt-12 flex min-h-full flex-col justify-center px-16`}

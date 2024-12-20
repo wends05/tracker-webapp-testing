@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { WeeklyChart } from "@/components/WeeklyChart";
 import { Outlet, useParams } from "react-router-dom";
 import { useState } from "react";
+import { WeeklyDataResult } from "@/interfaces/WeeklyDataResult";
 
 const Summary = () => {
   const { data: user } = useQuery<User>({
@@ -14,6 +15,26 @@ const Summary = () => {
     queryFn: getUser,
   });
   const { weeklysummary_id } = useParams();
+
+  const { data: weeklyData } = useQuery<WeeklyDataResult>({
+    enabled: !!user,
+    queryKey: ["weekchart", weeklysummary_id ?? undefined],
+    queryFn: async () => {
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/charts/user/${user?.user_id}/weekly_summary/${weeklysummary_id ?? 0}`
+      );
+
+      if (!response.ok) {
+        const errorMessage = await response.json();
+        throw Error(errorMessage);
+      }
+
+      const { data } = (await response.json()) as { data: WeeklyDataResult };
+      // setStartDate(new Date(data.date_start));
+      // setEndDate(new Date(data.date_end));
+      return data;
+    },
+  });
 
   const { data: weeklySummaryCategories } = useQuery({
     queryKey: ["weeklySummary", weeklysummary_id, "categories"],
@@ -37,6 +58,9 @@ const Summary = () => {
     enabled: !!user,
   });
 
+  // const [startDate, setStartDate] = useState<Date | null>(null);
+  // const [endDate, setEndDate] = useState<Date | null>(null);
+
   const [sortHighLow, setSortHighLow] = useState(false);
   const [sortLowHigh, setSortLowHigh] = useState(false);
   const [sortedCategories, setSortedCategories] = useState<
@@ -59,9 +83,26 @@ const Summary = () => {
     setSortedCategories(sorted);
   };
 
+  const formatter_start = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "2-digit",
+  });
+
+  const formatter_end = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+
   return (
     <div className="pl-5 pr-5 pt-5">
-      <h1 className="pb-2 font-bold">*Insert Date*</h1>
+      <h1 className="pb-2 font-bold">
+        {weeklyData
+          ? `${formatter_start.format(new Date(weeklyData.date_start))} - ${formatter_end.format(
+              new Date(weeklyData.date_end)
+            )}`
+          : "Loading dates..."}
+      </h1>
       <hr className="border-t-2 border-slate-900 pl-2 pr-2 pt-2" />
       <div>
         {/* Graphs */}
