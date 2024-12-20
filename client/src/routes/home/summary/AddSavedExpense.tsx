@@ -1,12 +1,49 @@
 import { toast } from "@/hooks/use-toast";
 import { BackendResponse } from "@/interfaces/BackendResponse";
-import { Expense, SavedCategories } from "@/utils/types";
+import { Expense, SavedCategories, User } from "@/utils/types";
+import getUser from "@/utils/getUser";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
 import { useNavigate, useParams } from "react-router-dom";
+import { Calendar } from "@/components/ui/calendar";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+import { WeeklyDataResult } from "@/interfaces/WeeklyDataResult";
 
 const AddSavedExpense = () => {
+  const { data: user } = useQuery<User>({
+    queryKey: ["user"],
+    queryFn: getUser,
+  });
+  const { weeklysummary_id } = useParams();
+
+  const { data: weeklyData } = useQuery<WeeklyDataResult>({
+    enabled: !!user,
+    queryKey: ["weekchart", weeklysummary_id ?? undefined],
+    queryFn: async () => {
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/charts/user/${user?.user_id}/weekly_summary/${weeklysummary_id ?? 0}`
+      );
+
+      if (!response.ok) {
+        const errorMessage = await response.json();
+        throw Error(errorMessage);
+      }
+
+      const { data } = (await response.json()) as { data: WeeklyDataResult };
+      // setStartDate(new Date(data.date_start));
+      // setEndDate(new Date(data.date_end));
+      return data;
+    },
+  });
+
   const { saved_category_id } = useParams();
 
   const { data: category } = useQuery<SavedCategories>({
@@ -121,6 +158,12 @@ const AddSavedExpense = () => {
     },
   });
 
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+
   const closeForm = () => {
     if (!isPending) {
       nav(-1);
@@ -164,16 +207,44 @@ const AddSavedExpense = () => {
           </div>
           <div className="flex flex-1 flex-col">
             <label htmlFor="date">Day Spent:</label>
-            <DatePicker
-              className="focus:ring-green rounded-3xl border-2 border-black focus:ring"
-              id="datetime"
-              name="timeDate"
-              // selected={timeDate}
-              // minDate={startOfWeek}
-              // maxDate={endOfWeek}
-              // onChange={(date: Date | null) => setTimeDate(date)}
-              // required
-            />
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "focus:ring-green rounded-3xl border-2 border-black focus:ring",
+                    !formatter.format(expense.date) && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {formatter.format(expense.date) ? (
+                    formatter.format(expense.date)
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                {weeklyData ? (
+                  <Calendar
+                    id="date"
+                    mode="single"
+                    selected={expense.date}
+                    onSelect={(date: Date | undefined) =>
+                      setExpense((prev) => ({
+                        ...prev,
+                        date: date || new Date(),
+                      }))
+                    }
+                    fromDate={new Date(weeklyData.date_start)}
+                    toDate={new Date(weeklyData.date_end)}
+                    initialFocus
+                  />
+                ) : (
+                  <div className="p-4 text-center">Loading calendar...</div>
+                )}
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 
