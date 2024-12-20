@@ -8,7 +8,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../utils/UserContext";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { CircleUserRound } from "lucide-react";
+import { User } from "@/utils/types";
+import getUser from "@/utils/getUser";
 
 const navLinks = [
   {
@@ -45,6 +48,12 @@ const Sidebar = () => {
     nav("/auth");
   };
 
+  const { data: user } = useQuery<User>({
+    queryKey: ["user"],
+    queryFn: getUser,
+    enabled: false,
+  });
+
   return (
     <div className="z-20">
       <header className="bg-vanilla flex h-16 w-full items-center justify-between px-16 text-black drop-shadow-md">
@@ -70,6 +79,17 @@ const Sidebar = () => {
           </button>
         </div>
 
+        {/* profile */}
+        <div className="flex h-[12rem] w-full flex-col items-center justify-center border-b-2 border-slate-300">
+          <CircleUserRound className="mb-2 size-[4rem] stroke-1" />
+          {user && (
+            <>
+              <text className="text-xl font-bold">{user?.username}</text>
+              <text>{user?.email}</text>
+            </>
+          )}
+        </div>
+
         <nav className="flex flex-col items-start p-6 text-black">
           {navLinks.map(({ name, path }, idx) => (
             <Link
@@ -88,12 +108,12 @@ const Sidebar = () => {
             </Link>
           ))}
         </nav>
-
         <button
           onClick={logOut}
-          className="absolute bottom-4 right-4 text-2xl text-black hover:text-red-600"
+          className="absolute bottom-16 left-1/2 mt-4 flex h-8 w-[8rem] -translate-x-1/2 transform items-center justify-center bg-gray-300 hover:bg-slate-200"
         >
-          <FontAwesomeIcon icon={faSignOutAlt} />
+          <FontAwesomeIcon icon={faSignOutAlt} className="size-[1.2rem]" />
+          <text className="ml-2 text-sm">Log out</text>
         </button>
       </div>
 

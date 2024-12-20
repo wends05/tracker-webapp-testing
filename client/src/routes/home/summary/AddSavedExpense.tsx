@@ -57,6 +57,10 @@ const AddSavedExpense = () => {
         throw Error("Please Select date and time");
       }
 
+      toast({
+        description: "Adding Expense...",
+      });
+
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/expense`,
         {
@@ -74,19 +78,19 @@ const AddSavedExpense = () => {
         };
         throw Error(errorMessage.error);
       }
+
+      await queryClient.invalidateQueries({
+        queryKey: ["savedCategory", saved_category_id],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["savedCategory", saved_category_id, "expenses"],
+      });
     },
     onSuccess: () => {
       toast({
         description: "Expense Added!",
       });
-      closeForm();
-      queryClient.invalidateQueries({
-        queryKey: ["savedCategory", saved_category_id],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["savedCategory", saved_category_id, "expenses"],
-      });
+      nav(-1);
     },
     onError: (error) => {
       toast({
@@ -98,7 +102,9 @@ const AddSavedExpense = () => {
   });
 
   const closeForm = () => {
-    nav(-1);
+    if (isPending) {
+      nav(-1);
+    }
   };
 
   return (

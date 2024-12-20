@@ -39,9 +39,13 @@ const chartConfig = {
 
 interface WeeklyChartProps {
   weekly_summary_id: number | null;
+  isRecent?: boolean;
 }
 
-export function WeeklyChart({ weekly_summary_id }: WeeklyChartProps) {
+export function WeeklyChart({
+  weekly_summary_id,
+  isRecent = false,
+}: WeeklyChartProps) {
   const { data: user } = useQuery<User>({
     queryKey: ["user"],
     queryFn: getUser,
@@ -52,7 +56,7 @@ export function WeeklyChart({ weekly_summary_id }: WeeklyChartProps) {
     queryKey: ["weekchart", weekly_summary_id ?? undefined],
     queryFn: async () => {
       const response = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/charts/user/${user?.user_id}/weekly_summary/${weekly_summary_id}`
+        `${import.meta.env.VITE_SERVER_URL}/charts/user/${user?.user_id}/weekly_summary/${weekly_summary_id ?? 0}/?isRecent=${isRecent}`
       );
 
       if (!response.ok) {
