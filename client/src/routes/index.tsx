@@ -1,5 +1,8 @@
 import sampleDesign from "../assets/landing-mockupp.png";
 import categoryLanding from "../assets/Category-landing.jpg";
+import feature1 from "../assets/feature-1.png";
+import feature2 from "../assets/feature-2.png";
+import feature3 from "../assets/feature-3.png";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Button } from "../components/ui/button";
@@ -138,6 +141,7 @@ const Landing = () => {
           className="relative grid min-h-screen grid-cols-2"
           ref={section3Ref}
         >
+          {/* Text Column */}
           <motion.div
             initial={{ opacity: 0, x: -100 }}
             animate={
@@ -171,26 +175,63 @@ const Landing = () => {
               >
                 Effortlessly track your spending by logging expense names,
                 quantities, and amounts, with totals automatically calculated
-                for you. Get instant when you’re about to exceed your category
-                budgets, helping you stay on track with your financial goals and
-                make informed spending decisions.
+                for you.
               </motion.p>
             </div>
+          </motion.div>
+
+          {/* Image Column */}
+          <motion.div
+            initial={{ opacity: 0, x: 100 }}
+            animate={
+              isSection3InView ? { opacity: 1, x: 0 } : { opacity: 0, x: 100 }
+            }
+            transition={{ duration: 1, delay: 0.5 }}
+            className="flex items-center justify-center"
+          >
+            <div
+              className="mr-14 h-[35rem] w-[40rem] bg-cover bg-no-repeat"
+              style={{
+                backgroundImage: `url(${feature1})`,
+                maxWidth: "100%",
+                overflow: "hidden",
+              }}
+            ></div>
           </motion.div>
         </section>
 
         {/* Feature 2 */}
         <section
-          className="relative col-start-2 grid min-h-screen grid-cols-2"
+          className="relative grid min-h-screen grid-cols-2"
           ref={section4Ref}
         >
+          {/* Image Column */}
           <motion.div
             initial={{ opacity: 0, x: -100 }}
             animate={
               isSection4InView ? { opacity: 1, x: 0 } : { opacity: 0, x: -100 }
             }
             transition={{ duration: 1, delay: 0.5 }}
-            className="col-start-2 flex items-center justify-center"
+            className="flex items-center justify-center"
+          >
+            <div
+              className="ml-14 h-[35rem] w-[45rem] bg-cover bg-no-repeat"
+              style={{
+                backgroundImage: `url(${feature2})`,
+                maxWidth: "100%",
+                overflow: "hidden",
+              }}
+            ></div>
+          </motion.div>
+
+          {/* Text Column */}
+          <motion.div
+            initial={{ opacity: 0, x: 100 }}
+            animate={
+              isSection4InView ? { opacity: 1, x: 0 } : { opacity: 0, x: 100 }
+            }
+            transition={{ duration: 1, delay: 0.5 }}
+            className="flex items-center justify-center"
           >
             <div className="flex w-80 flex-col items-center justify-center text-center">
               <motion.h1
@@ -216,9 +257,7 @@ const Landing = () => {
                 className="p-5 text-lg"
               >
                 Easily create personalized spending categories, allocate
-                budgets, and monitor your expenses with ease. Keep your finances
-                organized and gain insights with intuitive progress bars and
-                detailed budget summaries.
+                budgets, and monitor your expenses with ease.
               </motion.p>
             </div>
           </motion.div>
@@ -229,6 +268,7 @@ const Landing = () => {
           className="relative grid min-h-screen grid-cols-2"
           ref={section5Ref}
         >
+          {/* Text Column */}
           <motion.div
             initial={{ opacity: 0, x: -100 }}
             animate={
@@ -261,12 +301,28 @@ const Landing = () => {
                 className="p-5 text-lg"
               >
                 Detailed weekly summaries that offer a thorough analysis of your
-                spending, savings, and budget performance. Gain valuable
-                insights into your financial habits with easy-to-understand
-                reports and visual graphs, helping you make informed decisions
-                for the upcoming weeks.
+                spending, savings, and budget performance.
               </motion.p>
             </div>
+          </motion.div>
+
+          {/* Image Column */}
+          <motion.div
+            initial={{ opacity: 0, x: 100 }}
+            animate={
+              isSection5InView ? { opacity: 1, x: 0 } : { opacity: 0, x: 100 }
+            }
+            transition={{ duration: 1, delay: 0.5 }}
+            className="flex items-center justify-center"
+          >
+            <div
+              className="mr-14 h-[35rem] w-[45rem] bg-cover bg-no-repeat"
+              style={{
+                backgroundImage: `url(${feature3})`,
+                maxWidth: "100%",
+                overflow: "hidden",
+              }}
+            ></div>
           </motion.div>
         </section>
       </div>
