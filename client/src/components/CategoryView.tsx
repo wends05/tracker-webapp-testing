@@ -12,7 +12,7 @@ const CategoryView = (category: { category: Category }) => {
         to={`/category/${category_id}`}
         className="relative flex h-full w-full flex-col justify-between rounded-lg p-4"
         style={{
-          backgroundColor: category_color || "#f3f3f3",
+          backgroundColor: category_color || "#7a958f",
         }}
       >
         <div className="top- relative">
