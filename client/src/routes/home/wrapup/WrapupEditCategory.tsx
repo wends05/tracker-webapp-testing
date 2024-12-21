@@ -83,8 +83,11 @@ const WrapupEditCategory = () => {
       await queryClient.invalidateQueries({
         queryKey: ["categories"],
       });
-      await queryClient.refetchQueries({
-        predicate: (query) => query.queryKey[0] === "category",
+      // for each of the categories fetch the category9
+      categories.forEach((category) => {
+        queryClient.invalidateQueries({
+          queryKey: ["category", category.category_id],
+        });
       });
       nav("/dashboard");
     },

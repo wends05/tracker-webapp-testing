@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import getUser from "@/utils/getUser";
-import { User } from "@/utils/types";
+import { Category, User } from "@/utils/types";
 import { toast } from "@/hooks/use-toast";
+import { BackendResponse } from "@/interfaces/BackendResponse";
 
 interface DrawerDemoProps {
   open: boolean;
@@ -26,6 +27,27 @@ export function DrawerDemo({ open, setOpen }: DrawerDemoProps) {
   const nav = useNavigate();
 
   const queryClient = useQueryClient();
+
+  const { data: categories } = useQuery({
+    queryKey: ["categories"],
+    enabled: !!user,
+    queryFn: async () => {
+      if (!user) {
+        throw Error("No user provided");
+      }
+
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/user/${user.user_id}/categories`
+      );
+
+      if (!response.ok) {
+        throw Error("Error Fetched");
+      }
+
+      const { data } = (await response.json()) as BackendResponse<Category[]>;
+      return data;
+    },
+  });
 
   const { mutate: yesMutate, isPending } = useMutation({
     mutationFn: async () => {
@@ -58,8 +80,10 @@ export function DrawerDemo({ open, setOpen }: DrawerDemoProps) {
       await queryClient.invalidateQueries({
         queryKey: ["categories"],
       });
-      await queryClient.refetchQueries({
-        predicate: (query) => query.queryKey[0] === "category",
+      categories?.forEach((category) => {
+        queryClient.invalidateQueries({
+          queryKey: ["category", category.category_id],
+        });
       });
       nav("/dashboard");
     },
