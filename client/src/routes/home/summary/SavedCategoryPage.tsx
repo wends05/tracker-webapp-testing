@@ -90,134 +90,100 @@ const SavedCategoryPage = () => {
   return !saved_category_id || !category || !savedCategoryExpenses ? (
     <>loading</>
   ) : (
-    <div
-      className={`relative mt-12 flex min-h-full flex-col justify-center px-16`}
-    >
-      <h1 className="text-center text-8xl font-bold text-black">
+    <div className="relative mx-auto mt-4 flex min-h-screen w-full max-w-screen-lg flex-col justify-center px-4 sm:mt-6 sm:px-6 lg:mt-8 lg:px-8">
+      <h1 className="w-full text-center text-4xl font-bold text-black sm:text-5xl md:text-7xl lg:text-8xl">
         {category.category_name}
       </h1>
-      <div className="flex w-full justify-center gap-2">
-        <div className="flex w-1/3 flex-col items-center justify-center">
-          {" "}
-          <div className="mb-8 min-h-56 w-96 rounded-3xl bg-white drop-shadow-lg">
+
+      <div className="mt-8 flex w-full flex-wrap justify-between gap-4">
+        <div className="flex w-full flex-col items-center lg:w-1/3">
+          <div className="min-h-56 w-full rounded-3xl bg-white drop-shadow-lg">
             <div
-              className="mb-4 flex h-12 w-full items-center rounded-t-2xl px-6 font-bold text-white"
+              className="flex h-12 items-center rounded-t-2xl px-6 font-bold text-white"
               style={{
                 backgroundColor: category.category_color,
               }}
             >
-              <text>Description</text>
+              <span>Description</span>
             </div>
-            <text className="ml-6">{category.description}</text>
+            <p className="ml-6 mt-4 text-sm sm:text-base">
+              {category.description}
+            </p>
           </div>
         </div>
-        <div className="flex h-96 w-1/3 flex-col items-center">
+
+        <div className="flex w-full flex-col items-center lg:w-1/3">
           <div
-            className="mb-8 mt-20 h-16 w-96 rounded-3xl bg-white p-4 text-center text-white drop-shadow-lg"
+            className="h-16 w-full rounded-3xl bg-white p-4 text-center text-white drop-shadow-lg"
             style={{
               backgroundColor: category.category_color,
             }}
           >
-            <text>Total Budget: </text>
-            <text className="text-2xl font-bold">₱{category.budget}</text>
+            <span>Total Budget: </span>
+            <span className="text-xl font-bold sm:text-2xl">
+              ₱{category.budget}
+            </span>
           </div>
-          <div className="flex flex-row gap-4">
-            <div className="flex size-52 flex-col items-center py-8 text-center">
-              <text>Total Saved</text>
-              <text className="text-6xl font-bold">
+          <div className="mt-6 flex flex-wrap justify-center gap-4">
+            <div className="text-center">
+              <span>Total Saved</span>
+              <p className="text-4xl font-bold sm:text-6xl">
                 {savedPercentage.toFixed(0)}%
-              </text>
-              <text className="font-bold">₱{category.amount_left}</text>
+              </p>
+              <p className="font-bold">₱{category.amount_left}</p>
             </div>
-            <div className="flex size-52 flex-col items-center py-8 text-center">
-              <text>Total Spent</text>
-              <text className="text-6xl font-bold">
+            <div className="text-center">
+              <span>Total Spent</span>
+              <p className="text-4xl font-bold sm:text-6xl">
                 {spentPercentage.toFixed(0)}%
-              </text>
-              <text className="font-bold">₱{category.amount_spent}</text>
+              </p>
+              <p className="font-bold">₱{category.amount_spent}</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="my-4 flex flex-row justify-start gap-4 px-16">
-        <div
-          className="mx-2 items-center justify-center align-middle"
+      <div className="my-4 flex w-full flex-wrap justify-center gap-4 px-4 sm:px-8">
+        <button
+          className={`rounded-full border-2 px-4 py-2 text-sm ${
+            sortHighLow ? "text-white" : ""
+          }`}
+          style={{
+            borderColor: category.category_color,
+            backgroundColor: sortHighLow ? category.category_color : "white",
+            color: sortHighLow ? "white" : category.category_color,
+          }}
           onClick={() => {
             setsortHighLow(!sortHighLow);
             setsortLowHigh(false);
             descendingSorted();
           }}
         >
-          <button
-            className={
-              sortHighLow
-                ? "rounded-full border-2 px-4 py-2 text-sm text-white"
-                : "rounded-full border-2 px-4 py-2 text-sm"
-            }
-            style={{
-              borderColor: category.category_color,
-              backgroundColor: sortHighLow ? category.category_color : "white",
-              color: sortHighLow ? "white" : category.category_color,
-            }}
-            onMouseEnter={(e) => {
-              if (!sortHighLow) {
-                e.currentTarget.style.backgroundColor = category.category_color;
-                e.currentTarget.style.color = "white";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!sortHighLow) {
-                e.currentTarget.style.backgroundColor = "white";
-                e.currentTarget.style.color = category.category_color;
-              }
-            }}
-          >
-            Sort By: Descending Expense
-          </button>
-        </div>
-
-        <div
-          className="mx-2 items-center justify-center align-middle"
+          Sort By: Descending Expense
+        </button>
+        <button
+          className={`rounded-full border-2 px-4 py-2 text-sm ${
+            sortLowHigh ? "text-white" : ""
+          }`}
+          style={{
+            borderColor: category.category_color,
+            backgroundColor: sortLowHigh ? category.category_color : "white",
+            color: sortLowHigh ? "white" : category.category_color,
+          }}
           onClick={() => {
             setsortLowHigh(!sortLowHigh);
             setsortHighLow(false);
             ascendingSorted();
           }}
         >
-          <button
-            className={
-              sortLowHigh
-                ? "rounded-full border-2 px-4 py-2 text-sm text-white"
-                : "rounded-full border-2 px-4 py-2 text-sm"
-            }
-            style={{
-              borderColor: category.category_color,
-              backgroundColor: sortLowHigh ? category.category_color : "white",
-              color: sortLowHigh ? "white" : category.category_color,
-            }}
-            onMouseEnter={(e) => {
-              if (!sortLowHigh) {
-                e.currentTarget.style.backgroundColor = category.category_color;
-                e.currentTarget.style.color = "white";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!sortLowHigh) {
-                e.currentTarget.style.backgroundColor = "white";
-                e.currentTarget.style.color = category.category_color;
-              }
-            }}
-          >
-            Sort By: Ascending Expense
-          </button>
-        </div>
+          Sort By: Ascending Expense
+        </button>
       </div>
 
-      <div className="flex w-full flex-col gap-4 px-10">
+      <div className="flex w-full flex-col gap-4 px-4 sm:px-8">
         <Link to={"expense/add"}>
           <div
-            className="h-16 w-96 rounded-3xl bg-white p-4 text-center text-white drop-shadow-lg"
+            className="h-16 w-full rounded-3xl bg-white p-4 text-center text-white drop-shadow-lg"
             style={{
               backgroundColor: category.category_color,
             }}
@@ -226,55 +192,27 @@ const SavedCategoryPage = () => {
           </div>
         </Link>
 
-        {sortHighLow &&
-          descending?.map((expense) => (
-            <ExpenseBox
-              date={expense.date}
-              category_id={expense.category_id}
-              price={expense.price}
-              expense_name={expense.expense_name}
-              quantity={expense.quantity}
-              total={expense.total}
-              expense_id={Number(expense.expense_id)}
-              saved_category_id={Number(expense.saved_category_id)}
-              key={expense.expense_id}
-            />
-          ))}
-
-        {sortLowHigh &&
-          ascending?.map((expense) => (
-            <ExpenseBox
-              date={expense.date}
-              category_id={expense.category_id}
-              price={expense.price}
-              expense_name={expense.expense_name}
-              quantity={expense.quantity}
-              total={expense.total}
-              expense_id={Number(expense.expense_id)}
-              saved_category_id={Number(expense.saved_category_id)}
-              key={expense.expense_id}
-            />
-          ))}
-
-        {!sortHighLow &&
-          !sortLowHigh &&
-          savedCategoryExpenses?.map((expense) => (
-            <ExpenseBox
-              date={expense.date}
-              category_id={expense.category_id}
-              price={expense.price}
-              expense_name={expense.expense_name}
-              quantity={expense.quantity}
-              total={expense.total}
-              expense_id={Number(expense.expense_id)}
-              key={expense.expense_id}
-            />
-          ))}
+        {(sortHighLow
+          ? descending
+          : sortLowHigh
+            ? ascending
+            : savedCategoryExpenses
+        )?.map((expense) => (
+          <ExpenseBox
+            date={expense.date}
+            category_id={expense.category_id}
+            price={expense.price}
+            expense_name={expense.expense_name}
+            quantity={expense.quantity}
+            total={expense.total}
+            expense_id={Number(expense.expense_id)}
+            saved_category_id={Number(expense.saved_category_id)}
+            key={expense.expense_id}
+          />
+        ))}
       </div>
 
-      <div>
-        <Outlet />
-      </div>
+      <Outlet />
     </div>
   );
 };
