@@ -128,7 +128,7 @@ const EditExpense = () => {
       const final_price = price ?? 0;
       console.log("date: ", timeDate);
 
-      if ((category?.amount_left ?? 0) < total) {
+      if ((category?.amount_left ?? 0 + expense.total) < total) {
         throw Error("Your budget is lower than your amount spent.");
       }
 
@@ -151,7 +151,8 @@ const EditExpense = () => {
       if (!timeDate) {
         throw Error("Please Select date and time");
       }
-
+      const localeDate = new Date(timeDate);
+      localeDate.toLocaleDateString();
       const newExpense: Expense = {
         expense_id: expense.expense_id,
         expense_name: name,
@@ -159,7 +160,7 @@ const EditExpense = () => {
         quantity,
         total,
         category_id: expense.category_id,
-        date: timeDate ? timeDate : new Date(),
+        date: localeDate ? localeDate : new Date(),
       };
 
       console.log(newExpense);

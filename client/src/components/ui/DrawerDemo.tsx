@@ -74,16 +74,20 @@ export function DrawerDemo({ open, setOpen }: DrawerDemoProps) {
       toast({
         description: "Used the same categories from the previous week.",
       });
+
+      console.log(categories);
+      categories?.forEach(async (category) => {
+        console.log("MAMA ");
+        console.log(category);
+        await queryClient.refetchQueries({
+          queryKey: ["category", category.category_id],
+        });
+      });
       await queryClient.invalidateQueries({
         queryKey: ["weeklySummary"],
       });
       await queryClient.invalidateQueries({
         queryKey: ["categories"],
-      });
-      categories?.forEach((category) => {
-        queryClient.invalidateQueries({
-          queryKey: ["category", category.category_id],
-        });
       });
       nav("/dashboard");
     },
