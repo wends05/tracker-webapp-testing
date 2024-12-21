@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
-import { Expense, SavedCategories, WeeklySummary } from "@/utils/types";
+import { Expense } from "@/utils/types";
 import { BackendResponse } from "@/interfaces/BackendResponse";
 import { FormEvent, useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -30,7 +30,7 @@ const getCurrentWeekRange = () => {
 const EditExpense = () => {
   const expense = useLoaderData() as Expense;
 
-  const { category_id, saved_category_id } = useParams();
+  const { category_id } = useParams();
   const nav = useNavigate();
   const { toast } = useToast();
 
@@ -40,62 +40,8 @@ const EditExpense = () => {
   const [total, setTotal] = useState(expense.total);
   const [timeDate, setTimeDate] = useState<Date>(new Date(expense.date!));
 
-  const [{ startOfWeek, endOfWeek }, setDateRange] = useState<{
-    startOfWeek: Date;
-    endOfWeek: Date;
-  }>(getCurrentWeekRange());
+  const { startOfWeek, endOfWeek } = getCurrentWeekRange();
 
-  const { data: savedCategory } = useQuery<SavedCategories>({
-    enabled: !!saved_category_id,
-    queryKey: ["savedCategory", saved_category_id],
-    queryFn: async () => {
-      const response = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/savedCategories/${saved_category_id}`
-      );
-
-      if (!response.ok) {
-        const { message } = (await response.json()) as { message: string };
-        throw Error(message);
-      }
-
-      const { data } =
-        (await response.json()) as BackendResponse<SavedCategories>;
-      return data;
-    },
-  });
-  const { data: weeklySummary } = useQuery<WeeklySummary>({
-    enabled: !!saved_category_id && !!savedCategory,
-    queryKey: ["weeklySummary", savedCategory?.weekly_summary_id],
-    queryFn: async () => {
-      const response = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/summary/${savedCategory?.weekly_summary_id}`
-      );
-
-      if (!response.ok) {
-        const { message } = (await response.json()) as BackendError;
-        throw Error(message);
-      }
-
-      const { data } =
-        (await response.json()) as BackendResponse<WeeklySummary>;
-      // setStartDate(new Date(data.date_start));
-      // setEndDate(new Date(data.date_end));
-      return data;
-    },
-  });
-
-  useEffect(() => {
-    if (weeklySummary) {
-      if (category_id) {
-        setDateRange(getCurrentWeekRange());
-      } else if (saved_category_id) {
-        setDateRange({
-          startOfWeek: new Date(weeklySummary.date_start),
-          endOfWeek: new Date(weeklySummary.date_end),
-        });
-      }
-    }
-  }, [category_id, saved_category_id, weeklySummary]);
   useEffect(() => {
     const final_price = price ?? 0;
     setTotal(final_price * quantity);
@@ -155,6 +101,8 @@ const EditExpense = () => {
         const { message } = (await response.json()) as BackendError;
         throw Error(message);
       }
+
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({

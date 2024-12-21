@@ -236,6 +236,7 @@ const SavedCategoryPage = () => {
               quantity={expense.quantity}
               total={expense.total}
               expense_id={Number(expense.expense_id)}
+              saved_category_id={Number(expense.saved_category_id)}
               key={expense.expense_id}
             />
           ))}
@@ -250,6 +251,7 @@ const SavedCategoryPage = () => {
               quantity={expense.quantity}
               total={expense.total}
               expense_id={Number(expense.expense_id)}
+              saved_category_id={Number(expense.saved_category_id)}
               key={expense.expense_id}
             />
           ))}

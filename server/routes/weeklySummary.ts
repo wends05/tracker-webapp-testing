@@ -136,6 +136,25 @@ weeklySummaryRouter.post(
 );
 
 weeklySummaryRouter.get(
+  "/:id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+
+      const { rows } = await pool.query(
+        `SELECT * FROM "Weekly Summary" WHERE weekly_summary_id = $1`,
+        [id]
+      );
+
+      res.status(200).json({
+        data: rows[0],
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+weeklySummaryRouter.get(
   "/user/:id/categories",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
