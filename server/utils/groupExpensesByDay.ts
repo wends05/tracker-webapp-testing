@@ -31,7 +31,7 @@ export default function groupExpensesByDay(
 
   expenses.forEach((expense) => {
     const date = new Date(expense.date!);
-    const dayOfWeek = daysOfWeek[date.getUTCDay() + 1];
+    const dayOfWeek = daysOfWeek[date.getUTCDay()];
     groupedExpenses[dayOfWeek] += expense.total;
   });
 
