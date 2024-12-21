@@ -77,17 +77,18 @@ const WrapupEditCategory = () => {
       toast({
         description: "Success updating category budgets.",
       });
+
+      // for each of the categories fetch the category9
+      categories.forEach(async (category) => {
+        await queryClient.refetchQueries({
+          queryKey: ["category", category.category_id],
+        });
+      });
       await queryClient.invalidateQueries({
         queryKey: ["weeklySummary"],
       });
       await queryClient.invalidateQueries({
         queryKey: ["categories"],
-      });
-      // for each of the categories fetch the category9
-      categories.forEach((category) => {
-        queryClient.invalidateQueries({
-          queryKey: ["category", category.category_id],
-        });
       });
       nav("/dashboard");
     },

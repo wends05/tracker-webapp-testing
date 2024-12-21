@@ -30,10 +30,14 @@ chartRouter.get(
         const { rows } = await pool.query<Expense>(query, [user_id]);
         const arranged = groupExpensesByDay(rows);
 
-        const date_start = new Date(getLastSunday()).toDateString();
+        const date_start = new Date(getLastSunday()).toLocaleString("default", {
+          month: "long",
+        });
         const date_end = new Date(
           new Date(date_start).setDate(new Date(date_start).getDate() + 6)
-        ).toDateString();
+        ).toLocaleString("default", {
+          month: "long",
+        });
 
         res.status(200).json({
           data: {
@@ -63,11 +67,15 @@ chartRouter.get(
           );
 
           const date_start = new Date(
-            weeklySummaryRows[0].date_start
-          ).toDateString();
+            weeklySummaryRows[0].date_start.toLocaleString("default", {
+              month: "long",
+            })
+          );
           const date_end = new Date(
-            weeklySummaryRows[0].date_end
-          ).toDateString();
+            weeklySummaryRows[0].date_end.toLocaleString("default", {
+              month: "long",
+            })
+          );
 
           console.log(rows);
           console.log(date_start);
