@@ -40,7 +40,7 @@ const Landing = () => {
             <ul className="flex items-center space-x-6">
               <li className="flex items-center">
                 <a href="#section1" className="hover:text-tan">
-                  About
+                  Home
                 </a>
               </li>
               <li className="flex items-center">
