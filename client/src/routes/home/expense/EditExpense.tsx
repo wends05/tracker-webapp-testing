@@ -5,9 +5,16 @@ import { BackendResponse } from "@/interfaces/BackendResponse";
 import { FormEvent, useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Category } from "@/utils/types";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { BackendError } from "@/interfaces/ErrorResponse";
+import { Calendar } from "@/components/ui/calendar";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const getCurrentWeekRange = () => {
   const today = new Date();
@@ -31,9 +38,7 @@ const EditExpense = () => {
   const [price, setPrice] = useState<number | null>(expense.price);
   const [quantity, setQuantity] = useState(expense.quantity);
   const [total, setTotal] = useState(expense.total);
-  const [timeDate, setTimeDate] = useState<Date | null>(
-    new Date(expense.date!)
-  );
+  const [timeDate, setTimeDate] = useState<Date>(new Date(expense.date!));
 
   const { startOfWeek, endOfWeek } = getCurrentWeekRange();
 
@@ -147,6 +152,12 @@ const EditExpense = () => {
     },
   });
 
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+
   const closeForm = () => {
     if (!isPending) {
       nav(-1);
@@ -190,16 +201,36 @@ const EditExpense = () => {
           </div>
           <div className="flex flex-1 flex-col">
             <label htmlFor="datetime">Day Spent:</label>
-            <DatePicker
-              className="focus:ring-green rounded-3xl border-2 border-black focus:ring"
-              id="datetime"
-              name="timeDate"
-              selected={timeDate}
-              minDate={startOfWeek}
-              maxDate={endOfWeek}
-              onChange={(date: Date | null) => setTimeDate(date)}
-              required
-            />
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "focus:ring-green rounded-3xl border-2 border-black focus:ring",
+                    !formatter.format(timeDate) && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {formatter.format(timeDate) ? (
+                    formatter.format(timeDate)
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={timeDate}
+                  onSelect={(date: Date | undefined) =>
+                    setTimeDate(date || new Date())
+                  }
+                  fromDate={startOfWeek}
+                  toDate={endOfWeek}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 

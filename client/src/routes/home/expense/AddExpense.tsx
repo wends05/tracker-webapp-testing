@@ -5,8 +5,15 @@ import { toast } from "@/hooks/use-toast";
 import { Expense } from "@/utils/types";
 import { Category } from "@/utils/types";
 import { BackendResponse } from "@/interfaces/BackendResponse";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { Calendar } from "@/components/ui/calendar";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { BackendError } from "@/interfaces/ErrorResponse";
 
 const getCurrentWeekRange = () => {
@@ -29,7 +36,7 @@ const AddExpense = () => {
   const [price, setPrice] = useState(1.0);
   const [quantity, setQuantity] = useState(1);
   const [total, setTotal] = useState(0);
-  const [timeDate, setTimeDate] = useState<Date | null>(new Date());
+  const [timeDate, setTimeDate] = useState<Date>(new Date());
 
   const { startOfWeek, endOfWeek } = getCurrentWeekRange();
 
@@ -133,6 +140,12 @@ const AddExpense = () => {
     },
   });
 
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+
   const closeForm = () => {
     if (!isPending) {
       nav(-1);
@@ -176,16 +189,36 @@ const AddExpense = () => {
           </div>
           <div className="flex flex-1 flex-col">
             <label htmlFor="date">Day Spent:</label>
-            <DatePicker
-              className="focus:ring-green rounded-3xl border-2 border-black focus:ring"
-              id="datetime"
-              name="timeDate"
-              selected={timeDate}
-              minDate={startOfWeek}
-              maxDate={endOfWeek}
-              onChange={(date: Date | null) => setTimeDate(date)}
-              required
-            />
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "focus:ring-green rounded-3xl border-2 border-black focus:ring",
+                    !formatter.format(timeDate) && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {formatter.format(timeDate) ? (
+                    formatter.format(timeDate)
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={timeDate}
+                  onSelect={(date: Date | undefined) =>
+                    setTimeDate(date || new Date())
+                  }
+                  fromDate={startOfWeek}
+                  toDate={endOfWeek}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 
