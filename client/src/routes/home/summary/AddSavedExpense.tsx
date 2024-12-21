@@ -1,7 +1,6 @@
 import { toast } from "@/hooks/use-toast";
 import { BackendResponse } from "@/interfaces/BackendResponse";
-import { Expense, SavedCategories, User } from "@/utils/types";
-import getUser from "@/utils/getUser";
+import { Expense, SavedCategories, WeeklySummary } from "@/utils/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,35 +14,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import { WeeklyDataResult } from "@/interfaces/WeeklyDataResult";
+import { BackendError } from "@/interfaces/ErrorResponse";
 
 const AddSavedExpense = () => {
-  const { data: user } = useQuery<User>({
-    queryKey: ["user"],
-    queryFn: getUser,
-  });
-  const { weeklysummary_id } = useParams();
-
-  const { data: weeklyData } = useQuery<WeeklyDataResult>({
-    enabled: !!user,
-    queryKey: ["weekchart", weeklysummary_id ?? undefined],
-    queryFn: async () => {
-      const response = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/charts/user/${user?.user_id}/weekly_summary/${weeklysummary_id ?? 0}`
-      );
-
-      if (!response.ok) {
-        const errorMessage = await response.json();
-        throw Error(errorMessage);
-      }
-
-      const { data } = (await response.json()) as { data: WeeklyDataResult };
-      // setStartDate(new Date(data.date_start));
-      // setEndDate(new Date(data.date_end));
-      return data;
-    },
-  });
-
   const { saved_category_id } = useParams();
 
   const { data: category } = useQuery<SavedCategories>({
@@ -60,6 +33,27 @@ const AddSavedExpense = () => {
 
       const { data } =
         (await response.json()) as BackendResponse<SavedCategories>;
+      return data;
+    },
+  });
+
+  const { data: weeklySummary } = useQuery<WeeklySummary>({
+    enabled: !!category,
+    queryKey: ["weeklySummary", category?.weekly_summary_id],
+    queryFn: async () => {
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/summary/${category?.weekly_summary_id}`
+      );
+
+      if (!response.ok) {
+        const { message } = (await response.json()) as BackendError;
+        throw Error(message);
+      }
+
+      const { data } =
+        (await response.json()) as BackendResponse<WeeklySummary>;
+      // setStartDate(new Date(data.date_start));
+      // setEndDate(new Date(data.date_end));
       return data;
     },
   });
@@ -225,19 +219,18 @@ const AddSavedExpense = () => {
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
-                {weeklyData ? (
+                {weeklySummary ? (
                   <Calendar
                     id="date"
                     mode="single"
-                    selected={expense.date}
                     onSelect={(date: Date | undefined) =>
                       setExpense((prev) => ({
                         ...prev,
                         date: date || new Date(),
                       }))
                     }
-                    fromDate={new Date(weeklyData.date_start)}
-                    toDate={new Date(weeklyData.date_end)}
+                    fromDate={new Date(weeklySummary.date_start)}
+                    toDate={new Date(weeklySummary.date_end)}
                     initialFocus
                   />
                 ) : (

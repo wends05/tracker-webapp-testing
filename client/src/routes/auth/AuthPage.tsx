@@ -98,7 +98,7 @@ const AuthPage = () => {
     );
 
     if (fetchedUser.status === 200) {
-      const { data } = await fetchedUser.json();
+      const { data } = (await fetchedUser.json()) as BackendResponse<User>;
       setUser(data);
       nav("/dashboard");
 
