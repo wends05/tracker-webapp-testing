@@ -121,6 +121,9 @@ const EditCategory = () => {
       await queryClient.invalidateQueries({
         queryKey: ["category", category.category_id],
       });
+      await queryClient.invalidateQueries({
+        queryKey: ["weeklySummary"],
+      });
     },
     onSuccess: () => {
       toast({

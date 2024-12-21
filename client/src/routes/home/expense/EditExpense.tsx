@@ -128,6 +128,30 @@ const EditExpense = () => {
       const final_price = price ?? 0;
       console.log("date: ", timeDate);
 
+      if ((category?.amount_left ?? 0) < total) {
+        throw Error("Your budget is lower than your amount spent.");
+      }
+
+      toast({
+        description: "Adding Expense...",
+      });
+
+      if (!name.trim()) {
+        throw Error("Name is required.");
+      }
+
+      if ((price ?? 0) <= 0) {
+        throw Error("Price must be greater than zero.");
+      }
+
+      if (quantity <= 0) {
+        throw Error("Quantity must be greater than zero.");
+      }
+
+      if (!timeDate) {
+        throw Error("Please Select date and time");
+      }
+
       const newExpense: Expense = {
         expense_id: expense.expense_id,
         expense_name: name,

@@ -14,6 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { BackendError } from "@/interfaces/ErrorResponse";
 
 const getCurrentWeekRange = () => {
   const today = new Date();
@@ -55,9 +56,8 @@ const AddExpense = () => {
       );
 
       if (!response.ok) {
-        const { message: errorMessage } = (await response.json()) as {
-          message: string;
-        };
+        const { message: errorMessage } =
+          (await response.json()) as BackendError;
         throw Error(errorMessage);
       }
 
@@ -110,10 +110,7 @@ const AddExpense = () => {
       );
 
       if (!response.ok) {
-        const errorMessage = (await response.json()) as {
-          error: string;
-          message: string;
-        };
+        const errorMessage = (await response.json()) as BackendError;
         throw Error(errorMessage.message);
       }
 
@@ -129,7 +126,6 @@ const AddExpense = () => {
       toast({
         description: "Expense Added!",
       });
-
       queryClient.invalidateQueries({
         queryKey: ["weeklySummary"],
       });
